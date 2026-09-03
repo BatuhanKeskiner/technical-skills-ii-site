@@ -1,120 +1,60 @@
-<!-- @dsCard group="Lectures" viewport="1400x900" name="Lectures index" subtitle="The weeks, and the format they are built on." -->
 <!DOCTYPE html>
 <html lang="en" translate="no">
 <head>
 <meta charset="utf-8">
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lectures — Technical Skills II</title>
+<link rel="icon" href="_shared/favicon.svg" type="image/svg+xml">
+<title>Technical Skills II — KABK BA Photography</title>
+<meta name="description" content="The lectures for Technical Skills II, week by week.">
 <link rel="stylesheet" href="_shared/styles.css">
 <link rel="stylesheet" href="_shared/lecture.css">
 <style>
-body{background:#FFFFFF}
-.sheet{max-width:1060px;margin:0 auto;padding:0 40px 120px}
-header{padding:56px 0 22px;border-bottom:1px solid var(--ink-900);display:flex;align-items:flex-end;justify-content:space-between;gap:32px}
-header h1{margin:14px 0 0;font-family:var(--font-display);font-size:clamp(38px,5vw,68px);font-weight:600;letter-spacing:-.04em;line-height:.96}
-header .standfirst{font-family:var(--font-serif);font-style:italic;font-size:clamp(18px,2vw,26px);line-height:1.3;color:var(--text-muted);max-width:42ch;margin:16px 0 0}
-header img{flex:0 0 auto;height:54px;width:auto;display:block;mix-blend-mode:multiply}
-h2{font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--on-paper-quiet);margin:56px 0 0;padding-bottom:10px;border-bottom:1px solid var(--ink-900)}
-.row{display:grid;grid-template-columns:60px minmax(0,1fr) 150px;gap:24px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--rule-hairline);text-decoration:none;border-left:0;color:inherit}
-a.row:hover{background:var(--paper-200)}
-.row .n{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;color:var(--on-paper-quiet)}
-.row .t{font-family:var(--font-display);font-size:21px;font-weight:600;letter-spacing:-.02em}
-.row .t span{display:block;font-family:var(--font-display);font-size:14px;font-weight:400;letter-spacing:0;color:var(--text-muted);margin-top:4px;text-wrap:pretty}
-.row .s{font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-paper-quiet);text-align:right;
-  display:inline-flex;align-items:center;gap:7px;justify-content:flex-end;white-space:nowrap}
-.row .s .dot{width:7px;height:7px;flex:0 0 7px;border:1px solid currentColor;display:inline-block}
-.row .s.done{color:var(--ink-900)}
-.row .s.done .dot{background:currentColor}
-.row .s.wip{color:var(--signal-600)}
-.row .s.wip .dot{background:linear-gradient(90deg,currentColor 50%,transparent 50%)}
-.row .s.todo{color:var(--on-paper-quiet)}
-.row .s.ref{color:var(--on-paper-quiet)}
-.row .s.ref .dot{border-radius:0;transform:rotate(45deg);width:6px;height:6px;flex-basis:6px}
-.files{display:grid;gap:0;margin-top:8px}
-.files div{display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;padding:11px 0;border-bottom:1px solid var(--rule-faint);font-size:14.5px}
-.files code{font-family:var(--font-mono);font-size:12px;letter-spacing:.02em}
-.files span{color:var(--text-muted);text-wrap:pretty}
-.note{margin-top:20px;border:1px solid var(--rule-hairline);border-left:3px solid var(--ink-900);padding:14px 16px;font-size:14.5px;color:var(--text-muted);max-width:72ch}
-.note b{color:var(--ink-900);font-weight:600}
-@media (max-width:760px){.sheet{padding:0 20px 80px}header{display:block}header img{margin-top:20px}.row{grid-template-columns:44px 1fr}.row .s{grid-column:1/-1;text-align:left}.files div{grid-template-columns:1fr}}
+  body{background:#F7F5F0;color:#0B0C0C;margin:0;
+       font-family:'Archivo',system-ui,sans-serif}
+  .wrap{max-width:820px;margin:0 auto;padding:8vh 6vw 12vh}
+  .eyebrow{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;
+       letter-spacing:.18em;text-transform:uppercase;color:#5C605E;margin:0 0 20px}
+  h1{font-size:54px;line-height:1;letter-spacing:-.03em;font-weight:500;margin:0 0 6px}
+  h1 .yr{background:#E4FF1A;padding:0 .12em}
+  .lead{font-size:19px;line-height:1.45;color:#3A3D3B;margin:0 0 44px;max-width:34em}
+  ul.weeks{list-style:none;margin:0;padding:0;border-top:1px solid #0B0C0C}
+  li.w{border-bottom:1px solid #D8D4CC}
+  li.w a,li.w{display:flex;align-items:baseline;gap:18px;
+       padding:15px 2px;text-decoration:none;color:inherit}
+  li.w a{padding:0}
+  li.w.on a:hover{background:#EFEDE7}
+  .n{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;
+       letter-spacing:.1em;color:#5C605E;min-width:2.4em}
+  li.w.on .n{color:#0B0C0C}
+  .t{font-size:21px;flex:1 1 auto}
+  li.w:not(.on) .t{color:#8E918E}
+  .go{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;
+       letter-spacing:.14em;text-transform:uppercase;color:#8E918E}
+  li.w.on .go{color:#C42D00}
+  .foot{margin-top:52px;font-family:'JetBrains Mono',ui-monospace,monospace;
+       font-size:10px;letter-spacing:.1em;color:#8E918E;line-height:1.9}
 </style>
-<link rel="icon" href="_shared/favicon.svg" type="image/svg+xml">
 </head>
 <body>
-<div class="sheet">
-
-<header>
-  <div>
-    <p style="font-family:var(--font-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--on-paper-quiet);margin:0">KABK · BA Photography · 2026–27</p>
-    <h1>Technical Skills <span style="font-family:var(--font-mono);font-size:.62em">II</span></h1>
-    <p class="standfirst">Lectures, and the format they are built on.</p>
-  </div>
-  <img src="_shared/assets/kabk-logo.jpg" alt="Royal Academy of Art, The Hague">
-</header>
-
-<h2>Weeks</h2>
-<div id="week-rows"></div>
-
-<h2>Reference</h2>
-<div id="ref-rows"></div>
-
-<h2>How it is organised</h2>
-<div class="files">
-  <div><code>NN-slug/</code><span>One folder per week. <code>content.js</code> is the week's manuscript (the only file that is written), <code>assets/</code> its pictures, <code>files/</code> the PDFs handed out, <code>notes/</code> the exported batches.</span></div>
-  <div><code>00-catalogue/</code><span>The eleven layouts, each shown at its least and its most. Look here before asking for a new one.</span></div>
-  <div><code>CONTRACT.md</code><span>The rulebook: the layouts, the block types, the rules. Every session that writes a week reads it first.</span></div>
-  <div><code>CLAUDE.md</code><span>Standing instructions for Claude Code in this folder.</span></div>
-  <div><code>_shared/</code><span>The machine: one stylesheet, the fonts, the renderer, the page shell, the two correction modes, the interactives, the week template. Never edited by hand.</span></div>
-  <div><code>_shared/tools/</code><span><code>make-student-copy.py</code> writes one self-contained file per week into <code>_student/</code>; <code>check-pages.py</code> screenshots every page and reports anything that overflows.</span></div>
+<div class="wrap">
+  <p class="eyebrow">KABK · BA Photography · <span>2026–27</span></p>
+  <h1>Technical Skills <span class="yr">II</span></h1>
+  <p class="lead">Every lecture, week by week. Open one to read it, and to use
+     the instruments in it — they work on your own machine, during the class
+     and afterwards.</p>
+  <ul class="weeks">
+    <li class="w on"><a href="01-introduction/index.html"><span class="n">1</span><span class="t">Introduction</span><span class="go">Open</span></a></li>
+    <li class="w on"><a href="02-composition-format/index.html"><span class="n">2</span><span class="t">Composition & Format</span><span class="go">Open</span></a></li>
+    <li class="w"><span class="n">3</span><span class="t">Camera I</span><span class="go">To come</span></li>
+    <li class="w"><span class="n">4</span><span class="t">Camera II</span><span class="go">To come</span></li>
+    <li class="w"><span class="n">5</span><span class="t">Light I</span><span class="go">To come</span></li>
+    <li class="w"><span class="n">6</span><span class="t">Light II</span><span class="go">To come</span></li>
+    <li class="w"><span class="n">7</span><span class="t">Mid-Term Review</span><span class="go">To come</span></li>
+    <li class="w"><span class="n">—</span><span class="t">Fall week</span><span class="go">To come</span></li>
+    <li class="w"><span class="n">8</span><span class="t">Flash & Continuous</span><span class="go">To come</span></li>
+  </ul>
+  <p class="foot">Batuhan Keskiner<br>build 6 · 04.09.2026 01:23</p>
 </div>
-
-<p class="note"><b>Authoring a week.</b> Content lives in <code>content.js</code>, plain data, no markup, written against <code>CONTRACT.md</code>. Every page names its layout and carries a title. If a piece of content has no layout or block type, it is reported, not invented: it gets added once, to <code>_shared</code> and the catalogue, and every week gains it.</p>
-
-</div>
-
-<script src="_shared/weeks.js"></script>
-<script>
-/* The rows are rendered from weeks.js so this page and every lecture's rail
-   nav stay in step: adding a week is one entry there. */
-(function () {
-  const row = (w) => {
-    const a = document.createElement('a');
-    a.className = 'row';
-    a.href = w.slug + '/index.html';
-    const n = document.createElement('span');
-    n.className = 'n';
-    n.textContent = '#' + w.n;
-    const t = document.createElement('span');
-    t.className = 't';
-    t.append(document.createTextNode(w.title));
-    const d = document.createElement('span');
-    d.textContent = w.desc;
-    t.append(d);
-    /* Where the week has got to. Three states and no more: a week is either
-       finished, being written, or not begun. "Open" said nothing about any of
-       them. Reference material is not a week and keeps its own label. */
-    const STATE = {
-      done: ['Completed', 'done'],
-      wip: ['In progress', 'wip'],
-      todo: ['Not started', 'todo'],
-      live: ['In progress', 'wip'],
-      reference: ['Reference · v2.0', 'ref'],
-    };
-    const [label, cls] = STATE[w.status] || STATE.todo;
-    const s = document.createElement('span');
-    s.className = 's ' + cls;
-    const dot = document.createElement('i');
-    dot.className = 'dot';
-    s.append(dot, document.createTextNode(label));
-    a.append(n, t, s);
-    return a;
-  };
-  const weeks = document.getElementById('week-rows');
-  (window.TS2_WEEKS || []).forEach((w) => weeks.append(row(w)));
-  const refs = document.getElementById('ref-rows');
-  (window.TS2_REFERENCE || []).forEach((w) => refs.append(row(w)));
-})();
-</script>
-<p class="build-stamp">build 5 &middot; 04.09.2026 01:19</p><style>.build-stamp{position:fixed;left:8px;bottom:4px;z-index:99;margin:0;font-family:var(--font-mono,ui-monospace,monospace);font-size:8px;letter-spacing:.08em;color:#8E918E;pointer-events:none}@media print{.build-stamp{display:none}}</style></body>
+</body>
 </html>
