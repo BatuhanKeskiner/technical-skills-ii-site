@@ -1,0 +1,34 @@
+:root{
+  /* Technical scale. Sub-8 steps exist for hairline-adjacent padding. */
+  --space-0:0px;
+  --space-1:2px;
+  --space-2:4px;
+  --space-3:6px;
+  --space-4:8px;
+  --space-5:12px;
+  --space-6:16px;
+  --space-7:20px;
+  --space-8:24px;
+  --space-9:32px;
+  --space-10:40px;
+  --space-11:56px;
+  --space-12:72px;
+  --space-13:96px;
+  --space-14:128px;
+
+  /* Semantic */
+  --gutter-inline:var(--space-6);
+  --gutter-block:var(--space-8);
+  --pad-card:var(--space-7);
+  --pad-cell:var(--space-4) var(--space-5);
+  --pad-control-y:var(--space-4);
+  --pad-control-x:var(--space-6);
+  --section-gap:var(--space-12);
+  --page-margin:var(--space-10);
+
+  /* Grid */
+  --grid-columns:12; /* @kind other */
+  --grid-gap:var(--space-6);
+  --measure-prose:64ch;
+  --measure-caption:44ch;
+}

@@ -1,0 +1,14 @@
+:root{
+  /* Mechanical, no overshoot. Shutters do not bounce. */
+  --ease-mech:cubic-bezier(0.2,0,0,1); /* @kind other */
+  --ease-out:cubic-bezier(0.16,1,0.3,1); /* @kind other */
+  --ease-linear:linear; /* @kind other */
+
+  --dur-instant:90ms; /* @kind other */
+  --dur-fast:140ms; /* @kind other */
+  --dur-base:220ms; /* @kind other */
+  --dur-slow:400ms; /* @kind other */
+
+  --transition-control:background-color var(--dur-fast) var(--ease-mech),color var(--dur-fast) var(--ease-mech),border-color var(--dur-fast) var(--ease-mech); /* @kind other */
+  --transition-surface:opacity var(--dur-base) var(--ease-mech),transform var(--dur-base) var(--ease-mech); /* @kind other */
+}

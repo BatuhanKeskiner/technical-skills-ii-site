@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week #1 · Introduction — Technical Skills II</title>
+<link rel="icon" href="../_shared/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Introduction: the tutor, the course, the five modules, the learning goals and the assessment criteria. KABK BA Photography, Technical Skills II.">
+<link rel="stylesheet" href="../_shared/styles.css">
+<link rel="stylesheet" href="../_shared/lecture.css">
+</head>
+<body class="booting">
+<div class="layout">
+
+<nav class="chapters">
+  <p class="eyebrow" data-week-eyebrow>Technical Skills II · Week #1</p>
+  <h1 data-week-title>Introduction</h1>
+  <div class="weeknav"></div>
+  <ol id="chapter-list"></ol>
+  <!-- Left before right. Printed the other way round the hint read backwards:
+       the key that goes back was drawn on the right and the key that goes on was
+       drawn on the left, against every arrow pair anybody has ever seen. -->
+  <p class="hint"><kbd>←</kbd> <kbd>→</kbd> move between pages</p>
+  <div class="brand">
+    <p class="copy">KABK · BA Photography<br>© 2026 Batuhan Keskiner</p>
+  </div>
+</nav>
+
+<main class="content"></main>
+</div>
+
+<div id="lb">
+  <img alt="">
+  <span class="lb-n"></span>
+  <span class="lb-cap"></span>
+  <button type="button" class="lb-x" aria-label="Close">✕</button>
+  <button type="button" class="lb-p" aria-label="Previous">←</button>
+  <button type="button" class="lb-nx" aria-label="Next">→</button>
+</div>
+
+<footer>
+  <div class="wrap" data-week-footer></div>
+</footer>
+
+<script src="../_shared/weeks.js"></script>
+<script src="./content.js"></script>
+<script src="../_shared/interactives/kit.js"></script>
+<script src="../_shared/interactives/dof.js"></script>
+<script src="../_shared/interactives/focal.js"></script>
+<script src="../_shared/interactives/kelvin.js"></script>
+<script src="../_shared/render.js"></script>
+<script src="../_shared/shell.js"></script>
+<script>
+/* Classic scripts, not ES modules: this page opens straight off the disk. */
+boot(document, window.TS2_WEEK).then(function () {
+  ['../_shared/pages.js'].forEach(function (src) {
+    var s = document.createElement('script');
+    s.src = src;
+    document.body.append(s);
+  });
+});
+</script>
+<p class="build-stamp">v3.0 &middot; build 4 &middot; 04.09.2026 01:12</p><style>.build-stamp{position:fixed;left:8px;bottom:4px;z-index:99;margin:0;font-family:var(--font-mono,ui-monospace,monospace);font-size:8px;letter-spacing:.08em;color:#8E918E;pointer-events:none}@media print{.build-stamp{display:none}}</style></body>
+</html>

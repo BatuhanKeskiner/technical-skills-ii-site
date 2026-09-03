@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- The tab is sixteen pixels across. Anything that has to be READ is lost at
+       that size, so this is the site reduced to the one thing that is on every
+       page of it and belongs to nothing else: our yellow, with the ink bar the
+       week is named on. -->
+  <rect width="64" height="64" fill="#E4FF1A"/>
+  <rect x="10" y="26" width="44" height="12" fill="#0B0C0C"/>
+</svg>

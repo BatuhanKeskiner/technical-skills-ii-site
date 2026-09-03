@@ -1,0 +1,13 @@
+:root{
+  /* This system is flat on purpose: depth reads from hairlines, offset
+     registration blocks and inverse fills — not blur. */
+  --shadow-none:none;
+  /* Registration offset: a hard, un-blurred duplicate edge, like a print misregister. */
+  --shadow-register:3px 3px 0 0 var(--ink-900);
+  --shadow-register-signal:3px 3px 0 0 var(--signal-500);
+  /* The single permitted soft shadow: lifted overlays (dialog, menu) only. */
+  --shadow-overlay:0 16px 40px -12px rgba(11,12,12,0.28);
+
+  --overlay-scrim:rgba(11,12,12,0.72);
+  --overlay-blur:blur(2px); /* @kind other */
+}

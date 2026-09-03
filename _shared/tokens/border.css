@@ -1,0 +1,21 @@
+:root{
+  /* Corners are square. Radius above 2px is reserved for pills and dial gauges. */
+  --radius-0:0px;
+  --radius-1:2px;
+  --radius-2:4px;
+  --radius-pill:999px;
+  --radius-circle:50%;
+
+  --border-hairline:1px;
+  --border-medium:1.5px;
+  --border-heavy:2px;
+  --border-rule:1px;
+
+  --border-card:var(--border-hairline) solid var(--rule-hairline);
+  --border-card-strong:var(--border-hairline) solid var(--rule-strong);
+  --border-control:var(--border-hairline) solid var(--rule-strong);
+  --border-divider:var(--border-hairline) solid var(--rule-hairline);
+
+  /* Dashed leader / cut-line, used for callouts and diagram leaders */
+  --border-leader:var(--border-hairline) dashed var(--rule-hairline);
+}

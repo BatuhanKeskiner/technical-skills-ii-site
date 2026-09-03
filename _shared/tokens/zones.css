@@ -1,0 +1,20 @@
+/* Ansel Adams Zone System ramp — the course's native grayscale vocabulary.
+   Zone 0 = pure black with no detail; Zone V = 18% middle grey; Zone X = paper white.
+   Use for histograms, exposure diagrams, tonal-range graphics and neutral charts. */
+:root{
+  --zone-0:#000000;
+  --zone-1:#151515;
+  --zone-2:#2B2B2B;
+  --zone-3:#454545;
+  --zone-4:#5E5E5E;
+  --zone-5:#777777;
+  --zone-6:#949494;
+  --zone-7:#B0B0B0;
+  --zone-8:#CCCCCC;
+  --zone-9:#E7E7E7;
+  --zone-10:#FFFFFF;
+
+  --zone-midtone:var(--zone-5);
+  --zone-detail-low:var(--zone-2);
+  --zone-detail-high:var(--zone-8);
+}

@@ -1,0 +1,107 @@
+:root{
+  /* --- Base ink (near-black, never pure #000 except in the zone ramp) --- */
+  --ink-900:#0B0C0C;
+  --ink-800:#1A1C1B;
+  --ink-700:#2E3130;
+  --ink-500:#5C605E;
+  --ink-400:#7E8280;
+  --ink-300:#A5A8A4;
+  --ink-200:#C9CAC4;
+  --ink-100:#E2E2DC;
+
+  /* --- Paper (warm-neutral stock, not white-white) --- */
+  --paper-000:#FFFFFF;
+  --paper-100:#F7F6F2;
+  --paper-200:#EFEEE8;
+  --paper-300:#E4E3DB;
+
+  /* --- Signal: safety orange. One accent, used at ~5% of any surface. --- */
+  --signal-600:#C42D00;
+  --signal-500:#FF3B00;
+  --signal-300:#FF8C66;
+  --signal-100:#FFE3D9;
+
+  /* --- Marker: highlighter acid yellow. Highlight only, never a fill for text. --- */
+  --marker-500:#E4FF1A;
+  --marker-200:#F4FFA8;
+
+  /* --- Data colours: category coding inside teaching graphics only.
+         Three hues that stay legible on the console surface and do not
+         compete with signal orange. Never used for UI chrome. --- */
+  --data-digital:#3FC7D6;
+  --data-film:#E4FF1A;
+  --data-cinema:#FF8C66;
+
+  /* --- Semantic state --- */
+  --state-ok:#1F7A4D;
+  --state-warn:#B87400;
+  --state-error:#C2210C;
+  --state-ok-bg:#E6F1EA;
+  --state-warn-bg:#F7EEDC;
+  --state-error-bg:#F8E4DF;
+
+  /* --- Semantic aliases: use these in components --- */
+  --text-primary:var(--ink-900);
+  --text-body:var(--ink-800);
+  --text-muted:var(--ink-500);
+  --text-faint:var(--ink-400);
+  --text-inverse:var(--paper-100);
+  --text-signal:var(--signal-600);
+  --text-link:var(--signal-600);
+  --text-link-hover:var(--ink-900);
+
+  --surface-page:var(--paper-100);
+  --surface-card:var(--paper-000);
+  --surface-sunken:var(--paper-200);
+  --surface-inverse:var(--ink-900);
+  --surface-signal:var(--signal-500);
+  --surface-marker:var(--marker-500);
+
+  --rule-hairline:var(--ink-200);
+  --rule-strong:var(--ink-900);
+  --rule-faint:var(--ink-100);
+  --rule-inverse:#3A3D3C;
+
+  /* --- Legal foregrounds -------------------------------------------------
+     Small type (below ~16px) needs 4.5:1. These are the only greys that
+     clear it on the paper ground, so a mono label, caption, eyebrow or
+     table header uses one of THESE and never --text-faint:
+       --on-paper        ink on paper-100      19.0:1
+       --on-paper-quiet  ink-500 on paper-100   5.9:1  <- the floor
+       --on-signal       ink on signal-500      5.5:1
+     --text-faint (--ink-400) is 3.6:1 on paper: it is for hairline-adjacent
+     GRAPHIC marks and disabled states, never for type you expect read.
+     The accent has the same trap in both directions:
+       --signal-500 as TYPE on paper is 3.3:1 -> use --signal-600 (5.2:1)
+       WHITE on a --signal-500 ground is 3.57:1 -> use --on-signal (ink)
+     So: orange is a GROUND that carries ink, or it is --signal-600 type.
+     Never white-on-orange, never signal-500 as small type.
+     --------------------------------------------------------------------- */
+  --on-paper:var(--ink-900);
+  --on-paper-quiet:var(--ink-500);
+  --on-signal:var(--ink-900);
+
+  --focus-ring:var(--signal-500);
+}
+
+/* Dark scope: the "console" mode from the exploded-diagram boards.
+   Apply with <div data-theme="console"> or on <body>. */
+[data-theme="console"]{
+  --text-primary:#F2F2EE;
+  --text-body:#DCDCD6;
+  --text-muted:#8C908D;
+  --text-faint:#6A6E6C;
+  --text-inverse:var(--ink-900);
+  --text-link:var(--signal-300);
+  --text-link-hover:#FFFFFF;
+
+  --surface-page:#080A09;
+  --surface-card:#101312;
+  --surface-sunken:#0B0E0D;
+  --surface-inverse:var(--paper-100);
+
+  --rule-hairline:#2C2F2E;
+  --rule-strong:#5C605E;
+  --rule-faint:#1C1F1E;
+  --rule-inverse:var(--ink-200);
+}

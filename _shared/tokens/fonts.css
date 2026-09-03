@@ -1,0 +1,79 @@
+/* Technical Skills II — webfonts.
+   Four families, all OFL, kept locally in _shared/fonts/ so a lecture works
+   offline in the studio and from a downloaded copy. Nothing loads from a CDN.
+     Archivo          text and display grotesk (variable: width + weight)
+     Instrument Sans  page titles (variable: width + weight)
+     Instrument Serif editorial serif — standfirsts, quotes, defined terms
+     JetBrains Mono   labels, captions, data */
+
+@font-face{
+  font-family:'Archivo';
+  font-style:italic;
+  font-weight:300 800;
+  font-stretch:62% 125%;
+  font-display:swap;
+  src:url('../fonts/archivo-italic.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Archivo';
+  font-style:normal;
+  font-weight:300 800;
+  font-stretch:62% 125%;
+  font-display:swap;
+  src:url('../fonts/archivo-normal.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Instrument Sans';
+  font-style:italic;
+  font-weight:400 700;
+  font-stretch:75% 100%;
+  font-display:swap;
+  src:url('../fonts/instrument-sans-italic.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Instrument Sans';
+  font-style:normal;
+  font-weight:400 700;
+  font-stretch:75% 100%;
+  font-display:swap;
+  src:url('../fonts/instrument-sans-normal.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Instrument Serif';
+  font-style:italic;
+  font-weight:400;
+  font-display:swap;
+  src:url('../fonts/instrument-serif-italic.woff2') format('woff2');
+}
+@font-face{
+  font-family:'Instrument Serif';
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url('../fonts/instrument-serif-normal.woff2') format('woff2');
+}
+@font-face{
+  font-family:'JetBrains Mono';
+  font-style:italic;
+  font-weight:300 700;
+  font-display:swap;
+  src:url('../fonts/jetbrains-mono-italic.woff2') format('woff2');
+}
+@font-face{
+  font-family:'JetBrains Mono';
+  font-style:normal;
+  font-weight:300 700;
+  font-display:swap;
+  src:url('../fonts/jetbrains-mono-normal.woff2') format('woff2');
+}
+
+:root{
+  --font-title:"Instrument Sans","Archivo","Helvetica Neue",Helvetica,sans-serif;
+  --font-display:"Archivo","Helvetica Neue",Helvetica,sans-serif;
+  --font-text:"Archivo","Helvetica Neue",Helvetica,sans-serif;
+  --font-serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --wdth-condensed:82; /* @kind font */
+  --wdth-normal:100; /* @kind font */
+  --wdth-wide:112; /* @kind font */
+}

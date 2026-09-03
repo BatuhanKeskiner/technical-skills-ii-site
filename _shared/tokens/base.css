@@ -1,0 +1,8 @@
+/* Minimal global base. Components carry their own styling via tokens. */
+:root{color-scheme:light}
+body{margin:0;background:var(--surface-page);color:var(--text-body);font:var(--type-body);letter-spacing:var(--tracking-body);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--text-link);text-decoration:none;border-bottom:1px solid currentColor;transition:var(--transition-control)}
+a:hover{color:var(--text-link-hover)}
+::selection{background:var(--marker-500);color:var(--ink-900)}
+:focus-visible{outline:var(--border-heavy) solid var(--focus-ring);outline-offset:2px}
+hr{border:0;border-top:var(--border-divider);margin:var(--space-8) 0}

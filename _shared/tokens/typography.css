@@ -1,0 +1,46 @@
+:root{
+  /* Size ramp — fixed px, technical-document scale */
+  --text-display-xl:96px;
+  --text-display-l:64px;
+  --text-display-m:44px;
+  --text-h1:32px;
+  --text-h2:24px;
+  --text-h3:18px;
+  --text-body-l:17px;
+  --text-body-m:15px;
+  --text-body-s:13px;
+  --text-label:11px;
+  --text-micro:10px;
+
+  /* Line heights */
+  --leading-display:0.92;
+  --leading-tight:1.08;
+  --leading-heading:1.18;
+  --leading-body:1.5;
+  --leading-dense:1.35;
+
+  /* Tracking — display is tight, micro-labels are wide */
+  --tracking-display:-0.03em;
+  --tracking-heading:-0.015em;
+  --tracking-body:0em;
+  --tracking-label:0.12em;
+  --tracking-micro:0.16em;
+
+  /* Weights */
+  --weight-light:300;
+  --weight-regular:400;
+  --weight-medium:500;
+  --weight-semibold:600;
+  --weight-bold:700;
+  --weight-black:800;
+
+  /* Semantic type roles */
+  --type-display:var(--weight-medium) var(--text-display-l)/var(--leading-display) var(--font-display);
+  --type-title:var(--weight-medium) var(--text-h1)/var(--leading-tight) var(--font-display);
+  --type-heading:var(--weight-semibold) var(--text-h2)/var(--leading-heading) var(--font-display);
+  --type-subheading:var(--weight-semibold) var(--text-h3)/var(--leading-heading) var(--font-display);
+  --type-body:var(--weight-regular) var(--text-body-m)/var(--leading-body) var(--font-text);
+  --type-body-small:var(--weight-regular) var(--text-body-s)/var(--leading-dense) var(--font-text);
+  --type-label:var(--weight-medium) var(--text-label)/1.2 var(--font-mono);
+  --type-data:var(--weight-regular) var(--text-body-s)/1.45 var(--font-mono);
+}
