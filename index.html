@@ -71,7 +71,16 @@ a.cell:hover{background:#E9E6DE}
 /* The foot of the card: the door on the left, what the week hands out on the
    right. Same line, same place on all eight, so both can be read straight
    across the row without going back to the titles. */
-.base{margin-top:auto;padding-top:10px;display:flex;align-items:flex-end;gap:8px}
+.base{margin-top:auto;padding-top:10px;display:flex;flex-direction:column;
+   align-items:flex-start;gap:9px}
+.state{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--faint)}
+/* The one thing on the card you can act on, and the only thing with a box. */
+.open{font-family:var(--mono);font-size:12px;letter-spacing:.16em;
+   text-transform:uppercase;color:var(--live);border:1.5px solid var(--live);
+   padding:11px 22px;display:inline-block;background:transparent;
+   transition:background .12s,color .12s}
+a.cell:hover .open{background:var(--live);color:var(--paper)}
 .asg{margin-left:auto;display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end}
 .chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:2px 6px;
    border:1px solid var(--rule);color:var(--grey);white-space:nowrap;
@@ -79,10 +88,6 @@ a.cell:hover{background:#E9E6DE}
 a.chip{border-color:var(--faint);color:var(--ink)}
 a.chip:hover{border-color:var(--signal);color:var(--signal)}
 .chip.in{border-color:var(--signal);color:var(--signal)}
-.chip.open{background:var(--live);border-color:var(--live);color:var(--paper);
-   text-transform:uppercase;letter-spacing:.14em}
-.chip.working{border-color:var(--ink);color:var(--ink);
-   text-transform:uppercase;letter-spacing:.14em}
 .cell .quiet{font-family:var(--mono);font-size:9px;letter-spacing:.13em;
    text-transform:uppercase;color:var(--faint)}
 
@@ -218,8 +223,8 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 
   <div class="sec"><span class="no">01</span><span class="nm">Lectures</span><span class="ln"></span></div>
   <div class="wall">
-    <a class="cell on" href="01-introduction/index.html" data-f="week 01 introduction assignment #0 questionnaire"><span class="k">Week 01</span><span class="t">Introduction</span><span class="base"><span class="chip open">Open</span></span></a>
-    <div class="cell wip" data-f="week 02 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week 02</span><span class="t">Composition & Format</span><span class="base"><span class="chip working">In progress</span></span></div>
+    <a class="cell on" href="01-introduction/index.html" data-f="week 01 introduction assignment #0 questionnaire"><span class="k">Week 01</span><span class="t">Introduction</span><span class="base"><span class="state">Published</span><span class="open">Open</span></span></a>
+    <div class="cell wip" data-f="week 02 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week 02</span><span class="t">Composition & Format</span><span class="base"><span class="state">In progress</span></span></div>
     <div class="cell" data-f="week 03 camera i assignment #2 pinhole"><span class="k">Week 03</span><span class="t">Camera I</span></div>
     <div class="cell" data-f="week 04 camera ii assignment #3 anti-self portrait"><span class="k">Week 04</span><span class="t">Camera II</span></div>
     <div class="cell" data-f="week 05 light i hand in #1 photogram assignment #4 remake"><span class="k">Week 05</span><span class="t">Light I</span></div>
@@ -260,7 +265,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
   </div>
   <p id="none">Nothing matches that</p>
 
-  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 80 · 04.09.2026 06:03</span></div>
+  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 82 · 04.09.2026 15:20</span></div>
 
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; Black</span><span>Middle Grey</span><span>Zone X &mdash; White</span></div>
