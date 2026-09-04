@@ -25,29 +25,29 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
    weights, one job each - without the ladder the page goes flat. */
 .top{display:flex;justify-content:space-between;align-items:baseline;gap:32px;
      padding-bottom:12px;border-bottom:2px solid var(--ink);flex-wrap:wrap}
-h1{font-family:var(--title);font-size:clamp(26px,6.4vw,40px);font-weight:500;
+h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
    letter-spacing:-.03em;line-height:1;margin:0;color:var(--ink)}
 .right{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}
-.meta{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+.meta{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
    text-transform:uppercase;color:var(--grey);text-align:right;line-height:1.8;
    white-space:nowrap}
 .find{display:flex;align-items:center;gap:9px;border:1px solid var(--ink);
    padding:0 11px;height:36px;width:290px;background:var(--paper)}
 .find input{flex:1;min-width:0;border:0;outline:0;background:transparent;height:34px;
-   font-family:var(--mono);font-size:12px;letter-spacing:.11em;color:var(--ink);
+   font-family:var(--mono);font-size:13px;letter-spacing:.11em;color:var(--ink);
    -webkit-appearance:none;appearance:none;border-radius:0}
 .find input::placeholder{color:var(--faint)}
 
 .sec{display:flex;align-items:center;gap:12px;margin:32px 0 12px}
-.sec .no,.sec .nm{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
-   color:var(--ink)}
+.sec .no,.sec .nm{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+   font-weight:700;color:var(--ink)}
 .sec .nm{text-transform:uppercase}
 .sec .ln{flex:1;border-top:1px solid var(--ink)}
 
 /* Which year group is being shown. One choice, and every date under it is the
    student's own - a bare pair of dates asks them to know which is theirs. */
 .grp{display:flex;gap:0;flex:0 0 auto}
-.grp .g{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+.grp .g{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
    text-transform:uppercase;padding:4px 11px;border:1px solid var(--ink);
    background:var(--paper);color:var(--grey);cursor:pointer;border-radius:0;
    -webkit-appearance:none;appearance:none}
@@ -62,13 +62,13 @@ h1{font-family:var(--title);font-size:clamp(26px,6.4vw,40px);font-weight:500;
    text-decoration:none;color:inherit;transition:opacity .12s}
 .cell.on{background:var(--paper)}
 a.cell:hover{background:#E9E6DE}
-.cell .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+.cell .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
    text-transform:uppercase;color:var(--faint)}
 .cell.on .k{color:var(--ink)}
-.cell .t{font-size:20px;letter-spacing:-.01em;line-height:1.15;color:var(--grey)}
+.cell .t{font-size:21px;letter-spacing:-.01em;line-height:1.15;color:var(--grey)}
 .cell.on .t{color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:1px}
-.chip{font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:2px 6px;
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:2px 6px;
    border:1px solid var(--rule);color:var(--grey);white-space:nowrap}
 .chip.in{border-color:var(--signal);color:var(--signal)}
 .chip.open{background:var(--live);border-color:var(--live);color:var(--paper);
@@ -76,7 +76,7 @@ a.cell:hover{background:#E9E6DE}
 .cell .quiet{font-family:var(--mono);font-size:9px;letter-spacing:.13em;
    text-transform:uppercase;color:var(--faint)}
 
-.hdr,.bar,.ticks{display:grid;grid-template-columns:186px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 202px}
+.hdr,.bar,.ticks{display:grid;grid-template-columns:212px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 202px}
 .hdr,.bar{align-items:center}
 /* A bar with nothing behind it floats: the eye cannot say which week it starts
    in or which one it ends in, and the numbers along the top are centred over
@@ -95,14 +95,14 @@ a.cell:hover{background:#E9E6DE}
 .ticks i.w.end{border-right:1px solid var(--rule)}
 .bar{position:relative;z-index:1;background:transparent}
 .hdr{border-bottom:1px solid var(--ink);padding-bottom:6px}
-.hdr span{font-family:var(--mono);font-size:9px;letter-spacing:.12em;
+.hdr span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
    text-transform:uppercase;color:var(--faint);text-align:center}
 .hdr span:first-child{text-align:left}
 .hdr span:last-child{text-align:right}
 .bar{border-bottom:1px solid var(--rule);height:36px;transition:opacity .12s}
 .bar[hidden]{display:none}
-.bar .nm{font-size:14px;display:flex;align-items:baseline;gap:9px}
-.bar .nm em{font-family:var(--mono);font-size:10px;font-style:normal;
+.bar .nm{font-size:16px;display:flex;align-items:baseline;gap:9px}
+.bar .nm em{font-family:var(--mono);font-size:11px;font-style:normal;
    letter-spacing:.1em;color:var(--faint)}
 .bar .nm a{color:inherit;text-decoration:underline;text-underline-offset:3px;
    text-decoration-thickness:1px;text-decoration-color:var(--rule)}
@@ -110,7 +110,7 @@ a.cell:hover{background:#E9E6DE}
 .run{height:13px;position:relative;align-self:center;background:var(--ink)}
 .run i{position:absolute;right:-1px;top:-3px;bottom:-3px;width:3px;
    background:var(--signal)}
-.dt{grid-column:10 / 11;font-family:var(--mono);font-size:9px;letter-spacing:.08em;
+.dt{grid-column:10 / 11;font-family:var(--mono);font-size:11px;letter-spacing:.08em;
    color:var(--signal);text-align:right;align-self:center;white-space:nowrap}
 .dt .x{font-style:normal;color:var(--faint)}
 
@@ -124,11 +124,11 @@ a.cell:hover{background:#E9E6DE}
    max-width:560px}
 .zones i{flex:1;height:26px;display:block}
 .zlab{display:flex;justify-content:space-between;margin:5px auto 0;max-width:560px;
-   font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+   font-family:var(--mono);font-size:10px;letter-spacing:.14em;
    text-transform:uppercase;color:var(--faint)}
 .foot{margin-top:22px;padding-top:11px;border-top:1px solid var(--rule);
    display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);
-   font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+   font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
 
 /* On a narrow screen a four-week span across 200px says nothing, so the track
    is put away and each assignment keeps its name and the day it is due. */
@@ -206,7 +206,7 @@ a.cell:hover{background:#E9E6DE}
   <div class="zones" aria-hidden="true"><i style="background:#000000"></i><i style="background:#151515"></i><i style="background:#2B2B2B"></i><i style="background:#454545"></i><i style="background:#5E5E5E"></i><i style="background:#777777"></i><i style="background:#949494"></i><i style="background:#B0B0B0"></i><i style="background:#CCCCCC"></i><i style="background:#E7E7E7"></i><i style="background:#FFFFFF"></i></div>
   <div class="zlab"><span>Zone 0 &mdash; no detail</span><span>Zone V &mdash; 18% grey</span><span>Zone X &mdash; paper</span></div>
 
-  <div class="foot"><span>Batuhan Keskiner</span><span>build 34 · 04.09.2026 04:50</span></div>
+  <div class="foot"><span>Batuhan Keskiner</span><span>build 38 · 04.09.2026 04:52</span></div>
 </div>
 <script>
 var q=document.getElementById('q'),no=document.getElementById('none'),
