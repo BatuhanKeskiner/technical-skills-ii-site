@@ -7969,4 +7969,6 @@ body.editing .step.active .pg-col [data-align=left] p{text-align:left}
    met at the divider and stepped: the colophon's was 2px and the page bar's
    1px, so the line across the bottom of the screen changed thickness halfway.
    One weight, so it reads as one line. */
-body.pages nav.chapters .brand{border-top-width:1px}
+/* Corrected once: the page bar's own top rule is 2px, so bringing the colophon
+   DOWN to 1px did not remove the step, it reversed it. They match at 2px. */
+body.pages nav.chapters .brand{border-top-width:2px}
