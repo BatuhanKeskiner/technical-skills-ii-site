@@ -290,6 +290,20 @@ function svg(w, h) {
   return n;
 }
 
+/* THE KEY A TICK IS REMEMBERED UNDER — the week, the page, and the words.
+   Deliberately not the block's index: a checklist that moves up the page is the
+   same checklist and its ticks should move with it. And deliberately the words,
+   so that an instruction whose wording is changed starts unticked - it is a
+   different instruction, and a tick against the old one would be a lie. */
+function ckKey(node, text) {
+  const step = node.closest && node.closest('.step');
+  if (!step || !step.id) return null;
+  const wk = (document.querySelector('[data-week-n]') || {}).getAttribute
+    ? document.querySelector('[data-week-n]').getAttribute('data-week-n') : '';
+  return 'ts2c:' + wk + ':' + step.id + ':'
+       + String(text).replace(/\s+/g, ' ').trim().slice(0, 120);
+}
+
 function el(tag, cls, html) {
   const n = document.createElement(tag);
   if (cls) n.className = cls;
@@ -594,9 +608,46 @@ const BLOCK = {
       /* a plain string is a bullet; an object with `goto` jumps to the page
          that explains it, so an overview can be walked from the overview */
       if (typeof t === 'string') { u.append(el('li', null, t)); return; }
-      /* a checklist line: the box is drawn, and whether it is ticked is data */
+      /* A CHECKLIST LINE. The box is real: the student ticks it and their own
+         browser remembers, and `done` in the content is only where it starts.
+
+         There is no second block type for this. `marker: 'check'` was already
+         in the panel, offered as "A checklist", and rendered a tick nobody
+         could tick - an option that looked like the thing without being it.
+         Adding a Checklist block beside it would have put two names on one
+         shape, which is the fault this system spends most of its rules
+         avoiding.
+
+         The ticks go nowhere. Nothing is sent, nothing is recorded, and no one
+         but the student can see them - so a checklist is safe on a page that is
+         handed out, and it works in the handed-out copy for the same reason. */
       if (t.check !== undefined) {
-        const li = el('li', 'tick' + (t.done ? ' done' : ''), t.check);
+        const li = el('li', 'tick');
+        const lab = el('label');
+        const box = document.createElement('input');
+        box.type = 'checkbox';
+        box.className = 'ck-box';
+        box.checked = !!t.done;
+        lab.append(box, el('span', 'ck-t', t.check));
+        li.append(lab);
+        li.classList.toggle('done', box.checked);
+        box.addEventListener('change', () => {
+          li.classList.toggle('done', box.checked);
+          try {
+            const k = ckKey(li, t.check);
+            if (k) localStorage.setItem(k, box.checked ? '1' : '0');
+          } catch (e) { /* no storage: it still ticks, it just forgets */ }
+        });
+        /* the node is not in the page yet, so the key cannot be read here */
+        requestAnimationFrame(() => {
+          try {
+            const k = ckKey(li, t.check);
+            const v = k && localStorage.getItem(k);
+            if (v === null || v === undefined) return;   // never touched
+            box.checked = v === '1';
+            li.classList.toggle('done', box.checked);
+          } catch (e) {}
+        });
         u.append(li);
         return;
       }
@@ -1030,6 +1081,10 @@ const BLOCK = {
   qr: (b) => {
     const f = el('figure', 'slide qr');
     f.append(b.src ? img(b.src, b.alt) : phBox(b.label || 'QR code', 'square'));
+    /* A QR code is unreadable to anyone not holding a phone at it, so the
+       caption is the only thing that says where it goes. It was the one
+       evidence block that silently dropped it. */
+    if (b.caption || b.cap) f.append(capEl(b));
     return f;
   },
 

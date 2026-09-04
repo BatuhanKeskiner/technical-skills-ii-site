@@ -7816,7 +7816,12 @@ body.pages .step.active.arranged.centred .pg-rows:has(> .pg-row ~ .pg-row) > .pg
    do, and a control you cannot read is not softened, it is gone.
    #8E918E measured 3.1:1, which is under the floor; this is 4.6. */
 #tsedit button[disabled],
-#tsedit .off{opacity:1;color:#71756F}
+/* A disabled control is exempt from WCAG, and this project's floor is not WCAG,
+   it is 4.5:1 everywhere. Measured on the panel's own ground (#FBFAF7) this was
+   4.495 - under by five thousandths, which is the kind of miss that comes from
+   picking a grey by eye and never measuring it against the surface it lands on.
+   #6C7066 is 4.85 and is the same tone one step darker. */
+#tsedit .off{opacity:1;color:#6C7066}
 
 /* The fold headings are <summary>, which none of the selectors above
    reach, so "Page" and the chapter line stayed at 2.3:1 while every
@@ -7972,3 +7977,56 @@ body.editing .step.active .pg-col [data-align=left] p{text-align:left}
 /* Corrected once: the page bar's own top rule is 2px, so bringing the colophon
    DOWN to 1px did not remove the step, it reversed it. They match at 2px. */
 body.pages nav.chapters .brand{border-top-width:2px}
+
+/* ============================================================
+   A CHECKLIST THE READER CAN TICK
+   ------------------------------------------------------------
+   `bul` with `marker: 'check'`. It was already in the panel and
+   already drew a tick; what it did not do was let anyone tick
+   it. It does now, and the tick is kept in the reader's own
+   browser — so this is the same block it always was, not a
+   second one that looks like it.
+
+   The box is drawn, not the browser's. A native checkbox is a
+   different shape and a different blue on every machine in the
+   room, and this page has one signal colour. Sharp corners, a
+   hairline when empty, filled ink when ticked, and the tick
+   itself is two borders rotated — no glyph, no image, nothing
+   to load.
+
+   A ticked line goes quiet rather than struck through: it has
+   been done, not cancelled, and a reader going back over the
+   list should still be able to read what they did.
+   ============================================================ */
+.bul[data-marker=check] > li.tick{list-style:none;margin-left:0}
+.bul[data-marker=check] > li.tick label{display:grid;
+  grid-template-columns:auto 1fr;gap:13px;align-items:start;cursor:pointer}
+.ck-box{appearance:none;-webkit-appearance:none;margin:0;
+  width:17px;height:17px;border:1px solid var(--ink-900,#0B0C0C);
+  border-radius:0;background:transparent;position:relative;
+  transform:translateY(3px);cursor:pointer;flex:0 0 auto}
+.ck-box:checked{background:var(--ink-900,#0B0C0C)}
+.ck-box:checked::after{content:'';position:absolute;left:5px;top:1px;
+  width:4px;height:9px;border:solid var(--paper-100,#F7F5F0);
+  border-width:0 2px 2px 0;transform:rotate(42deg)}
+.ck-box:focus-visible{outline:2px solid var(--signal-500,#C42D00);outline-offset:2px}
+.bul[data-marker=check] > li.tick.done .ck-t{color:var(--muted,#5C605E)}
+
+@media print{ .ck-box{transform:none} }
+
+/* The old marker was a square drawn in ::before, filled when `done` was set in
+   the content. It was the whole of the old checklist - a picture of a tick box.
+   Now that the box is real, that square is a second box beside it, so it goes.
+   The two rules that painted it are left where they are, still true for any
+   .tick without a real box in it, and simply overruled here. */
+body.pages .step.active ul.bul[data-marker=check] > li.tick::before,
+body.editing .step.active ul.bul[data-marker=check] > li.tick::before{
+  content:none;display:none}
+/* And the row goes back to one column. A .bul li is itself a two-column grid -
+   the marker in the first, the words in the second - and the ::before WAS the
+   first column. Take it away and the label falls into a 92px column and the
+   words break one to a line. The label carries its own two columns now, so the
+   row needs only one. */
+body.pages .step.active ul.bul[data-marker=check] > li.tick,
+body.editing .step.active ul.bul[data-marker=check] > li.tick{
+  display:block;padding-left:0}
