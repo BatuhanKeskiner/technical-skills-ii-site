@@ -246,6 +246,83 @@ function keyWhite(img, cut = 228, soft = 22) {
   return c;
 }
 
+/* A CAMERA BACK, AND THE HOLE ITS SCREEN LEAVES.
+   ------------------------------------------------------------------
+   The first camera back was a JPEG on white with a white screen, and
+   `keyWhite` cut both out at once - the background so the body sits on
+   the page, the screen so the scene shows through. It worked because
+   that photograph happened to have no other white in it. Measured on
+   a1-camera-back.jpg: white spans the whole frame and about 59,000
+   pixels of it are outside the screen. On any camera with a white
+   shutter ring, a white label or a bright highlight, `keyWhite` puts
+   a hole in the body.
+
+   So a camera back is now a PNG that carries its own transparency,
+   and nothing is keyed. This finds the screen in it: the transparent
+   pixels reachable from the edge are the background, and whatever
+   transparency is left is the hole the scene goes into.
+
+   A JPEG still works - it falls back to keying - so the A1 keeps
+   running until its own PNG arrives.
+
+     cameraBack('assets/x.png', (cam) => { cam.img; cam.screen; })
+     cam.screen = {x, y, w, h} in the image's own pixels
+   ------------------------------------------------------------------ */
+function cameraBack(src, onReady) {
+  loadImage(src, (box) => {
+    const img = box.img, w = img.naturalWidth, h = img.naturalHeight;
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    const g = c.getContext('2d');
+    g.drawImage(img, 0, 0);
+    let d = g.getImageData(0, 0, w, h).data;
+
+    let clear = 0;
+    for (let i = 3; i < d.length; i += 4) if (d[i] < 8) { clear++; if (clear > 64) break; }
+
+    let surface = img;
+    if (clear <= 64) {                    /* opaque: the old way, keyed on white */
+      surface = keyWhite(img);
+      d = surface.getContext('2d').getImageData(0, 0, w, h).data;
+    }
+
+    /* Flood the transparency that touches the edge. What it cannot reach is
+       the screen. A stack, not recursion - a 4000px back would blow it. */
+    const seen = new Uint8Array(w * h), st = [];
+    const push = (x, y) => {
+      if (x < 0 || y < 0 || x >= w || y >= h) return;
+      const k = y * w + x;
+      if (seen[k] || d[k * 4 + 3] >= 8) return;
+      seen[k] = 1; st.push(k);
+    };
+    for (let x = 0; x < w; x++) { push(x, 0); push(x, h - 1); }
+    for (let y = 0; y < h; y++) { push(0, y); push(w - 1, y); }
+    while (st.length) {
+      const k = st.pop(), x = k % w, y = (k - x) / w;
+      push(x + 1, y); push(x - 1, y); push(x, y + 1); push(x, y - 1);
+    }
+
+    let x0 = w, y0 = h, x1 = -1, y1 = -1;
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const k = y * w + x;
+        if (seen[k] || d[k * 4 + 3] >= 8) continue;
+        if (x < x0) x0 = x; if (x > x1) x1 = x;
+        if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+    }
+    const found = x1 > x0 && y1 > y0;
+    onReady({
+      img: surface,
+      w: w, h: h,
+      /* no hole found is not a failure - some backs are drawn with the screen
+         painted on. The caller decides what to do with a null. */
+      screen: found ? { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 } : null,
+      keyed: clear <= 64,
+    });
+  });
+}
+
 /* A panorama the camera can look into.
    The picture is treated as a full 360° turn horizontally; its own
    proportions give the vertical span, so a strip and a full sphere
