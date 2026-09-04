@@ -3,58 +3,195 @@
 <head>
 <meta charset="utf-8">
 <meta name="google" content="notranslate">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="_shared/favicon.svg" type="image/svg+xml">
 <title>Technical Skills II — KABK BA Photography</title>
-<meta name="description" content="The lectures for Technical Skills II, week by week.">
-<link rel="stylesheet" href="_shared/styles.css">
-<link rel="stylesheet" href="_shared/lecture.css">
+<meta name="description" content="Technical Skills II: the lectures, and the assignments running across them.">
+<link rel="stylesheet" href="_shared/tokens/fonts.css">
 <style>
-  body{background:#F7F5F0;color:#0B0C0C;margin:0;
-       font-family:'Archivo',system-ui,sans-serif}
-  .wrap{max-width:820px;margin:0 auto;padding:8vh 6vw 12vh}
-  .eyebrow{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;
-       letter-spacing:.18em;text-transform:uppercase;color:#5C605E;margin:0 0 20px}
-  h1{font-size:54px;line-height:1;letter-spacing:-.03em;font-weight:500;margin:0 0 6px}
-  h1 .yr{background:#E4FF1A;padding:0 .12em}
-  .lead{font-size:19px;line-height:1.45;color:#3A3D3B;margin:0 0 44px;max-width:34em}
-  ul.weeks{list-style:none;margin:0;padding:0;border-top:1px solid #0B0C0C}
-  li.w{border-bottom:1px solid #D8D4CC}
-  li.w a,li.w{display:flex;align-items:baseline;gap:18px;
-       padding:15px 2px;text-decoration:none;color:inherit}
-  li.w a{padding:0}
-  li.w.on a:hover{background:#EFEDE7}
-  .n{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;
-       letter-spacing:.1em;color:#5C605E;min-width:2.4em}
-  li.w.on .n{color:#0B0C0C}
-  .t{font-size:21px;flex:1 1 auto}
-  li.w:not(.on) .t{color:#8E918E}
-  .go{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:10px;
-       letter-spacing:.14em;text-transform:uppercase;color:#8E918E}
-  li.w.on .go{color:#C42D00}
-  .foot{margin-top:52px;font-family:'JetBrains Mono',ui-monospace,monospace;
-       font-size:10px;letter-spacing:.1em;color:#8E918E;line-height:1.9}
+:root{
+  --paper:#F7F5F0; --ink:#0B0C0C; --grey:#5C605E; --faint:#727272;
+  --rule:#C9CAC4; --signal:#C42D00;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --sans:'Archivo','Helvetica Neue',Helvetica,sans-serif;
+  --title:'Instrument Sans','Archivo',sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+     -webkit-font-smoothing:antialiased}
+.sheet{max-width:1080px;margin:0 auto;padding:5vh 40px 7vh}
+
+/* The page's spine is 2px, a section boundary 1px, a row a hairline. Three
+   weights, one job each - without the ladder the page goes flat. */
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:32px;
+     padding-bottom:12px;border-bottom:2px solid var(--ink);flex-wrap:wrap}
+h1{font-family:var(--title);font-size:clamp(26px,6.4vw,40px);font-weight:500;
+   letter-spacing:-.03em;line-height:1;margin:0;color:var(--ink)}
+.right{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}
+.meta{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+   text-transform:uppercase;color:var(--grey);text-align:right;line-height:1.8;
+   white-space:nowrap}
+.find{display:flex;align-items:center;gap:9px;border:1px solid var(--ink);
+   padding:0 11px;height:36px;width:290px;background:var(--paper)}
+.find input{flex:1;min-width:0;border:0;outline:0;background:transparent;height:34px;
+   font-family:var(--sans);font-size:14px;color:var(--ink);
+   -webkit-appearance:none;appearance:none;border-radius:0}
+.find input::placeholder{color:var(--faint)}
+
+.sec{display:flex;align-items:center;gap:12px;margin:32px 0 12px}
+.sec .no,.sec .nm{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+   color:var(--ink)}
+.sec .nm{text-transform:uppercase}
+.sec .ln{flex:1;border-top:1px solid var(--ink)}
+
+/* Which year group is being shown. One choice, and every date under it is the
+   student's own - a bare pair of dates asks them to know which is theirs. */
+.grp{display:flex;gap:0;flex:0 0 auto}
+.grp .g{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+   text-transform:uppercase;padding:4px 11px;border:1px solid var(--ink);
+   background:var(--paper);color:var(--grey);cursor:pointer;border-radius:0;
+   -webkit-appearance:none;appearance:none}
+.grp .g + .g{border-left:0}
+.grp .g.on{background:var(--ink);color:var(--paper)}
+
+.wall{display:grid;grid-template-columns:repeat(4,1fr);
+   border-left:1px solid var(--rule);border-top:1px solid var(--rule)}
+.cell{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+   padding:13px 16px 14px;display:flex;flex-direction:column;gap:7px;
+   text-decoration:none;color:inherit;transition:opacity .12s}
+a.cell:hover{background:#EFEDE7}
+.cell .k{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--faint)}
+.cell.on .k{color:var(--ink)}
+.cell .t{font-size:20px;letter-spacing:-.01em;line-height:1.15;color:var(--grey)}
+.cell.on .t{color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:1px}
+.chip{font-family:var(--mono);font-size:9px;letter-spacing:.1em;padding:2px 6px;
+   border:1px solid var(--rule);color:var(--grey);white-space:nowrap}
+.chip.in{border-color:var(--signal);color:var(--signal)}
+.chip.open{background:var(--ink);border-color:var(--ink);color:var(--paper);
+   text-transform:uppercase;letter-spacing:.14em}
+.cell .quiet{font-family:var(--mono);font-size:9px;letter-spacing:.13em;
+   text-transform:uppercase;color:var(--faint)}
+
+.hdr,.bar{display:grid;grid-template-columns:186px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 202px;align-items:center}
+.hdr{border-bottom:1px solid var(--ink);padding-bottom:6px}
+.hdr span{font-family:var(--mono);font-size:9px;letter-spacing:.12em;
+   text-transform:uppercase;color:var(--faint);text-align:center}
+.hdr span:first-child{text-align:left}
+.hdr span:last-child{text-align:right}
+.bar{border-bottom:1px solid var(--rule);height:36px;transition:opacity .12s}
+.bar[hidden]{display:none}
+.bar .nm{font-size:14px;display:flex;align-items:baseline;gap:9px}
+.bar .nm em{font-family:var(--mono);font-size:10px;font-style:normal;
+   letter-spacing:.1em;color:var(--faint)}
+.run{height:13px;position:relative;align-self:center;background:var(--ink)}
+.run i{position:absolute;right:-1px;top:-3px;bottom:-3px;width:3px;
+   background:var(--signal)}
+.dt{grid-column:10 / 11;font-family:var(--mono);font-size:9px;letter-spacing:.08em;
+   color:var(--signal);text-align:right;align-self:center;white-space:nowrap}
+.dt .x{font-style:normal;color:var(--faint)}
+
+#none{display:none;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+   text-transform:uppercase;color:var(--faint);padding:16px 0 0}
+.foot{margin-top:34px;padding-top:11px;border-top:1px solid var(--rule);
+   display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);
+   font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+
+/* On a narrow screen a four-week span across 200px says nothing, so the track
+   is put away and each assignment keeps its name and the day it is due. */
+@media(max-width:900px){
+  .wall{grid-template-columns:repeat(2,1fr)}
+  .right{flex:1 1 100%;justify-content:space-between}
+  .find{width:100%;flex:1 1 220px}
+  .meta{text-align:left}
+  .hdr,.bar{grid-template-columns:1fr auto}
+  .hdr span:not(:first-child):not(:last-child),.run{display:none}
+  .dt{grid-column:2 / 3}
+  .dt .x{display:none}
+}
+@media(max-width:620px){
+  .sheet{padding:4vh 20px 7vh}
+  .wall{grid-template-columns:1fr}
+  .top{gap:14px}
+  .right{flex-direction:column;align-items:stretch;gap:11px;width:100%}
+  .meta{white-space:normal;text-align:left}
+  .find{width:auto;flex:none}
+  .sec{margin:26px 0 10px;flex-wrap:wrap}
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <p class="eyebrow">KABK · BA Photography · <span>2026–27</span></p>
-  <h1>Technical Skills <span class="yr">II</span></h1>
-  <p class="lead">Every lecture, week by week. Open one to read it, and to use
-     the instruments in it — they work on your own machine, during the class
-     and afterwards.</p>
-  <ul class="weeks">
-    <li class="w on"><a href="01-introduction/index.html"><span class="n">1</span><span class="t">Introduction</span><span class="go">Open</span></a></li>
-    <li class="w on"><a href="02-composition-format/index.html"><span class="n">2</span><span class="t">Composition & Format</span><span class="go">Open</span></a></li>
-    <li class="w"><span class="n">3</span><span class="t">Camera I</span><span class="go">To come</span></li>
-    <li class="w"><span class="n">4</span><span class="t">Camera II</span><span class="go">To come</span></li>
-    <li class="w"><span class="n">5</span><span class="t">Light I</span><span class="go">To come</span></li>
-    <li class="w"><span class="n">6</span><span class="t">Light II</span><span class="go">To come</span></li>
-    <li class="w"><span class="n">7</span><span class="t">Mid-Term Review</span><span class="go">To come</span></li>
-    <li class="w"><span class="n">—</span><span class="t">Fall week</span><span class="go">To come</span></li>
-    <li class="w"><span class="n">8</span><span class="t">Flash & Continuous</span><span class="go">To come</span></li>
-  </ul>
-  <p class="foot">Batuhan Keskiner<br>build 9 · 04.09.2026 04:02</p>
+<div class="sheet">
+
+  <div class="top">
+    <h1>Technical Skills II</h1>
+    <div class="right">
+      <span class="meta">KABK · BA Photography<br>2026–27</span>
+      <label class="find">
+        <svg width="12" height="12" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+          <circle cx="5.4" cy="5.4" r="4.1" stroke="#5C605E" stroke-width="1.3"/>
+          <path d="M8.6 8.6 L12 12" stroke="#5C605E" stroke-width="1.3"/></svg>
+        <input id="q" type="text" placeholder="Search a week or an assignment"
+               autocomplete="off" spellcheck="false" aria-label="Search a week or an assignment">
+      </label>
+    </div>
+  </div>
+
+  <div class="sec"><span class="no">01</span><span class="nm">Lectures</span><span class="ln"></span></div>
+  <div class="wall">
+    <a class="cell on" href="01-introduction/index.html" data-f="week 01 introduction assignment #0 questionnaire"><span class="k">Week 01</span><span class="t">Introduction</span><span class="chips"><span class="chip open">Open</span><span class="chip">assignment #0</span></span></a>
+    <a class="cell on" href="02-composition-format/index.html" data-f="week 02 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week 02</span><span class="t">Composition & Format</span><span class="chips"><span class="chip open">Open</span><span class="chip in">hand in #0</span><span class="chip">assignment #1</span></span></a>
+    <div class="cell" data-f="week 03 camera i assignment #2 pinhole"><span class="k">Week 03</span><span class="t">Camera I</span><span class="chips"><span class="chip">assignment #2</span></span></div>
+    <div class="cell" data-f="week 04 camera ii assignment #3 anti-self portrait"><span class="k">Week 04</span><span class="t">Camera II</span><span class="chips"><span class="chip">assignment #3</span></span></div>
+    <div class="cell" data-f="week 05 light i hand in #1 photogram assignment #4 remake"><span class="k">Week 05</span><span class="t">Light I</span><span class="chips"><span class="chip in">hand in #1</span><span class="chip">assignment #4</span></span></div>
+    <div class="cell" data-f="week 06 light ii"><span class="k">Week 06</span><span class="t">Light II</span><span class="quiet">Nothing due</span></div>
+    <div class="cell" data-f="week 07 mid-term review hand in #2 pinhole"><span class="k">Week 07</span><span class="t">Mid-Term Review</span><span class="chips"><span class="chip in">hand in #2</span></span></div>
+    <div class="cell" data-f="week 08 flash  continuous hand in #3 anti-self portrait hand in #4 remake"><span class="k">Week 08</span><span class="t">Flash & Continuous</span><span class="chips"><span class="chip in">hand in #3</span><span class="chip in">hand in #4</span></span></div>
+  </div>
+
+  <div class="sec"><span class="no">02</span><span class="nm">Assignments</span><span class="ln"></span>
+    <span class="grp" role="group" aria-label="Year group"><button type="button" class="g on" data-g="ft" title="Full-time">ft</button><button type="button" class="g" data-g="pt" title="Part-time">pt</button></span></div>
+  <div>
+    <div class="hdr"><span>Assignment</span><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span><span>Hand-in</span></div>
+    <div class="bar" data-g="ft" data-f="#0 questionnaire hand in week 2 ft full-time 10.09"><span class="nm"><em>#0</em>Questionnaire</span><span class="run" style="grid-column:2 / 4"><i></i></span><span class="dt">10.09 · week 2</span></div>
+    <div class="bar" data-g="pt" data-f="#0 questionnaire hand in week 2 pt part-time 14.09" hidden><span class="nm"><em>#0</em>Questionnaire</span><span class="run" style="grid-column:2 / 4"><i></i></span><span class="dt">14.09 · week 2</span></div>
+    <div class="bar" data-g="ft" data-f="#1 photogram hand in week 5 ft full-time 01.10"><span class="nm"><em>#1</em>Photogram</span><span class="run" style="grid-column:3 / 7"><i></i></span><span class="dt">01.10 · week 5</span></div>
+    <div class="bar" data-g="pt" data-f="#1 photogram hand in week 5 pt part-time 05.10" hidden><span class="nm"><em>#1</em>Photogram</span><span class="run" style="grid-column:3 / 7"><i></i></span><span class="dt">05.10 · week 5</span></div>
+    <div class="bar" data-g="ft" data-f="#2 pinhole hand in week 7 ft full-time 15.10"><span class="nm"><em>#2</em>Pinhole</span><span class="run" style="grid-column:4 / 9"><i></i></span><span class="dt">15.10 · week 7</span></div>
+    <div class="bar" data-g="pt" data-f="#2 pinhole hand in week 7 pt part-time 19.10" hidden><span class="nm"><em>#2</em>Pinhole</span><span class="run" style="grid-column:4 / 9"><i></i></span><span class="dt">19.10 · week 7</span></div>
+    <div class="bar" data-g="ft" data-f="#3 anti-self portrait hand in week 8 ft full-time 29.10"><span class="nm"><em>#3</em>Anti-Self Portrait</span><span class="run" style="grid-column:5 / 10"><i></i></span><span class="dt">29.10 · week 8</span></div>
+    <div class="bar" data-g="pt" data-f="#3 anti-self portrait hand in week 8 pt part-time 02.11" hidden><span class="nm"><em>#3</em>Anti-Self Portrait</span><span class="run" style="grid-column:5 / 10"><i></i></span><span class="dt">02.11 · week 8</span></div>
+    <div class="bar" data-g="ft" data-f="#4 remake hand in week 8 ft full-time 29.10"><span class="nm"><em>#4</em>reMAKE</span><span class="run" style="grid-column:6 / 10"><i></i></span><span class="dt">29.10 · week 8</span></div>
+    <div class="bar" data-g="pt" data-f="#4 remake hand in week 8 pt part-time 02.11" hidden><span class="nm"><em>#4</em>reMAKE</span><span class="run" style="grid-column:6 / 10"><i></i></span><span class="dt">02.11 · week 8</span></div>
+  </div>
+  <p id="none">Nothing matches that</p>
+
+  <div class="foot"><span>Batuhan Keskiner</span><span>build 21 · 04.09.2026 04:37</span></div>
 </div>
+<script>
+var q=document.getElementById('q'),no=document.getElementById('none'),
+    all=document.querySelectorAll('[data-f]');
+function filt(){
+  var v=q.value.trim().toLowerCase(),n=0;
+  [].forEach.call(all,function(el){
+    if(el.hidden){el.style.opacity='1';return;}   /* the other group, not a miss */
+    var hit=!v||el.dataset.f.indexOf(v)>-1;
+    el.style.opacity=hit?'1':'.28'; if(hit)n++;
+  });
+  no.style.display=n?'none':'block';
+}
+q.addEventListener('input',filt);
+[].forEach.call(document.querySelectorAll('.grp .g'),function(b){
+  b.addEventListener('click',function(){
+    var g=b.dataset.g;
+    [].forEach.call(document.querySelectorAll('.grp .g'),function(o){
+      o.classList.toggle('on',o===b);});
+    [].forEach.call(document.querySelectorAll('.bar[data-g]'),function(r){
+      r.hidden=(r.dataset.g!==g);});
+    filt();
+  });
+});
+</script>
 </body>
 </html>
