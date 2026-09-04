@@ -28,9 +28,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
 h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
    letter-spacing:-.03em;line-height:1;margin:0;color:var(--ink)}
 .right{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}
-.meta{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
-   text-transform:uppercase;color:var(--grey);text-align:right;line-height:1.8;
-   white-space:nowrap}
+.mark{display:block;height:56px;width:auto;mix-blend-mode:multiply;
+   align-self:center}
 .find{display:flex;align-items:center;gap:9px;border:1px solid var(--ink);
    padding:0 11px;height:36px;width:290px;background:var(--paper)}
 .find input{flex:1;min-width:0;border:0;outline:0;background:transparent;height:34px;
@@ -157,7 +156,6 @@ a.cell:hover{background:#E9E6DE}
   .wall{grid-template-columns:repeat(2,1fr)}
   .right{flex:1 1 100%;justify-content:space-between}
   .find{width:100%;flex:1 1 220px}
-  .meta{text-align:left}
   .hdr,.bar{grid-template-columns:1fr auto}
   .track{padding-top:0}
   .hdr span:not(:first-child):not(:last-child),.run,.ticks,.marks{display:none}
@@ -169,7 +167,6 @@ a.cell:hover{background:#E9E6DE}
   .wall{grid-template-columns:1fr}
   .top{gap:14px}
   .right{flex-direction:column;align-items:stretch;gap:11px;width:100%}
-  .meta{white-space:normal;text-align:left}
   .find{width:auto;flex:none}
   .sec{margin:26px 0 10px;flex-wrap:wrap}
 }
@@ -181,7 +178,8 @@ a.cell:hover{background:#E9E6DE}
   <div class="top">
     <h1>Technical Skills II</h1>
     <div class="right">
-      <span class="meta">KABK · BA Photography<br>2026–27</span>
+      <img class="mark" src="_shared/assets/kabk-logo.jpg"
+           alt="Royal Academy of Art, The Hague" width="59" height="56">
       <label class="find">
         <svg width="12" height="12" viewBox="0 0 13 13" fill="none" aria-hidden="true">
           <circle cx="5.4" cy="5.4" r="4.1" stroke="#5C605E" stroke-width="1.3"/>
@@ -236,7 +234,7 @@ a.cell:hover{background:#E9E6DE}
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; no detail</span><span>Zone V &mdash; 18% grey</span><span>Zone X &mdash; paper</span></div>
 
-  <div class="foot"><span>Batuhan Keskiner</span><span>build 55 · 04.09.2026 05:11</span></div>
+  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 58 · 04.09.2026 05:14</span></div>
 </div>
 <script>
 var q=document.getElementById('q'),no=document.getElementById('none'),
