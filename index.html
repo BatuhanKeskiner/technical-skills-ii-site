@@ -124,9 +124,24 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
    top:-6px;bottom:-6px;right:0;width:1px;background:var(--rule)}
 .bar .dt::before{content:'';position:absolute;top:-6px;bottom:-6px;left:0;
    width:1px;background:var(--rule)}
-.track::-webkit-scrollbar{height:9px}
-.track::-webkit-scrollbar-thumb{background:var(--rule)}
-.track::-webkit-scrollbar-track{background:transparent}
+/* A SCROLLBAR WE DRAW OURSELVES.
+   The native one was styled first and could not be trusted: macOS hides overlay
+   scrollbars until something moves, Firefox takes two colours and no shape, and
+   the first attempt drew the thumb in --rule - the same hairline the whole chart
+   is ruled with, so the one thing you are meant to grab looked like the twenty
+   lines you are not.
+
+   So the rail is an element. Ink thumb on a sunk track, sharp ends, sitting on
+   its own rule under the strip. It is there before anyone scrolls, which is the
+   point: it has to say the term continues. It hides itself when everything
+   already fits. */
+.track{scrollbar-width:none;-ms-overflow-style:none}
+.track::-webkit-scrollbar{display:none}
+.srail{position:relative;height:11px;margin:7px 0 0;background:var(--paper-2,#EEECE6);
+   border-top:1px solid var(--ink);cursor:pointer;user-select:none}
+.srail[hidden]{display:none}
+.sgrip{position:absolute;top:2px;height:7px;min-width:40px;background:var(--ink)}
+.srail:hover .sgrip,.srail.drag .sgrip{background:var(--signal)}
 .marks{position:absolute;inset:0;pointer-events:none;z-index:2}
 .marks i{display:block;position:relative}
 .marks i.now::before{content:'';position:absolute;top:0;left:var(--d,50%);
@@ -286,14 +301,51 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
       </div>
     </div>
   </div>
+  <div class="srail" id="srail" hidden><span class="sgrip" id="sgrip"></span></div>
   <p id="none">Nothing matches that</p>
 
-  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 93 · 04.09.2026 17:48</span></div>
+  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 96 · 04.09.2026 17:52</span></div>
 
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; Black</span><span>Middle Grey</span><span>Zone X &mdash; White</span></div>
 </div>
 <script>
+/* the rail: where we are along the term, and a way to move */
+(function(){
+  var tr=document.querySelector('.track'), rail=document.getElementById('srail'),
+      grip=document.getElementById('sgrip');
+  if(!tr||!rail||!grip) return;
+  function sync(){
+    var over=tr.scrollWidth-tr.clientWidth;
+    if(over<2){rail.hidden=true;return;}
+    rail.hidden=false;
+    var w=Math.max(40,rail.clientWidth*tr.clientWidth/tr.scrollWidth);
+    grip.style.width=w+'px';
+    grip.style.left=(tr.scrollLeft/over)*(rail.clientWidth-w)+'px';
+  }
+  tr.addEventListener('scroll',sync,{passive:true});
+  window.addEventListener('resize',sync);
+  var dragging=false,grab=0;
+  function to(clientX,off){
+    var over=tr.scrollWidth-tr.clientWidth,
+        room=rail.clientWidth-grip.offsetWidth;
+    if(room<=0) return;
+    var x=clientX-rail.getBoundingClientRect().left-off;
+    tr.scrollLeft=Math.max(0,Math.min(over,(x/room)*over));
+  }
+  grip.addEventListener('pointerdown',function(e){
+    dragging=true; grab=e.clientX-grip.getBoundingClientRect().left;
+    rail.classList.add('drag'); grip.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  grip.addEventListener('pointermove',function(e){ if(dragging) to(e.clientX,grab); });
+  grip.addEventListener('pointerup',function(){ dragging=false; rail.classList.remove('drag'); });
+  rail.addEventListener('pointerdown',function(e){
+    if(e.target===grip) return;
+    to(e.clientX,grip.offsetWidth/2);
+  });
+  sync(); setTimeout(sync,250);
+})();
+
 var q=document.getElementById('q'),no=document.getElementById('none'),
     all=document.querySelectorAll('[data-f]');
 function filt(){
