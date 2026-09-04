@@ -115,6 +115,9 @@ a.cell:hover{background:#E9E6DE}
 .hdr span:first-child{text-align:left}
 .hdr span:last-child{text-align:right}
 .bar{border-bottom:1px solid var(--rule);height:36px;transition:opacity .12s}
+/* An assignment the course will set and we cannot yet name. It keeps its number
+   and its row and says nothing else - the row itself is the statement. */
+.bar.empty .nm em{color:var(--rule)}
 .bar[hidden]{display:none}
 .bar .nm{font-size:16px;display:flex;align-items:baseline;gap:9px}
 .bar .nm em{font-family:var(--mono);font-size:11px;font-style:normal;
@@ -219,6 +222,13 @@ a.cell:hover{background:#E9E6DE}
       <div class="bar" data-g="pt" data-f="#3 anti-self portrait hand in week 8 pt part-time 02.11" hidden><span class="nm"><em>#3</em>Anti-Self Portrait</span><span class="run" style="grid-column:5 / 10"><i></i></span><span class="dt">02.11 · week 8</span></div>
       <div class="bar" data-g="ft" data-f="#4 remake hand in week 8 ft full-time 29.10"><span class="nm"><em>#4</em>reMAKE</span><span class="run" style="grid-column:6 / 10"><i></i></span><span class="dt">29.10 · week 8</span></div>
       <div class="bar" data-g="pt" data-f="#4 remake hand in week 8 pt part-time 02.11" hidden><span class="nm"><em>#4</em>reMAKE</span><span class="run" style="grid-column:6 / 10"><i></i></span><span class="dt">02.11 · week 8</span></div>
+      <div class="bar empty" data-f="#5 assignment"><span class="nm"><em>#5</em></span><span class="dt"></span></div>
+      <div class="bar empty" data-f="#6 assignment"><span class="nm"><em>#6</em></span><span class="dt"></span></div>
+      <div class="bar empty" data-f="#7 assignment"><span class="nm"><em>#7</em></span><span class="dt"></span></div>
+      <div class="bar empty" data-f="#8 assignment"><span class="nm"><em>#8</em></span><span class="dt"></span></div>
+      <div class="bar empty" data-f="#9 assignment"><span class="nm"><em>#9</em></span><span class="dt"></span></div>
+      <div class="bar empty" data-f="#10 assignment"><span class="nm"><em>#10</em></span><span class="dt"></span></div>
+      <div class="bar empty" data-f="#11 assignment"><span class="nm"><em>#11</em></span><span class="dt"></span></div>
     </div>
   </div>
   <p id="none">Nothing matches that</p>
@@ -226,7 +236,7 @@ a.cell:hover{background:#E9E6DE}
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; no detail</span><span>Zone V &mdash; 18% grey</span><span>Zone X &mdash; paper</span></div>
 
-  <div class="foot"><span>Batuhan Keskiner</span><span>build 52 · 04.09.2026 05:07</span></div>
+  <div class="foot"><span>Batuhan Keskiner</span><span>build 54 · 04.09.2026 05:09</span></div>
 </div>
 <script>
 var q=document.getElementById('q'),no=document.getElementById('none'),
