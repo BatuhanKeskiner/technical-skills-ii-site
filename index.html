@@ -317,7 +317,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
   <div class="srail" id="srail" hidden><span class="sgrip" id="sgrip"></span></div>
   <p id="none">Nothing matches that</p>
 
-  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 106 · 05.09.2026 00:53</span></div>
+  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 108 · 05.09.2026 00:56</span></div>
 
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; Black</span><span>Middle Grey</span><span>Zone X &mdash; White</span></div>
@@ -402,36 +402,45 @@ q.addEventListener('input',filt);
    nothing is marked - which is correct, there is no class that week. */
 (function(){
   var weeks=[["1","2026-09-03","2026-09-07"],["2","2026-09-10","2026-09-14"],["3","2026-09-17","2026-09-21"],["4","2026-09-24","2026-09-28"],["5","2026-10-01","2026-10-05"],["6","2026-10-08","2026-10-12"],["7","2026-10-15","2026-10-26"],["8","2026-10-29","2026-11-02"],["9","2026-11-05","2026-11-09"],["10","2026-11-12","2026-11-16"],["11","2026-11-19","2026-11-23"],["12","2026-11-26","2026-11-30"]];
-  /* Each row is [week, full-time session, part-time session] as ISO days. A
-     week is the run UP TO its session, so you are in week N from the day after
-     N-1's class until N's class. Redrawn when the group is switched, because
-     the two groups meet on different days and are therefore in different
-     weeks: on Monday 14.09 part-time is in week 2 and full-time is in week 3. */
+  /* Each row is [week, full-time session, part-time session] as ISO days.
+
+     A WEEK STARTS WITH ITS CLASS. It was written the other way round - a week
+     as the run UP TO its session - and on Saturday 05.09, with full-time's
+     first class already taught on the 3rd and the second not until the 10th,
+     the marker stood over W2. They had not got there. A week begins when you
+     have the class and runs until the next one; before the first class nobody
+     is in a week yet, and the marker waits at the start of W1.
+
+     Redrawn on the group switch, because the two meet on different days and
+     are therefore in different weeks. */
   window.TS2_MARK=function(group){
-    var t=new Date(); t.setHours(0,0,0,0), k=group==='pt'?2:1;
+    var t=new Date(); t.setHours(0,0,0,0);
+    var k=group==='pt'?2:1;
     [].forEach.call(document.querySelectorAll('.marks i,.ticks i'),function(el){
       el.classList.remove('now'); el.style.removeProperty('--d'); el.removeAttribute('title');
     });
-    var prev=null;
-    for(var i=0;i<weeks.length;i++){
-      var iso=weeks[i][k];
-      if(!iso) continue;                       /* this group has no such week */
-      var day=new Date(iso+'T00:00:00');
-      if(t<=day){
-        var from=prev?new Date(prev+'T00:00:00'):new Date(day.getTime()-7*86400000),
-            span=day-from,
-            at=span>0?Math.max(2,Math.min(98,((t-from)/span)*100)).toFixed(2)+'%':'50%';
-        var sel='[data-w="'+weeks[i][0]+'"]';
-        [].forEach.call(document.querySelectorAll('.marks '+sel+',.ticks '+sel),
-          function(el){
-            el.classList.add('now');
-            el.style.setProperty('--d',at);
-            el.title='Week '+weeks[i][0]+' — class on '+iso.split('-').reverse().slice(0,2).join('.');
-          });
-        return;
-      }
-      prev=iso;
+    var mine=[];
+    for(var i=0;i<weeks.length;i++) if(weeks[i][k]) mine.push(weeks[i]);
+    if(!mine.length) return;
+    var at='2%', row=mine[0], started=false;
+    for(var j=0;j<mine.length;j++){
+      var day=new Date(mine[j][k]+'T00:00:00');
+      if(t<day) break;                       /* not reached yet */
+      started=true; row=mine[j];
+      var next=mine[j+1]?new Date(mine[j+1][k]+'T00:00:00')
+                        :new Date(day.getTime()+7*86400000),
+          span=next-day;
+      at=span>0?Math.max(2,Math.min(98,((t-day)/span)*100)).toFixed(2)+'%':'50%';
     }
+    var sel='[data-w="'+row[0]+'"]';
+    [].forEach.call(document.querySelectorAll('.marks '+sel+',.ticks '+sel),
+      function(el){
+        el.classList.add('now');
+        el.style.setProperty('--d',at);
+        el.title=(started?'Week ':'Week ')+row[0]+' — class on '
+                 +row[k].split('-').reverse().slice(0,2).join('.')
+                 +(started?'':', not yet');
+      });
   };
   TS2_MARK('ft');
 })();
