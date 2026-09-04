@@ -67,7 +67,11 @@ a.cell:hover{background:#E9E6DE}
 .cell.on .k{color:var(--ink)}
 .cell .t{font-size:21px;letter-spacing:-.01em;line-height:1.15;color:var(--grey)}
 .cell.on .t{color:var(--ink)}
-.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:1px}
+/* OPEN is the door; an assignment is what the week hands out. They are two
+   different statements, so they get two lines rather than sitting side by side
+   as if they were a set of the same thing. */
+.chips{display:flex;flex-direction:column;align-items:flex-start;gap:5px;
+   margin-top:1px}
 .chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:2px 6px;
    border:1px solid var(--rule);color:var(--grey);white-space:nowrap}
 .chip.in{border-color:var(--signal);color:var(--signal)}
@@ -206,7 +210,7 @@ a.cell:hover{background:#E9E6DE}
   <div class="zones" aria-hidden="true"><i style="background:#000000"></i><i style="background:#151515"></i><i style="background:#2B2B2B"></i><i style="background:#454545"></i><i style="background:#5E5E5E"></i><i style="background:#777777"></i><i style="background:#949494"></i><i style="background:#B0B0B0"></i><i style="background:#CCCCCC"></i><i style="background:#E7E7E7"></i><i style="background:#FFFFFF"></i></div>
   <div class="zlab"><span>Zone 0 &mdash; no detail</span><span>Zone V &mdash; 18% grey</span><span>Zone X &mdash; paper</span></div>
 
-  <div class="foot"><span>Batuhan Keskiner</span><span>build 38 · 04.09.2026 04:52</span></div>
+  <div class="foot"><span>Batuhan Keskiner</span><span>build 40 · 04.09.2026 04:53</span></div>
 </div>
 <script>
 var q=document.getElementById('q'),no=document.getElementById('none'),
