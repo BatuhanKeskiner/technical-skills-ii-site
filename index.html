@@ -55,7 +55,11 @@ h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
 
 .wall{display:grid;grid-template-columns:repeat(4,1fr);
    border-left:1px solid var(--rule);border-top:1px solid var(--rule)}
-.cell.blank .k{color:var(--rule)}
+/* An unnamed week is quiet, not invisible. --rule is the hairline the grid is
+   drawn with: against the cell it measured 1.40:1, which is not faint, it is
+   absent. #6B6B6B clears 4.5 on the cell AND on the paper, so one grey does
+   for both. */
+.cell.blank .k{color:#6B6B6B}
 .cell{background:#EEECE6;min-height:158px;
    border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
    padding:13px 16px 14px;display:flex;flex-direction:column;gap:7px;
@@ -80,7 +84,12 @@ a.cell:hover{background:#E9E6DE}
    text-transform:uppercase;color:var(--live);border:1.5px solid var(--live);
    padding:11px 22px;display:inline-block;background:transparent;
    transition:background .12s,color .12s}
-.open:hover,.open:focus-visible{background:var(--live);color:var(--paper)}
+/* Two rules, not one list. Safari 15.3 and older do not know
+   :focus-visible, and an unknown pseudo-class invalidates the WHOLE selector
+   list - so written as one line the button lost its hover fill entirely on
+   those browsers, silently. */
+.open:hover{background:var(--live);color:var(--paper)}
+.open:focus-visible{background:var(--live);color:var(--paper)}
 .open:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 .asg{margin-left:auto;display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end}
 .chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:2px 6px;
@@ -98,7 +107,8 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
    in or which one it ends in, and the numbers along the top are centred over
    columns that are not drawn. These are those columns. */
 .rows{position:relative;z-index:1}
-.ticks{position:absolute;inset:0;pointer-events:none;z-index:0}
+.ticks{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;
+   pointer-events:none;z-index:0}
 .ticks i{display:block}
 
 /* Where we are now: a triangle above the week numbers, and a dotted line
@@ -142,7 +152,10 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 .srail[hidden]{display:none}
 .sgrip{position:absolute;top:2px;height:7px;min-width:40px;background:var(--ink)}
 .srail:hover .sgrip,.srail.drag .sgrip{background:var(--signal)}
-.marks{position:absolute;inset:0;pointer-events:none;z-index:2}
+/* the long form first: Safari below 14.1 ignores `inset` and would
+   collapse both overlays, taking the week rules and the marker with them */
+.marks{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;
+   pointer-events:none;z-index:2}
 .marks i{display:block;position:relative}
 .marks i.now::before{content:'';position:absolute;top:0;left:var(--d,50%);
    transform:translateX(-50%);width:0;height:0;
@@ -164,7 +177,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 .bar{border-bottom:1px solid var(--rule);height:36px;transition:opacity .12s}
 /* An assignment the course will set and we cannot yet name. It keeps its number
    and its row and says nothing else - the row itself is the statement. */
-.bar.empty .nm em{color:var(--rule)}
+.bar.empty .nm em{color:#6B6B6B}
 .bar[hidden]{display:none}
 .bar .nm{font-size:16px;display:flex;align-items:baseline;gap:9px}
 .bar .nm em{font-family:var(--mono);font-size:11px;font-style:normal;
@@ -259,8 +272,8 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 
   <div class="sec"><span class="no">01</span><span class="nm">Lectures</span><span class="ln"></span></div>
   <div class="wall">
-    <div class="cell on" data-f="week #1 introduction assignment #0 questionnaire"><span class="k">Week #1</span><span class="t">Introduction</span><span class="base"><a class="open" href="01-introduction/index.html">Open</a><span class="state">Published</span></span></div>
-    <div class="cell on" data-f="week #2 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week #2</span><span class="t">Composition & Format</span><span class="base"><a class="open" href="02-composition-format/index.html">Open</a><span class="state">Published</span></span></div>
+    <div class="cell on" data-f="week #1 introduction assignment #0 questionnaire"><span class="k">Week #1</span><span class="t">Introduction</span><span class="base"><a class="open" href="01-introduction/index.html">Open</a><span class="state">In progress</span></span></div>
+    <div class="cell on" data-f="week #2 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week #2</span><span class="t">Composition & Format</span><span class="base"><a class="open" href="02-composition-format/index.html">Open</a><span class="state">In progress</span></span></div>
     <div class="cell" data-f="week #3 camera i assignment #2 pinhole"><span class="k">Week #3</span><span class="t">Camera I</span></div>
     <div class="cell" data-f="week #4 camera ii assignment #3 anti-self portrait"><span class="k">Week #4</span><span class="t">Camera II</span></div>
     <div class="cell" data-f="week #5 light i hand in #1 photogram assignment #4 remake"><span class="k">Week #5</span><span class="t">Light I</span></div>
@@ -304,7 +317,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
   <div class="srail" id="srail" hidden><span class="sgrip" id="sgrip"></span></div>
   <p id="none">Nothing matches that</p>
 
-  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 105 · 05.09.2026 00:46</span></div>
+  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 7 · 05.09.2026 00:53</span></div>
 
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; Black</span><span>Middle Grey</span><span>Zone X &mdash; White</span></div>
