@@ -8030,3 +8030,38 @@ body.editing .step.active ul.bul[data-marker=check] > li.tick::before{
 body.pages .step.active ul.bul[data-marker=check] > li.tick,
 body.editing .step.active ul.bul[data-marker=check] > li.tick{
   display:block;padding-left:0}
+
+/* ============================================================
+   THE LEAST ROOM AN INSTRUMENT NEEDS
+   ------------------------------------------------------------
+   It is shown on a projector at six metres and on a student's
+   laptop at fifty centimetres AT THE SAME MOMENT, so a fixed
+   size cannot be right. The instrument fills what it is given;
+   this says the floor, in the five names the panel asks for.
+
+   These apply to `figure.demo`, not only to the placeholder.
+   The rule used to be that a written instrument lost its sizes,
+   which is why every one took the full width whether it needed
+   it or not — the author's own complaint, and now gone.
+
+   `full`, `l`, `m` and `s` are what content written before
+   these names says, and they are kept so nothing already on a
+   page changes under it.
+   ============================================================ */
+figure.demo[data-size=third],figure.demo[data-size=s]{--w:min(33%,var(--figw))}
+figure.demo[data-size=half],figure.demo[data-size=m]{--w:min(50%,var(--figw))}
+figure.demo[data-size=column],figure.demo[data-size=full],
+figure.demo[data-size=l]{--w:min(var(--figw),100vw - 48px,230vh - 900px)}
+
+/* Edge to edge: out of the text column and across the page box. */
+figure.demo[data-size=bleed]{--w:calc(100% + 8vw);margin-left:-4vw;max-width:none}
+
+/* Its own page: everything the page has, top to bottom. Nothing else is
+   expected to sit beside it, so it takes the height too. */
+figure.demo[data-size=page]{--w:calc(100% + 8vw);margin-left:-4vw;max-width:none;
+  min-height:72vh}
+figure.demo[data-size=page] .stage{min-height:68vh}
+
+/* An instrument that opens out of the page says so where the room can see it,
+   not only in the panel. */
+figure.demo[data-fullscreen] .stage{position:relative}

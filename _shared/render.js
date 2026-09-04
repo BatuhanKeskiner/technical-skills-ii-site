@@ -928,9 +928,18 @@ const BLOCK = {
     return wrap;
   },
 
+  /* A written instrument keeps the room it was given. The rule used to be that
+     the moment an instrument was written the block became a `demo` and the sizes
+     went away - which is why every instrument took the full width whether it
+     needed it or not, and it was Batu's own complaint. The brief stops being a
+     specification the moment it is built; it becomes a setting. */
   demo: (b) => {
     const f = el('figure', 'demo');
     f.setAttribute('data-demo', b.id);
+    f.setAttribute('data-size', b.size || 'column');
+    if (b.shape) f.setAttribute('data-shape', b.shape);
+    if (b.pos && (b.size || 'column') !== 'column') f.setAttribute('data-pos', b.pos);
+    if (b.fullscreen) f.setAttribute('data-fullscreen', '');
     const cap = el('figcaption');
     if (b.fig) cap.append(el('span', 'figno', 'Fig. ' + b.fig));
     if (b.caption) cap.insertAdjacentHTML('beforeend', ' ' + b.caption);
@@ -1133,14 +1142,20 @@ const BLOCK = {
      and the size is the instrument's own. */
   demoPlaceholder: (b) => {
     const f = el('figure', 'demo ph-spec');
-    f.setAttribute('data-size', b.size || 'full');
+    f.setAttribute('data-size', b.size || 'column');
     f.setAttribute('data-shape', b.shape || 'landscape');
-    if (b.pos && b.size && b.size !== 'full') f.setAttribute('data-pos', b.pos);
+    if (b.pos && b.size && b.size !== 'column') f.setAttribute('data-pos', b.pos);
     const stage = el('div', 'stage wide');
     const ph = el('div', 'ph');
     ph.append(el('span', 'ph-label', b.label || 'Interactive'));
     const spec = [
-      ({ full: 'full width', l: 'large', m: 'medium', s: 'small' })[b.size || 'full'],
+      /* the floor it needs, in the words the panel asks the question in */
+      ({ third: 'a third of the page', half: 'half the page',
+         column: 'the full text column', bleed: 'edge to edge',
+         page: 'its own page',
+         /* what content written before these names says */
+         full: 'the full text column', l: 'the full text column',
+         m: 'half the page', s: 'a third of the page' })[b.size || 'column'],
       ({ landscape: 'landscape', square: 'square', portrait: 'portrait' })[b.shape || 'landscape'],
     ];
     if (b.fullscreen) spec.push('opens full screen');
