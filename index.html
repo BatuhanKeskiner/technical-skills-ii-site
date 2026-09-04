@@ -11,7 +11,7 @@
 <style>
 :root{
   --paper:#F7F5F0; --ink:#0B0C0C; --grey:#5C605E; --faint:#606060;
-  --rule:#C9CAC4; --signal:#C42D00; --live:#146B3A;
+  --rule:#C9CAC4; --signal:#C42D00; --live:#146B3A; --acid:#E4FF1A;
   --mono:'JetBrains Mono',ui-monospace,monospace;
   --sans:'Archivo','Helvetica Neue',Helvetica,sans-serif;
   --title:'Instrument Sans','Archivo',sans-serif;
@@ -60,7 +60,8 @@ h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
    border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
    padding:13px 16px 14px;display:flex;flex-direction:column;gap:7px;
    text-decoration:none;color:inherit;transition:opacity .12s}
-.cell.on{background:var(--paper)}
+.cell.on,.cell.wip{background:var(--paper)}
+.cell.wip .k,.cell.wip .t{color:var(--ink)}
 a.cell:hover{background:#E9E6DE}
 .cell .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
    text-transform:uppercase;color:var(--faint)}
@@ -80,10 +81,12 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 .chip.in{border-color:var(--signal);color:var(--signal)}
 .chip.open{background:var(--live);border-color:var(--live);color:var(--paper);
    text-transform:uppercase;letter-spacing:.14em}
+.chip.working{border-color:var(--ink);color:var(--ink);
+   text-transform:uppercase;letter-spacing:.14em}
 .cell .quiet{font-family:var(--mono);font-size:9px;letter-spacing:.13em;
    text-transform:uppercase;color:var(--faint)}
 
-.hdr,.bar,.ticks,.marks{display:grid;grid-template-columns:212px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 202px}
+.hdr,.bar,.ticks,.marks{display:grid;grid-template-columns:212px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 136px 116px}
 .hdr,.bar{align-items:center}
 /* A bar with nothing behind it floats: the eye cannot say which week it starts
    in or which one it ends in, and the numbers along the top are centred over
@@ -130,10 +133,20 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 .bar .nm a:hover{color:var(--signal);text-decoration-color:var(--signal)}
 .run{height:13px;position:relative;align-self:center;
    background:rgba(11,12,12,.30)}
+/* Running now: handed out, not yet due. The bar is marked the way a line in a
+   book is marked - same weight as the others, a different colour. */
+.run.now{background:var(--acid)}
 .run i{position:absolute;right:-1px;top:-3px;bottom:-3px;width:3px;
    background:var(--signal)}
 .dt{grid-column:14 / 15;font-family:var(--mono);font-size:11px;letter-spacing:.08em;
    color:var(--signal);text-align:right;align-self:center;white-space:nowrap}
+.dt .g{color:var(--faint)}
+/* How long is left, worked out in the browser and only once the assignment has
+   been handed out. A countdown on work nobody has been given is noise: it makes
+   a row look urgent months early, and there is nothing to start. */
+.cd{grid-column:15 / 16;font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+   color:var(--faint);text-align:right;align-self:center;white-space:nowrap}
+.cd.soon{color:var(--signal)}
 .dt .x{font-style:normal;color:var(--faint)}
 /* How long is left, worked out in the browser. A countdown stamped in at build
    time is wrong the next morning, and this page can sit unbuilt for a week. */
@@ -171,6 +184,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
   .track{padding-top:0}
   .hdr span:not(:first-child):not(:last-child),.run,.ticks,.marks{display:none}
   .dt{grid-column:2 / 3}
+  .cd{grid-column:2 / 3;grid-row:2}
   .dt .x{display:none}
 }
 @media(max-width:620px){
@@ -204,11 +218,11 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 
   <div class="sec"><span class="no">01</span><span class="nm">Lectures</span><span class="ln"></span></div>
   <div class="wall">
-    <a class="cell on" href="01-introduction/index.html" data-f="week 01 introduction assignment #0 questionnaire"><span class="k">Week 01</span><span class="t">Introduction</span><span class="base"><span class="chip open">Open</span><span class="asg"><a class="chip" href="assignments/00-questionnaire/index.html">assignment #0</a></span></span></a>
-    <a class="cell on" href="02-composition-format/index.html" data-f="week 02 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week 02</span><span class="t">Composition & Format</span><span class="base"><span class="chip open">Open</span><span class="asg"><a class="chip" href="assignments/01-photogram/index.html">assignment #1</a></span></span></a>
-    <div class="cell" data-f="week 03 camera i assignment #2 pinhole"><span class="k">Week 03</span><span class="t">Camera I</span><span class="base"><span class="asg"><a class="chip" href="assignments/02-pinhole/index.html">assignment #2</a></span></span></div>
-    <div class="cell" data-f="week 04 camera ii assignment #3 anti-self portrait"><span class="k">Week 04</span><span class="t">Camera II</span><span class="base"><span class="asg"><a class="chip" href="assignments/03-anti-self-portrait/index.html">assignment #3</a></span></span></div>
-    <div class="cell" data-f="week 05 light i hand in #1 photogram assignment #4 remake"><span class="k">Week 05</span><span class="t">Light I</span><span class="base"><span class="asg"><a class="chip" href="assignments/04-remake/index.html">assignment #4</a></span></span></div>
+    <a class="cell on" href="01-introduction/index.html" data-f="week 01 introduction assignment #0 questionnaire"><span class="k">Week 01</span><span class="t">Introduction</span><span class="base"><span class="chip open">Open</span></span></a>
+    <div class="cell wip" data-f="week 02 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week 02</span><span class="t">Composition & Format</span><span class="base"><span class="chip working">In progress</span></span></div>
+    <div class="cell" data-f="week 03 camera i assignment #2 pinhole"><span class="k">Week 03</span><span class="t">Camera I</span></div>
+    <div class="cell" data-f="week 04 camera ii assignment #3 anti-self portrait"><span class="k">Week 04</span><span class="t">Camera II</span></div>
+    <div class="cell" data-f="week 05 light i hand in #1 photogram assignment #4 remake"><span class="k">Week 05</span><span class="t">Light I</span></div>
     <div class="cell" data-f="week 06 light ii"><span class="k">Week 06</span><span class="t">Light II</span></div>
     <div class="cell" data-f="week 07 mid-term review hand in #2 pinhole"><span class="k">Week 07</span><span class="t">Mid-Term Review</span></div>
     <div class="cell" data-f="week 08 flash  continuous hand in #3 anti-self portrait hand in #4 remake"><span class="k">Week 08</span><span class="t">Flash & Continuous</span></div>
@@ -221,32 +235,32 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
   <div class="sec"><span class="no">02</span><span class="nm">Assignments</span><span class="ln"></span>
     <span class="grp" role="group" aria-label="Year group"><button type="button" class="g on" data-g="ft" title="Full-time">ft</button><button type="button" class="g" data-g="pt" title="Part-time">pt</button></span></div>
   <div class="track">
-    <div class="marks" aria-hidden="true"><i></i><i data-w="1"></i><i data-w="2"></i><i data-w="3"></i><i data-w="4"></i><i data-w="5"></i><i data-w="6"></i><i data-w="7"></i><i data-w="8"></i><i data-w="9"></i><i data-w="10"></i><i data-w="11"></i><i data-w="12"></i><i></i></div>
-    <div class="hdr"><span>Assignment</span><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span><span>09</span><span>10</span><span>11</span><span>12</span><span>Deadline</span></div>
+    <div class="marks" aria-hidden="true"><i></i><i data-w="1"></i><i data-w="2"></i><i data-w="3"></i><i data-w="4"></i><i data-w="5"></i><i data-w="6"></i><i data-w="7"></i><i data-w="8"></i><i data-w="9"></i><i data-w="10"></i><i data-w="11"></i><i data-w="12"></i><i></i><i></i></div>
+    <div class="hdr"><span>Assignment</span><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span><span>09</span><span>10</span><span>11</span><span>12</span><span>Deadline</span><span>Days left</span></div>
     <div class="rows">
-      <div class="ticks" aria-hidden="true"><i></i><i class="w" data-w="1"></i><i class="w" data-w="2"></i><i class="w" data-w="3"></i><i class="w" data-w="4"></i><i class="w" data-w="5"></i><i class="w" data-w="6"></i><i class="w" data-w="7"></i><i class="w" data-w="8"></i><i class="w" data-w="9"></i><i class="w" data-w="10"></i><i class="w" data-w="11"></i><i class="w end" data-w="12"></i><i></i></div>
-      <div class="bar" data-g="ft" data-f="#0 questionnaire hand in week 2 ft full-time 10.09"><span class="nm"><em>#0</em><a href="assignments/00-questionnaire/index.html">Questionnaire</a></span><span class="run" style="grid-column:2 / 4"><i></i></span><span class="dt" data-due="2026-09-10">10.09 <span class="left">· week 2</span></span></div>
-      <div class="bar" data-g="pt" data-f="#0 questionnaire hand in week 2 pt part-time 14.09" hidden><span class="nm"><em>#0</em><a href="assignments/00-questionnaire/index.html">Questionnaire</a></span><span class="run" style="grid-column:2 / 4"><i></i></span><span class="dt" data-due="2026-09-14">14.09 <span class="left">· week 2</span></span></div>
-      <div class="bar" data-g="ft" data-f="#1 photogram hand in week 5 ft full-time 01.10"><span class="nm"><em>#1</em><a href="assignments/01-photogram/index.html">Photogram</a></span><span class="run" style="grid-column:3 / 7"><i></i></span><span class="dt" data-due="2026-10-01">01.10 <span class="left">· week 5</span></span></div>
-      <div class="bar" data-g="pt" data-f="#1 photogram hand in week 5 pt part-time 05.10" hidden><span class="nm"><em>#1</em><a href="assignments/01-photogram/index.html">Photogram</a></span><span class="run" style="grid-column:3 / 7"><i></i></span><span class="dt" data-due="2026-10-05">05.10 <span class="left">· week 5</span></span></div>
-      <div class="bar" data-g="ft" data-f="#2 pinhole hand in week 7 ft full-time 15.10"><span class="nm"><em>#2</em><a href="assignments/02-pinhole/index.html">Pinhole</a></span><span class="run" style="grid-column:4 / 9"><i></i></span><span class="dt" data-due="2026-10-15">15.10 <span class="left">· week 7</span></span></div>
-      <div class="bar" data-g="pt" data-f="#2 pinhole hand in week 7 pt part-time 19.10" hidden><span class="nm"><em>#2</em><a href="assignments/02-pinhole/index.html">Pinhole</a></span><span class="run" style="grid-column:4 / 9"><i></i></span><span class="dt" data-due="2026-10-19">19.10 <span class="left">· week 7</span></span></div>
-      <div class="bar" data-g="ft" data-f="#3 anti-self portrait hand in week 8 ft full-time 29.10"><span class="nm"><em>#3</em><a href="assignments/03-anti-self-portrait/index.html">Anti-Self Portrait</a></span><span class="run" style="grid-column:5 / 10"><i></i></span><span class="dt" data-due="2026-10-29">29.10 <span class="left">· week 8</span></span></div>
-      <div class="bar" data-g="pt" data-f="#3 anti-self portrait hand in week 8 pt part-time 02.11" hidden><span class="nm"><em>#3</em><a href="assignments/03-anti-self-portrait/index.html">Anti-Self Portrait</a></span><span class="run" style="grid-column:5 / 10"><i></i></span><span class="dt" data-due="2026-11-02">02.11 <span class="left">· week 8</span></span></div>
-      <div class="bar" data-g="ft" data-f="#4 remake hand in week 8 ft full-time 29.10"><span class="nm"><em>#4</em><a href="assignments/04-remake/index.html">reMAKE</a></span><span class="run" style="grid-column:6 / 10"><i></i></span><span class="dt" data-due="2026-10-29">29.10 <span class="left">· week 8</span></span></div>
-      <div class="bar" data-g="pt" data-f="#4 remake hand in week 8 pt part-time 02.11" hidden><span class="nm"><em>#4</em><a href="assignments/04-remake/index.html">reMAKE</a></span><span class="run" style="grid-column:6 / 10"><i></i></span><span class="dt" data-due="2026-11-02">02.11 <span class="left">· week 8</span></span></div>
-      <div class="bar empty" data-f="#5 assignment"><span class="nm"><em>#5</em></span><span class="dt"></span></div>
-      <div class="bar empty" data-f="#6 assignment"><span class="nm"><em>#6</em></span><span class="dt"></span></div>
-      <div class="bar empty" data-f="#7 assignment"><span class="nm"><em>#7</em></span><span class="dt"></span></div>
-      <div class="bar empty" data-f="#8 assignment"><span class="nm"><em>#8</em></span><span class="dt"></span></div>
-      <div class="bar empty" data-f="#9 assignment"><span class="nm"><em>#9</em></span><span class="dt"></span></div>
-      <div class="bar empty" data-f="#10 assignment"><span class="nm"><em>#10</em></span><span class="dt"></span></div>
-      <div class="bar empty" data-f="#11 assignment"><span class="nm"><em>#11</em></span><span class="dt"></span></div>
+      <div class="ticks" aria-hidden="true"><i></i><i class="w" data-w="1"></i><i class="w" data-w="2"></i><i class="w" data-w="3"></i><i class="w" data-w="4"></i><i class="w" data-w="5"></i><i class="w" data-w="6"></i><i class="w" data-w="7"></i><i class="w" data-w="8"></i><i class="w" data-w="9"></i><i class="w" data-w="10"></i><i class="w" data-w="11"></i><i class="w end" data-w="12"></i><i></i><i></i></div>
+      <div class="bar" data-g="ft" data-f="#0 questionnaire hand in week 2 ft full-time 10.09"><span class="nm"><em>#0</em><a href="assignments/00-questionnaire/index.html">Questionnaire</a></span><span class="run" style="grid-column:2 / 4"><i></i></span><span class="dt">10.09 <span class="g">· week 2</span></span><span class="cd" data-due="2026-09-10" data-from="2026-09-03"></span></div>
+      <div class="bar" data-g="pt" data-f="#0 questionnaire hand in week 2 pt part-time 14.09" hidden><span class="nm"><em>#0</em><a href="assignments/00-questionnaire/index.html">Questionnaire</a></span><span class="run" style="grid-column:2 / 4"><i></i></span><span class="dt">14.09 <span class="g">· week 2</span></span><span class="cd" data-due="2026-09-14" data-from="2026-09-07"></span></div>
+      <div class="bar" data-g="ft" data-f="#1 photogram hand in week 5 ft full-time 01.10"><span class="nm"><em>#1</em><a href="assignments/01-photogram/index.html">Photogram</a></span><span class="run" style="grid-column:3 / 7"><i></i></span><span class="dt">01.10 <span class="g">· week 5</span></span><span class="cd" data-due="2026-10-01" data-from="2026-09-10"></span></div>
+      <div class="bar" data-g="pt" data-f="#1 photogram hand in week 5 pt part-time 05.10" hidden><span class="nm"><em>#1</em><a href="assignments/01-photogram/index.html">Photogram</a></span><span class="run" style="grid-column:3 / 7"><i></i></span><span class="dt">05.10 <span class="g">· week 5</span></span><span class="cd" data-due="2026-10-05" data-from="2026-09-14"></span></div>
+      <div class="bar" data-g="ft" data-f="#2 pinhole hand in week 7 ft full-time 15.10"><span class="nm"><em>#2</em><a href="assignments/02-pinhole/index.html">Pinhole</a></span><span class="run" style="grid-column:4 / 9"><i></i></span><span class="dt">15.10 <span class="g">· week 7</span></span><span class="cd" data-due="2026-10-15" data-from="2026-09-17"></span></div>
+      <div class="bar" data-g="pt" data-f="#2 pinhole hand in week 7 pt part-time 19.10" hidden><span class="nm"><em>#2</em><a href="assignments/02-pinhole/index.html">Pinhole</a></span><span class="run" style="grid-column:4 / 9"><i></i></span><span class="dt">19.10 <span class="g">· week 7</span></span><span class="cd" data-due="2026-10-19" data-from="2026-09-21"></span></div>
+      <div class="bar" data-g="ft" data-f="#3 anti-self portrait hand in week 8 ft full-time 29.10"><span class="nm"><em>#3</em><a href="assignments/03-anti-self-portrait/index.html">Anti-Self Portrait</a></span><span class="run" style="grid-column:5 / 10"><i></i></span><span class="dt">29.10 <span class="g">· week 8</span></span><span class="cd" data-due="2026-10-29" data-from="2026-09-24"></span></div>
+      <div class="bar" data-g="pt" data-f="#3 anti-self portrait hand in week 8 pt part-time 02.11" hidden><span class="nm"><em>#3</em><a href="assignments/03-anti-self-portrait/index.html">Anti-Self Portrait</a></span><span class="run" style="grid-column:5 / 10"><i></i></span><span class="dt">02.11 <span class="g">· week 8</span></span><span class="cd" data-due="2026-11-02" data-from="2026-09-28"></span></div>
+      <div class="bar" data-g="ft" data-f="#4 remake hand in week 8 ft full-time 29.10"><span class="nm"><em>#4</em><a href="assignments/04-remake/index.html">reMAKE</a></span><span class="run" style="grid-column:6 / 10"><i></i></span><span class="dt">29.10 <span class="g">· week 8</span></span><span class="cd" data-due="2026-10-29" data-from="2026-10-01"></span></div>
+      <div class="bar" data-g="pt" data-f="#4 remake hand in week 8 pt part-time 02.11" hidden><span class="nm"><em>#4</em><a href="assignments/04-remake/index.html">reMAKE</a></span><span class="run" style="grid-column:6 / 10"><i></i></span><span class="dt">02.11 <span class="g">· week 8</span></span><span class="cd" data-due="2026-11-02" data-from="2026-10-05"></span></div>
+      <div class="bar empty" data-f="#5 assignment"><span class="nm"><em>#5</em></span><span class="dt"></span><span class="cd"></span></div>
+      <div class="bar empty" data-f="#6 assignment"><span class="nm"><em>#6</em></span><span class="dt"></span><span class="cd"></span></div>
+      <div class="bar empty" data-f="#7 assignment"><span class="nm"><em>#7</em></span><span class="dt"></span><span class="cd"></span></div>
+      <div class="bar empty" data-f="#8 assignment"><span class="nm"><em>#8</em></span><span class="dt"></span><span class="cd"></span></div>
+      <div class="bar empty" data-f="#9 assignment"><span class="nm"><em>#9</em></span><span class="dt"></span><span class="cd"></span></div>
+      <div class="bar empty" data-f="#10 assignment"><span class="nm"><em>#10</em></span><span class="dt"></span><span class="cd"></span></div>
+      <div class="bar empty" data-f="#11 assignment"><span class="nm"><em>#11</em></span><span class="dt"></span><span class="cd"></span></div>
     </div>
   </div>
   <p id="none">Nothing matches that</p>
 
-  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 68 · 04.09.2026 05:25</span></div>
+  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 73 · 04.09.2026 05:30</span></div>
 
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; Black</span><span>Middle Grey</span><span>Zone X &mdash; White</span></div>
@@ -269,18 +283,24 @@ q.addEventListener('input',filt);
    wrong by the next morning. */
 (function(){
   var t=new Date(); t.setHours(0,0,0,0);
-  [].forEach.call(document.querySelectorAll('.dt[data-due]'),function(el){
+  [].forEach.call(document.querySelectorAll('.cd[data-due]'),function(el){
+    /* Only once it has been handed out. A countdown on work nobody has been
+       given yet is noise - you cannot start it, and it makes the row look
+       urgent months early. Until then the cell says which week it lands in. */
+    if(el.dataset.from && t < new Date(el.dataset.from+'T00:00:00')) return;
     var due=new Date(el.dataset.due+'T00:00:00'),
-        n=Math.round((due-t)/86400000),
-        s=el.querySelector('.left');
-    if(!s) return;
-    if(n>1)       s.textContent='· in '+n+' days';
-    else if(n===1)s.textContent='· tomorrow';
-    else if(n===0)s.textContent='· today';
-    else if(n===-1)s.textContent='· yesterday';
-    else          s.textContent='· '+(-n)+' days ago';
-    if(n<0) el.classList.add('gone');
-    else if(n<=7) el.classList.add('soon');
+        n=Math.round((due-t)/86400000);
+    if(n>1)        el.textContent=n+' days';
+    else if(n===1) el.textContent='tomorrow';
+    else if(n===0) el.textContent='today';
+    else if(n===-1)el.textContent='yesterday';
+    else           el.textContent=(-n)+' days ago';
+    if(n>=0 && n<=7) el.classList.add('soon');
+    /* handed out and not yet due - the work is running right now */
+    if(n>=0){
+      var bar=el.parentNode.querySelector('.run');
+      if(bar) bar.classList.add('now');
+    }
   });
 })();
 
