@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../../_shared/favicon.svg" type="image/svg+xml">
+<title>Assignment 3 — Anti-Self Portrait</title>
+<link rel="stylesheet" href="../../_shared/tokens/fonts.css">
+<style>
+:root{
+  --paper:#F7F5F0; --ink:#0B0C0C; --body:#1A1C1B; --grey:#5C605E;
+  --faint:#606060; --rule:#C9CAC4; --signal:#C42D00;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --sans:'Archivo','Helvetica Neue',Helvetica,sans-serif;
+  --title:'Instrument Sans','Archivo',sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased}
+.sheet{max-width:840px;margin:0 auto;padding:5vh 40px 7vh}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:24px;
+  padding-bottom:11px;border-bottom:2px solid var(--ink)}
+.top a,.top span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey);text-decoration:none}
+.top a:hover{color:var(--signal)}
+.mark{height:44px;width:auto;mix-blend-mode:multiply;flex:0 0 auto}
+.no{font-family:var(--mono);font-size:13px;letter-spacing:.16em;
+  color:var(--signal);margin:24px 0 0}
+h1{font-family:var(--title);font-size:46px;font-weight:500;letter-spacing:-.03em;
+  line-height:1.02;margin:8px 0 0}
+.premise{font-size:18px;line-height:1.5;color:var(--body);margin:14px 0 0;max-width:56ch}
+.draft{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--signal);border:1px solid var(--signal);
+  padding:8px 12px;margin:18px 0 0;display:inline-block}
+.link{margin:16px 0 0}
+.link a{font-family:var(--mono);font-size:15px;letter-spacing:.04em;
+  color:var(--ink);text-decoration:underline;text-underline-offset:4px;
+  text-decoration-color:var(--faint)}
+.link a:hover{color:var(--signal);text-decoration-color:var(--signal)}
+ul.qs{list-style:none;margin:18px 0 0;padding:0;border-top:1px solid var(--rule)}
+ul.qs li{padding:10px 0;border-bottom:1px solid var(--rule);font-size:16px;
+  line-height:1.5;color:var(--body)}
+
+.spec{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:26px;
+  padding-top:13px;border-top:1px solid var(--ink)}
+.spec dt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint)}
+.spec dd{font-family:var(--mono);font-size:13px;margin:5px 0 0}
+.spec dd.hot{color:var(--signal)}
+.spec dd.tbc{color:var(--faint)}
+.spec dd .g{color:var(--faint)}
+
+.sec{display:flex;align-items:center;gap:12px;margin:38px 0 0}
+.sec span:first-child,.sec span:nth-child(2){font-family:var(--mono);font-size:12px;
+  letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink)}
+.sec .ln{flex:1;border-top:1px solid var(--ink)}
+p.body{font-size:16px;line-height:1.6;color:var(--body);margin:14px 0 0;max-width:64ch}
+
+ol.steps{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--rule)}
+ol.steps li{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:13px 0;
+  border-bottom:1px solid var(--rule)}
+ol.steps .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--faint)}
+ol.steps .t{font-size:16px;line-height:1.5;color:var(--body)}
+
+dl.limits{margin:16px 0 0;padding:0;border-top:1px solid var(--rule)}
+dl.limits > div{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:11px 0;
+  border-bottom:1px solid var(--rule)}
+dl.limits dt{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+dl.limits dd{margin:0;font-size:15px;line-height:1.5;color:var(--body)}
+
+.warn{display:grid;grid-template-columns:auto 1fr;gap:14px;margin-top:18px;
+  padding:14px 16px;border:1px solid var(--ink);border-left:3px solid var(--signal)}
+.warn .m{font-family:var(--mono);font-size:15px;color:var(--signal);line-height:1}
+.warn b{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint);font-weight:400;display:block}
+.warn p{margin:5px 0 0;font-size:15px;line-height:1.55;color:var(--body)}
+
+ul.plain{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
+ul.plain li{display:grid;grid-template-columns:16px 1fr;gap:9px;font-size:15px;
+  line-height:1.5;color:var(--body)}
+ul.plain .m{font-family:var(--mono);color:var(--signal)}
+ul.plain.quiet .m{color:var(--faint)}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;padding:4px 8px;border:1px solid var(--rule);color:var(--grey)}
+
+.foot{margin-top:44px;padding-top:12px;border-top:1px solid var(--rule);
+  display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+@media(max-width:620px){
+  .sheet{padding:4vh 20px 7vh}
+  .spec{grid-template-columns:repeat(2,1fr)}
+  dl.limits > div{grid-template-columns:1fr;gap:4px}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="top">
+    <a href="../../index.html">Technical Skills II · Assignment brief</a>
+    <img class="mark" src="../../_shared/assets/kabk-logo.jpg"
+         alt="Royal Academy of Art, The Hague">
+  </div>
+
+  <p class="no">Assignment #3</p>
+  <h1>Anti-Self Portrait</h1>
+  <p class="premise"></p>
+  <p class="draft">Draft — not final. Do not build to this yet.</p>
+
+  <dl class="spec">
+    <div><dt>Given</dt><dd>Week 4</dd></div>
+    <div><dt>Due — full-time</dt><dd class="hot">29.10 <span class="g">· week 8</span></dd></div>
+    <div><dt>Due — part-time</dt><dd class="hot">02.11 <span class="g">· week 8</span></dd></div>
+    <div><dt>Hand in</dt><dd>—</dd></div>
+  </dl>
+
+
+  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 66 · 04.09.2026 05:23</span></div>
+</div>
+</body>
+</html>
