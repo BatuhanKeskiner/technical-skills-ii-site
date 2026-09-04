@@ -80,21 +80,32 @@ a.cell:hover{background:#E9E6DE}
 .cell .quiet{font-family:var(--mono);font-size:9px;letter-spacing:.13em;
    text-transform:uppercase;color:var(--faint)}
 
-.hdr,.bar,.ticks{display:grid;grid-template-columns:212px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 202px}
+.hdr,.bar,.ticks,.marks{display:grid;grid-template-columns:212px 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 202px}
 .hdr,.bar{align-items:center}
 /* A bar with nothing behind it floats: the eye cannot say which week it starts
    in or which one it ends in, and the numbers along the top are centred over
    columns that are not drawn. These are those columns. */
 .rows{position:relative}
 .ticks{position:absolute;inset:0;pointer-events:none;z-index:0}
-.ticks i{display:block;position:relative}
-/* Where we are now. Worked out in the browser from the week's own Monday, not
-   stamped in at build time - the page can sit unrebuilt for a fortnight and a
-   marker that was right when it was written would be quietly lying by then. */
-.ticks i.now::before{content:'';position:absolute;top:0;left:50%;
+.ticks i{display:block}
+
+/* Where we are now: a triangle above the week numbers, and a dotted line
+   dropping through every row beneath it. Worked out in the browser from the
+   week's own Monday, not stamped in at build time - the page can sit unrebuilt
+   for a fortnight, and a marker that was right when it was written would be
+   quietly lying by then. */
+.track{position:relative;padding-top:17px}
+.marks{position:absolute;inset:0;pointer-events:none;z-index:2}
+.marks i{display:block;position:relative}
+.marks i.now::before{content:'';position:absolute;top:0;left:50%;
    transform:translateX(-50%);width:0;height:0;
-   border-left:5px solid transparent;border-right:5px solid transparent;
-   border-top:7px solid var(--signal)}
+   border-left:7px solid transparent;border-right:7px solid transparent;
+   border-top:10px solid var(--signal)}
+.ticks i.now{position:relative}
+.ticks i.now::after{content:'';position:absolute;top:0;bottom:0;left:50%;
+   transform:translateX(-50%);width:1px;z-index:2;
+   background:repeating-linear-gradient(to bottom,
+      var(--signal) 0 3px,transparent 3px 7px)}
 .ticks i.w{border-left:1px solid var(--rule)}
 .ticks i.w.end{border-right:1px solid var(--rule)}
 .bar{position:relative;z-index:1;background:transparent}
@@ -142,7 +153,8 @@ a.cell:hover{background:#E9E6DE}
   .find{width:100%;flex:1 1 220px}
   .meta{text-align:left}
   .hdr,.bar{grid-template-columns:1fr auto}
-  .hdr span:not(:first-child):not(:last-child),.run,.ticks{display:none}
+  .track{padding-top:0}
+  .hdr span:not(:first-child):not(:last-child),.run,.ticks,.marks{display:none}
   .dt{grid-column:2 / 3}
   .dt .x{display:none}
 }
@@ -189,7 +201,8 @@ a.cell:hover{background:#E9E6DE}
 
   <div class="sec"><span class="no">02</span><span class="nm">Assignments</span><span class="ln"></span>
     <span class="grp" role="group" aria-label="Year group"><button type="button" class="g on" data-g="ft" title="Full-time">ft</button><button type="button" class="g" data-g="pt" title="Part-time">pt</button></span></div>
-  <div>
+  <div class="track">
+    <div class="marks" aria-hidden="true"><i></i><i data-w="1"></i><i data-w="2"></i><i data-w="3"></i><i data-w="4"></i><i data-w="5"></i><i data-w="6"></i><i data-w="7"></i><i data-w="8"></i><i></i></div>
     <div class="hdr"><span>Assignment</span><span>01</span><span>02</span><span>03</span><span>04</span><span>05</span><span>06</span><span>07</span><span>08</span><span>Hand-in</span></div>
     <div class="rows">
       <div class="ticks" aria-hidden="true"><i></i><i class="w" data-w="1"></i><i class="w" data-w="2"></i><i class="w" data-w="3"></i><i class="w" data-w="4"></i><i class="w" data-w="5"></i><i class="w" data-w="6"></i><i class="w" data-w="7"></i><i class="w end" data-w="8"></i><i></i></div>
@@ -210,7 +223,7 @@ a.cell:hover{background:#E9E6DE}
   <div class="zones" aria-hidden="true"><i style="background:#000000"></i><i style="background:#151515"></i><i style="background:#2B2B2B"></i><i style="background:#454545"></i><i style="background:#5E5E5E"></i><i style="background:#777777"></i><i style="background:#949494"></i><i style="background:#B0B0B0"></i><i style="background:#CCCCCC"></i><i style="background:#E7E7E7"></i><i style="background:#FFFFFF"></i></div>
   <div class="zlab"><span>Zone 0 &mdash; no detail</span><span>Zone V &mdash; 18% grey</span><span>Zone X &mdash; paper</span></div>
 
-  <div class="foot"><span>Batuhan Keskiner</span><span>build 40 · 04.09.2026 04:53</span></div>
+  <div class="foot"><span>Batuhan Keskiner</span><span>build 43 · 04.09.2026 04:55</span></div>
 </div>
 <script>
 var q=document.getElementById('q'),no=document.getElementById('none'),
@@ -234,8 +247,9 @@ q.addEventListener('input',filt);
     var a=new Date(weeks[i][1]+'T00:00:00'), b=new Date(a);
     b.setDate(b.getDate()+7);
     if(t>=a&&t<b){
-      var el=document.querySelector('.ticks i[data-w="'+weeks[i][0]+'"]');
-      if(el){el.classList.add('now');el.title='This week';}
+      var sel='[data-w="'+weeks[i][0]+'"]';
+      [].forEach.call(document.querySelectorAll('.marks '+sel+',.ticks '+sel),
+        function(el){el.classList.add('now');el.title='This week';});
       break;
     }
   }
