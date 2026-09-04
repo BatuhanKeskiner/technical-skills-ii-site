@@ -67,9 +67,11 @@ a.cell:hover{background:#E9E6DE}
 .cell.on .k{color:var(--ink)}
 .cell .t{font-size:21px;letter-spacing:-.01em;line-height:1.15;color:var(--grey)}
 .cell.on .t{color:var(--ink)}
-.chip.open{align-self:flex-start}
-.asg{margin-top:auto;padding-top:10px;display:flex;flex-wrap:wrap;gap:5px;
-   justify-content:flex-end}
+/* The foot of the card: the door on the left, what the week hands out on the
+   right. Same line, same place on all eight, so both can be read straight
+   across the row without going back to the titles. */
+.base{margin-top:auto;padding-top:10px;display:flex;align-items:flex-end;gap:8px}
+.asg{margin-left:auto;display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end}
 .chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:2px 6px;
    border:1px solid var(--rule);color:var(--grey);white-space:nowrap}
 .chip.in{border-color:var(--signal);color:var(--signal)}
@@ -190,11 +192,11 @@ a.cell:hover{background:#E9E6DE}
 
   <div class="sec"><span class="no">01</span><span class="nm">Lectures</span><span class="ln"></span></div>
   <div class="wall">
-    <a class="cell on" href="01-introduction/index.html" data-f="week 01 introduction assignment #0 questionnaire"><span class="k">Week 01</span><span class="t">Introduction</span><span class="chip open">Open</span><span class="asg"><span class="chip">assignment #0</span></span></a>
-    <a class="cell on" href="02-composition-format/index.html" data-f="week 02 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week 02</span><span class="t">Composition & Format</span><span class="chip open">Open</span><span class="asg"><span class="chip">assignment #1</span></span></a>
-    <div class="cell" data-f="week 03 camera i assignment #2 pinhole"><span class="k">Week 03</span><span class="t">Camera I</span><span class="asg"><span class="chip">assignment #2</span></span></div>
-    <div class="cell" data-f="week 04 camera ii assignment #3 anti-self portrait"><span class="k">Week 04</span><span class="t">Camera II</span><span class="asg"><span class="chip">assignment #3</span></span></div>
-    <div class="cell" data-f="week 05 light i hand in #1 photogram assignment #4 remake"><span class="k">Week 05</span><span class="t">Light I</span><span class="asg"><span class="chip">assignment #4</span></span></div>
+    <a class="cell on" href="01-introduction/index.html" data-f="week 01 introduction assignment #0 questionnaire"><span class="k">Week 01</span><span class="t">Introduction</span><span class="base"><span class="chip open">Open</span><span class="asg"><span class="chip">assignment #0</span></span></span></a>
+    <a class="cell on" href="02-composition-format/index.html" data-f="week 02 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week 02</span><span class="t">Composition & Format</span><span class="base"><span class="chip open">Open</span><span class="asg"><span class="chip">assignment #1</span></span></span></a>
+    <div class="cell" data-f="week 03 camera i assignment #2 pinhole"><span class="k">Week 03</span><span class="t">Camera I</span><span class="base"><span class="asg"><span class="chip">assignment #2</span></span></span></div>
+    <div class="cell" data-f="week 04 camera ii assignment #3 anti-self portrait"><span class="k">Week 04</span><span class="t">Camera II</span><span class="base"><span class="asg"><span class="chip">assignment #3</span></span></span></div>
+    <div class="cell" data-f="week 05 light i hand in #1 photogram assignment #4 remake"><span class="k">Week 05</span><span class="t">Light I</span><span class="base"><span class="asg"><span class="chip">assignment #4</span></span></span></div>
     <div class="cell" data-f="week 06 light ii"><span class="k">Week 06</span><span class="t">Light II</span></div>
     <div class="cell" data-f="week 07 mid-term review hand in #2 pinhole"><span class="k">Week 07</span><span class="t">Mid-Term Review</span></div>
     <div class="cell" data-f="week 08 flash  continuous hand in #3 anti-self portrait hand in #4 remake"><span class="k">Week 08</span><span class="t">Flash & Continuous</span></div>
@@ -224,7 +226,7 @@ a.cell:hover{background:#E9E6DE}
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; no detail</span><span>Zone V &mdash; 18% grey</span><span>Zone X &mdash; paper</span></div>
 
-  <div class="foot"><span>Batuhan Keskiner</span><span>build 50 · 04.09.2026 05:04</span></div>
+  <div class="foot"><span>Batuhan Keskiner</span><span>build 52 · 04.09.2026 05:07</span></div>
 </div>
 <script>
 var q=document.getElementById('q'),no=document.getElementById('none'),
