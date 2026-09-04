@@ -56,7 +56,7 @@ h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
 
 .wall{display:grid;grid-template-columns:repeat(4,1fr);
    border-left:1px solid var(--rule);border-top:1px solid var(--rule)}
-.cell{background:#EEECE6;
+.cell{background:#EEECE6;min-height:158px;
    border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
    padding:13px 16px 14px;display:flex;flex-direction:column;gap:7px;
    text-decoration:none;color:inherit;transition:opacity .12s}
@@ -67,11 +67,9 @@ a.cell:hover{background:#E9E6DE}
 .cell.on .k{color:var(--ink)}
 .cell .t{font-size:21px;letter-spacing:-.01em;line-height:1.15;color:var(--grey)}
 .cell.on .t{color:var(--ink)}
-/* OPEN is the door; an assignment is what the week hands out. They are two
-   different statements, so they get two lines rather than sitting side by side
-   as if they were a set of the same thing. */
-.chips{display:flex;flex-direction:column;align-items:flex-start;gap:5px;
-   margin-top:1px}
+.chip.open{align-self:flex-start}
+.asg{margin-top:auto;padding-top:10px;display:flex;flex-wrap:wrap;gap:5px;
+   justify-content:flex-end}
 .chip{font-family:var(--mono);font-size:10px;letter-spacing:.1em;padding:2px 6px;
    border:1px solid var(--rule);color:var(--grey);white-space:nowrap}
 .chip.in{border-color:var(--signal);color:var(--signal)}
@@ -97,12 +95,12 @@ a.cell:hover{background:#E9E6DE}
 .track{position:relative;padding-top:17px}
 .marks{position:absolute;inset:0;pointer-events:none;z-index:2}
 .marks i{display:block;position:relative}
-.marks i.now::before{content:'';position:absolute;top:0;left:50%;
+.marks i.now::before{content:'';position:absolute;top:0;left:var(--d,50%);
    transform:translateX(-50%);width:0;height:0;
    border-left:7px solid transparent;border-right:7px solid transparent;
    border-top:10px solid var(--signal)}
 .ticks i.now{position:relative}
-.ticks i.now::after{content:'';position:absolute;top:0;bottom:0;left:50%;
+.ticks i.now::after{content:'';position:absolute;top:0;bottom:0;left:var(--d,50%);
    transform:translateX(-50%);width:1px;z-index:2;
    background:repeating-linear-gradient(to bottom,
       var(--signal) 0 3px,transparent 3px 7px)}
@@ -122,7 +120,8 @@ a.cell:hover{background:#E9E6DE}
 .bar .nm a{color:inherit;text-decoration:underline;text-underline-offset:3px;
    text-decoration-thickness:1px;text-decoration-color:var(--rule)}
 .bar .nm a:hover{color:var(--signal);text-decoration-color:var(--signal)}
-.run{height:13px;position:relative;align-self:center;background:var(--ink)}
+.run{height:13px;position:relative;align-self:center;
+   background:rgba(11,12,12,.30)}
 .run i{position:absolute;right:-1px;top:-3px;bottom:-3px;width:3px;
    background:var(--signal)}
 .dt{grid-column:10 / 11;font-family:var(--mono);font-size:11px;letter-spacing:.08em;
@@ -137,7 +136,9 @@ a.cell:hover{background:#E9E6DE}
    ornament, and it says what the subject is without a word of explanation. */
 .zones{display:flex;border:1px solid var(--ink);margin:44px auto 0;
    max-width:560px}
-.zones i{flex:1;height:34px;display:block}
+.zones i{flex:1;height:34px;display:flex;align-items:flex-end;
+   justify-content:center;padding-bottom:5px;font-family:var(--mono);
+   font-size:10px;letter-spacing:.1em;font-style:normal}
 .zlab{display:flex;justify-content:space-between;margin:6px auto 0;max-width:560px;
    font-family:var(--mono);font-size:10px;letter-spacing:.12em;
    text-transform:uppercase;color:var(--grey)}
@@ -189,11 +190,11 @@ a.cell:hover{background:#E9E6DE}
 
   <div class="sec"><span class="no">01</span><span class="nm">Lectures</span><span class="ln"></span></div>
   <div class="wall">
-    <a class="cell on" href="01-introduction/index.html" data-f="week 01 introduction assignment #0 questionnaire"><span class="k">Week 01</span><span class="t">Introduction</span><span class="chips"><span class="chip open">Open</span><span class="chip">assignment #0</span></span></a>
-    <a class="cell on" href="02-composition-format/index.html" data-f="week 02 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week 02</span><span class="t">Composition & Format</span><span class="chips"><span class="chip open">Open</span><span class="chip">assignment #1</span></span></a>
-    <div class="cell" data-f="week 03 camera i assignment #2 pinhole"><span class="k">Week 03</span><span class="t">Camera I</span><span class="chips"><span class="chip">assignment #2</span></span></div>
-    <div class="cell" data-f="week 04 camera ii assignment #3 anti-self portrait"><span class="k">Week 04</span><span class="t">Camera II</span><span class="chips"><span class="chip">assignment #3</span></span></div>
-    <div class="cell" data-f="week 05 light i hand in #1 photogram assignment #4 remake"><span class="k">Week 05</span><span class="t">Light I</span><span class="chips"><span class="chip">assignment #4</span></span></div>
+    <a class="cell on" href="01-introduction/index.html" data-f="week 01 introduction assignment #0 questionnaire"><span class="k">Week 01</span><span class="t">Introduction</span><span class="chip open">Open</span><span class="asg"><span class="chip">assignment #0</span></span></a>
+    <a class="cell on" href="02-composition-format/index.html" data-f="week 02 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week 02</span><span class="t">Composition & Format</span><span class="chip open">Open</span><span class="asg"><span class="chip">assignment #1</span></span></a>
+    <div class="cell" data-f="week 03 camera i assignment #2 pinhole"><span class="k">Week 03</span><span class="t">Camera I</span><span class="asg"><span class="chip">assignment #2</span></span></div>
+    <div class="cell" data-f="week 04 camera ii assignment #3 anti-self portrait"><span class="k">Week 04</span><span class="t">Camera II</span><span class="asg"><span class="chip">assignment #3</span></span></div>
+    <div class="cell" data-f="week 05 light i hand in #1 photogram assignment #4 remake"><span class="k">Week 05</span><span class="t">Light I</span><span class="asg"><span class="chip">assignment #4</span></span></div>
     <div class="cell" data-f="week 06 light ii"><span class="k">Week 06</span><span class="t">Light II</span></div>
     <div class="cell" data-f="week 07 mid-term review hand in #2 pinhole"><span class="k">Week 07</span><span class="t">Mid-Term Review</span></div>
     <div class="cell" data-f="week 08 flash  continuous hand in #3 anti-self portrait hand in #4 remake"><span class="k">Week 08</span><span class="t">Flash & Continuous</span></div>
@@ -220,10 +221,10 @@ a.cell:hover{background:#E9E6DE}
   </div>
   <p id="none">Nothing matches that</p>
 
-  <div class="zones" aria-hidden="true"><i style="background:#000000"></i><i style="background:#151515"></i><i style="background:#2B2B2B"></i><i style="background:#454545"></i><i style="background:#5E5E5E"></i><i style="background:#777777"></i><i style="background:#949494"></i><i style="background:#B0B0B0"></i><i style="background:#CCCCCC"></i><i style="background:#E7E7E7"></i><i style="background:#FFFFFF"></i></div>
-  <div class="zlab"><span>Zone 0</span><span>Zone X</span></div>
+  <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
+  <div class="zlab"><span>Zone 0 &mdash; no detail</span><span>Zone V &mdash; 18% grey</span><span>Zone X &mdash; paper</span></div>
 
-  <div class="foot"><span>Batuhan Keskiner</span><span>build 45 · 04.09.2026 04:58</span></div>
+  <div class="foot"><span>Batuhan Keskiner</span><span>build 50 · 04.09.2026 05:04</span></div>
 </div>
 <script>
 var q=document.getElementById('q'),no=document.getElementById('none'),
@@ -247,9 +248,18 @@ q.addEventListener('input',filt);
     var a=new Date(weeks[i][1]+'T00:00:00'), b=new Date(a);
     b.setDate(b.getDate()+7);
     if(t>=a&&t<b){
+      /* which seventh of the week today is - the middle of its own day */
+      var day=Math.round((t-a)/86400000),
+          at=((day+0.5)/7*100).toFixed(2)+'%',
+          name=['Monday','Tuesday','Wednesday','Thursday','Friday',
+                'Saturday','Sunday'][day];
       var sel='[data-w="'+weeks[i][0]+'"]';
       [].forEach.call(document.querySelectorAll('.marks '+sel+',.ticks '+sel),
-        function(el){el.classList.add('now');el.title='This week';});
+        function(el){
+          el.classList.add('now');
+          el.style.setProperty('--d',at);
+          el.title=name+', week '+weeks[i][0];
+        });
       break;
     }
   }
