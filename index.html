@@ -5,7 +5,7 @@
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="_shared/favicon.svg" type="image/svg+xml">
-<title>Technical Skills II — KABK BA Photography</title>
+<title>Technical Skills II — Royal Academy of Art</title>
 <meta name="description" content="Technical Skills II: the lectures, and the assignments running across them.">
 <link rel="stylesheet" href="_shared/tokens/fonts.css">
 <style>
@@ -23,13 +23,26 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
 
 /* The page's spine is 2px, a section boundary 1px, a row a hairline. Three
    weights, one job each - without the ladder the page goes flat. */
-.top{display:flex;justify-content:space-between;align-items:baseline;gap:32px;
+/* THE SCHOOL'S MARK BELONGS BESIDE THE TITLE, NOT BESIDE THE SEARCH BOX. It
+   sat in the right-hand group with the search, at the size of a favicon, which
+   read as a badge stuck on the furniture. It is the identity of the thing, so
+   it stands where identity stands - left of the name, at a size you can see -
+   and the name gains the line that says which school, which course, which
+   year, because a masthead that does not say those is a title. */
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;
      padding-bottom:12px;border-bottom:2px solid var(--ink);flex-wrap:wrap}
+.ident{display:flex;align-items:center;gap:22px;min-width:0}
+.names{min-width:0}
 h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
    letter-spacing:-.03em;line-height:1;margin:0;color:var(--ink)}
-.right{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}
-.mark{display:block;height:56px;width:auto;mix-blend-mode:multiply;
-   align-self:center}
+/* IT BREAKS AT THE DOTS OR NOT AT ALL. Three phrases separated by middots is
+   a line that reads as one thing; broken mid-phrase it reads as two. */
+.sub{margin:8px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+   text-transform:uppercase;color:var(--grey);line-height:1.5}
+.sub .p{white-space:nowrap}
+.right{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.mark{display:block;height:84px;width:auto;mix-blend-mode:multiply;
+   flex:0 0 auto}
 .find{display:flex;align-items:center;gap:9px;border:1px solid var(--ink);
    padding:0 11px;height:36px;width:290px;background:var(--paper)}
 .find input{flex:1;min-width:0;border:0;outline:0;background:transparent;height:34px;
@@ -53,6 +66,9 @@ h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
 .grp .g + .g{border-left:0}
 .grp .g.on{background:var(--ink);color:var(--paper)}
 
+.wall.dark{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.cell.tool .t{font-size:19px}
+.cell.tool .d{font-size:13px;line-height:1.45;color:var(--grey);margin-top:-2px}
 .wall{display:grid;grid-template-columns:repeat(4,1fr);
    border-left:1px solid var(--rule);border-top:1px solid var(--rule)}
 /* An unnamed week is quiet, not invisible. --rule is the hairline the grid is
@@ -245,6 +261,9 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
   .sheet{padding:4vh 20px 7vh}
   .wall{grid-template-columns:1fr}
   .top{gap:14px}
+  .ident{gap:14px}
+  .mark{height:58px}
+  .sub{font-size:10px;letter-spacing:.12em}
   .right{flex-direction:column;align-items:stretch;gap:11px;width:100%}
   .find{width:auto;flex:none}
   .sec{margin:26px 0 10px;flex-wrap:wrap}
@@ -255,10 +274,15 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 <div class="sheet">
 
   <div class="top">
-    <h1>Technical Skills II</h1>
-    <div class="right">
+    <div class="ident">
       <img class="mark" src="_shared/assets/kabk-logo.jpg"
-           alt="Royal Academy of Art, The Hague" width="59" height="56">
+           alt="Royal Academy of Art, The Hague" width="89" height="84">
+      <div class="names">
+        <h1>Technical Skills II</h1>
+        <p class="sub"><span class="p">Royal Academy of Art</span> · <span class="p">Bachelor Photography</span> · <span class="p">2026–2027</span></p>
+      </div>
+    </div>
+    <div class="right">
       <label class="find">
         <svg width="12" height="12" viewBox="0 0 13 13" fill="none" aria-hidden="true">
           <circle cx="5.4" cy="5.4" r="4.1" stroke="#5C605E" stroke-width="1.3"/>
@@ -272,7 +296,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 
   <div class="sec"><span class="no">01</span><span class="nm">Lectures</span><span class="ln"></span></div>
   <div class="wall">
-    <div class="cell wip" data-f="week #1 introduction assignment #0 questionnaire"><span class="k">Week #1</span><span class="t">Introduction</span><span class="base"><span class="state">In progress</span></span></div>
+    <div class="cell on" data-f="week #1 introduction assignment #0 questionnaire"><span class="k">Week #1</span><span class="t">Introduction</span><span class="base"><a class="open" href="01-introduction/index.html">Open</a><span class="state">Published</span></span></div>
     <div class="cell wip" data-f="week #2 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week #2</span><span class="t">Composition & Format</span><span class="base"><span class="state">In progress</span></span></div>
     <div class="cell" data-f="week #3 camera i assignment #2 pinhole"><span class="k">Week #3</span><span class="t">Camera I</span></div>
     <div class="cell" data-f="week #4 camera ii assignment #3 anti-self portrait"><span class="k">Week #4</span><span class="t">Camera II</span></div>
@@ -314,10 +338,31 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
       </div>
     </div>
   </div>
+  <div class="sec"><span class="no">03</span><span class="nm">Darkroom</span><span class="ln"></span></div>
+  <div class="wall dark">
+    <div class="cell on tool" data-f="test strip the enlarger s timer and its aperture, and what the paper does with them."><span class="k">Instrument</span><span class="t">Test strip</span><span class="d">The enlarger&rsquo;s timer and its aperture, and what the paper does with them.</span><span class="base"><a class="open" href="instruments/teststrip.html">Open</a><span class="state">Always open</span></span></div>
+    <div class="cell on tool" data-f="photogram objects on a sheet of paper, and how long each of them stays there."><span class="k">Instrument</span><span class="t">Photogram</span><span class="d">Objects on a sheet of paper, and how long each of them stays there.</span><span class="base"><a class="open" href="instruments/photogram.html">Open</a><span class="state">Always open</span></span></div>
+  </div>
+
+  <div class="sec"><span class="no">04</span><span class="nm">Camera &amp; light</span><span class="ln"></span></div>
+  <div class="wall dark">
+    <div class="cell on tool" data-f="light meter a sekonic l-308x. point it at a light and read the exposure off it."><span class="k">Instrument</span><span class="t">Light meter</span><span class="d">A Sekonic L-308X. Point it at a light and read the exposure off it.</span><span class="base"><a class="open" href="instruments/lightmeter.html">Open</a><span class="state">Always open</span></span></div>
+    <div class="cell on tool" data-f="the meter, part by part every button on the meter, and what the white dome is actually for."><span class="k">Instrument</span><span class="t">The meter, part by part</span><span class="d">Every button on the meter, and what the white dome is actually for.</span><span class="base"><a class="open" href="instruments/meterguide.html">Open</a><span class="state">Always open</span></span></div>
+    <div class="cell on tool" data-f="format, at true size 35 mm, 6   4.5 and 4   5, drawn at their real sizes to each other."><span class="k">Instrument</span><span class="t">Format, at true size</span><span class="d">35 mm, 6 &times; 4.5 and 4 &times; 5, drawn at their real sizes to each other.</span><span class="base"><a class="open" href="instruments/formats.html">Open</a><span class="state">Always open</span></span></div>
+  </div>
+
+  <div class="sec"><span class="no">05</span><span class="nm">Library</span><span class="ln"></span></div>
+  <div class="wall dark">
+    <div class="cell on tool" data-f="the camera ansel adams pinhole camera diffraction f-numbers depth of field hyperfocal distance angle of view / coverage shutter efficiency exposure formula incident vs reflected metering spot meters guide numbers lens formulas, bellows extension"><span class="k">Book</span><span class="t">The Camera</span><span class="d">Ansel Adams &middot; 1980</span><span class="base"><a class="open" href="library/adams-camera.html">Open</a><span class="state">12 topics indexed</span></span></div>
+    <div class="cell on tool" data-f="the negative ansel adams the exposure formula reciprocity effect the zones, and print values half zones and thirds filter and extension factors metering technique, five rules the exposure record form inverse square law flash exposure and guide numbers film speed"><span class="k">Book</span><span class="t">The Negative</span><span class="d">Ansel Adams &middot; 1981</span><span class="base"><a class="open" href="library/adams-negative.html">Open</a><span class="state">10 topics indexed</span></span></div>
+    <div class="cell on tool" data-f="the print ansel adams the paper&#x27;s exposure scale the paper&#x27;s characteristic curve paper grades brilliance is not contrast test strips reflection density reproduction ranges"><span class="k">Book</span><span class="t">The Print</span><span class="d">Ansel Adams &middot; 1983</span><span class="base"><a class="open" href="library/adams-print.html">Open</a><span class="state">7 topics indexed</span></span></div>
+    <div class="cell on tool" data-f="library index search books"><span class="k">All of them</span><span class="t">Look something up</span><span class="d">Every topic in every book, searched at once.</span><span class="base"><a class="open" href="library/index.html">Open</a><span class="state">Finding aid</span></span></div>
+  </div>
+
   <div class="srail" id="srail" hidden><span class="sgrip" id="sgrip"></span></div>
   <p id="none">Nothing matches that</p>
 
-  <div class="foot"><span>Batuhan Keskiner · KABK · BA Photography · 2026–27</span><span>build 109 · 05.09.2026 01:07</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 174 · 06.09.2026 19:08</span></div>
 
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; Black</span><span>Middle Grey</span><span>Zone X &mdash; White</span></div>

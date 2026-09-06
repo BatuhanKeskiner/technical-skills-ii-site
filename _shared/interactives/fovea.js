@@ -43,10 +43,27 @@ function mountFovea(fig) {
   });
   fDeg.addEventListener('input', () => { state.deg = +fDeg.value; view.render(); });
 
-  states(controls, {
-    label: 'Scan path', cls: 'span1', items: ['Keep', 'Clear'],
-    onChange: (i) => { if (i === 1) { state.path = []; } view.render(); },
-  });
+  /* CLEAR IS AN ACTION WEARING A STATE'S CLOTHES - it was one of two 'Scan
+     path' states, Keep and Clear. Pressing Clear emptied the path and then
+     stayed lit, so the control asserted a Clear mode the instrument does not
+     have, and pressing it again did nothing at all. It is one button now, and
+     it is dead while there is no path to clear. */
+  const scan = el('div', 'ctl span1');
+  scan.append(el('label', null, 'Scan path'));
+  const scanRow = el('div', 'states');
+  const bClear = el('button', 'st', 'Clear path');
+  bClear.type = 'button';
+  scanRow.append(bClear);
+  scan.append(scanRow);
+  controls.append(scan);
+  bClear.addEventListener('click', () => { state.path = []; refresh(); view.render(); });
+
+  function refresh() {
+    const dead = !state.path.length;
+    bClear.disabled = dead;
+    bClear.setAttribute('aria-disabled', String(dead));
+    bClear.classList.toggle('off', dead);
+  }
 
   const out = readout(fig, [
     { id: 'fix', key: 'Fixations' },
@@ -89,6 +106,7 @@ function mountFovea(fig) {
     if (x < 0 || x > 1 || y < 0 || y > 1) return;
     state.path.push({ x: state.x, y: state.y });
     if (state.path.length > 24) state.path.shift();
+    refresh();
     lookAt(x, y);
   });
   view.canvas.addEventListener('pointermove', (e) => {
@@ -220,6 +238,7 @@ function mountFovea(fig) {
     sync(P);
   }
 
+  refresh();
   return { render: view.render };
 }
 

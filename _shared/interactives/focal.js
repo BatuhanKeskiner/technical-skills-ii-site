@@ -51,7 +51,8 @@ function mountFocal(fig) {
     sync();
   }));
 
-  /* In fixed framing the distance is derived, so the slider follows. */
+  /* In fixed framing the distance is derived, so the slider follows - and it
+     is off, wearing the same .off every dead control on the site wears. */
   function sync() {
     if (state.mode === 1) {
       /* keep the subject at 70% of frame height */
@@ -61,10 +62,10 @@ function mountFocal(fig) {
       fDist.value = Math.max(+fDist.min, Math.min(+fDist.max, state.dist)).toFixed(1);
       fDist._sync();
       fDist.disabled = true;
-      fDist.closest('.ctl').style.opacity = 0.5;
+      fDist.closest('.ctl').classList.add('off');
     } else {
       fDist.disabled = false;
-      fDist.closest('.ctl').style.opacity = 1;
+      fDist.closest('.ctl').classList.remove('off');
       state.dist = +fDist.value;
     }
     compute();

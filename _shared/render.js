@@ -11,6 +11,11 @@ const DEMOS = {
   transform: { url: './interactives/transform.js', fn: 'mountTransform' },
   viewfinder: { url: './interactives/viewfinder.js', fn: 'mountViewfinder' },
   fovea: { url: './interactives/fovea.js', fn: 'mountFovea' },
+  teststrip: { url: './interactives/teststrip.js', fn: 'mountTestStrip' },
+  photogram: { url: './interactives/photogram.js', fn: 'mountPhotogram' },
+  lightmeter: { url: './interactives/lightmeter.js', fn: 'mountLightMeter' },
+  meterguide: { url: './interactives/meterguide.js', fn: 'mountMeterGuide' },
+  formats: { url: './interactives/formats.js', fn: 'mountFormats' },
 };
 
 /* A bare file name is the week's own assets/ folder. A name with a slash is

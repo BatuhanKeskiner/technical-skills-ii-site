@@ -77,3 +77,16 @@
   --wdth-normal:100; /* @kind font */
   --wdth-wide:112; /* @kind font */
 }
+
+/* The enlarger timer's own display. Only ever set on a canvas, only ever
+   digits — a seven-segment face has no letters to give and is not a typeface
+   the pages use. It is here because it belongs to the type system rather than
+   to one instrument, and because a canvas can only ask for a font the document
+   has already loaded. */
+@font-face{
+  font-family:'Seven Segment';
+  font-style:normal;
+  font-weight:400;
+  font-display:block;
+  src:url('../fonts/seven-segment.ttf') format('truetype');
+}

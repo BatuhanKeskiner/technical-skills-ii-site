@@ -36,23 +36,48 @@ function slider(controls, { label, min, max, step, value, unit, cls, decimals, f
   return input;
 }
 
-/* A named-state stepper. Calls onChange(index). */
-function states(controls, { label, items, onChange, cls }) {
+/* A named-state stepper. Calls onChange(index).
+
+   NOTHING IS LIVE THAT CANNOT BE USED. A state the instrument cannot go to
+   from where it is must not look pressable, and until now this could not
+   say so - every item was a live button whatever the instrument's state. So:
+     group.setDisabled(i, bool)   switches one item off (or on again): it is
+                                  disabled, aria-disabled, and wears .off
+     group.select(i)              moves the mark without firing onChange;
+                                  -1 marks nothing
+     disabled: [bool, ...]        the same, per item, at build time
+   A disabled item does not fire onChange and does not take the mark. Nor
+   does the item already marked: pressing the state you are in changes
+   nothing, so it is not a press. */
+function states(controls, { label, items, onChange, cls, disabled }) {
   const ctl = el('div', 'ctl ' + (cls || 'wide'));
   if (label) ctl.append(el('label', null, label));
   const group = el('div', 'states');
+  const mark = (i) => {
+    [...group.children].forEach((x, k) => x.setAttribute('aria-current', String(k === i)));
+    group.setAttribute('data-state', String(i));
+  };
   items.forEach((text, i) => {
     const b = el('button', null, '<span class="n">' + String(i + 1).padStart(2, '0') + '</span>' + text);
     b.type = 'button';
     b.setAttribute('aria-current', String(i === 0));
     b.addEventListener('click', () => {
-      [...group.children].forEach((x, k) => x.setAttribute('aria-current', String(k === i)));
-      group.setAttribute('data-state', i);
+      if (b.disabled || group.getAttribute('data-state') === String(i)) return;
+      mark(i);
       onChange(i);
     });
     group.append(b);
   });
   group.setAttribute('data-state', '0');
+  group.setDisabled = (i, off) => {
+    const b = group.children[i];
+    if (!b) return;
+    b.disabled = !!off;
+    b.setAttribute('aria-disabled', String(!!off));
+    b.classList.toggle('off', !!off);
+  };
+  group.select = mark;
+  if (disabled) disabled.forEach((off, i) => { if (off) group.setDisabled(i, true); });
   ctl.append(group);
   controls.append(ctl);
   return group;
@@ -100,14 +125,80 @@ function legend(stage, rows, corner = 'tr') {
 }
 
 /* Theatre-mode button. */
+/* A CONTROL SAYS WHAT IT WILL DO NEXT, not what it did last. This one said
+   'Full screen' while already full screen, which is a button describing the
+   state it is in rather than the act it offers. */
+/* KEYS LOOK LIKE KEYS. A row that reads "S slide" is a sentence with a stray
+   letter in it; the same row with the S in a little square is a keyboard
+   instruction, and nobody has to be told which. Draws one cap and returns how
+   much room it took, so a row can be laid out by adding them up. */
+function keyCap(ctx, x, y, glyph, ink, dim) {
+  ctx.save();
+  ctx.font = '600 10px "IBM Plex Mono", ui-monospace, monospace';
+  const tw = ctx.measureText(glyph).width;
+  const w = Math.max(16, tw + 10), h = 15;
+  ctx.strokeStyle = dim; ctx.lineWidth = 1;
+  ctx.strokeRect(Math.round(x) + 0.5, Math.round(y - h / 2) + 0.5, w, h);
+  ctx.fillStyle = ink;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(glyph, x + w / 2, y + 0.5);
+  ctx.restore();
+  return w;
+}
+
+/* A WHOLE ROW OF THEM, centred on x. Pass pairs: [['S','slide'], ...] where a
+   pair may carry more than one key for the same act. */
+function keyRow(ctx, x, y, groups, ink, dim) {
+  ctx.save();
+  ctx.font = '10px "IBM Plex Mono", ui-monospace, monospace';
+  let total = 0;
+  groups.forEach((g, i) => {
+    g[0].forEach((k) => {
+      ctx.font = '600 10px "IBM Plex Mono", ui-monospace, monospace';
+      total += Math.max(16, ctx.measureText(k).width + 10) + 3;
+    });
+    ctx.font = '10px "IBM Plex Mono", ui-monospace, monospace';
+    total += 5 + ctx.measureText(g[1]).width + (i < groups.length - 1 ? 20 : 0);
+  });
+  /* AND IT STAYS ON THE CANVAS. The row is centred under the thing it drives,
+     and the thing it drives can be hard against an edge - the test strip's
+     timer stands in the bottom-left corner, so the first cap and its word ran
+     off the left of the picture and the row began mid-letter. A row of keys
+     that is cut off is worse than no row: it reads as damage. */
+  const scale = (ctx.getTransform && ctx.getTransform().a) || 1;
+  const W = ctx.canvas.width / (scale || 1);
+  let cx = x - total / 2;
+  if (cx < 8) cx = 8;
+  if (cx + total > W - 8) cx = Math.max(8, W - 8 - total);
+  groups.forEach((g, i) => {
+    g[0].forEach((k) => { cx += keyCap(ctx, cx, y, k, ink, dim) + 3; });
+    cx += 2;
+    ctx.font = '10px "IBM Plex Mono", ui-monospace, monospace';
+    ctx.fillStyle = dim; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText(g[1], cx, y + 0.5);
+    cx += ctx.measureText(g[1]).width + (i < groups.length - 1 ? 20 : 0);
+  });
+  ctx.restore();
+}
+
 function fsButton(stage, fig) {
   const b = el('button', 'fs', 'Full screen');
   b.type = 'button';
+  const say = () => {
+    const on = document.fullscreenElement === fig || fig.classList.contains('fs-on');
+    b.textContent = on ? 'Leave full screen' : 'Full screen';
+    b.setAttribute('aria-pressed', String(on));
+  };
   b.addEventListener('click', () => {
-    if (document.fullscreenElement) { document.exitFullscreen(); return; }
-    if (fig.requestFullscreen) fig.requestFullscreen().catch(() => fig.classList.toggle('fs-on'));
-    else fig.classList.toggle('fs-on');
+    if (document.fullscreenElement) { document.exitFullscreen().then(say, say); return; }
+    if (fig.requestFullscreen) {
+      fig.requestFullscreen().then(say, () => { fig.classList.toggle('fs-on'); say(); });
+    } else { fig.classList.toggle('fs-on'); say(); }
   });
+  /* the browser can leave full screen without being asked - Escape, or another
+     window taking it - so the word is set from the truth, not from the press */
+  document.addEventListener('fullscreenchange', say);
+  say();
   stage.append(b);
   return b;
 }

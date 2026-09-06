@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Negative — Library</title>
+<link rel="icon" href="../_shared/favicon.svg" type="image/svg+xml">
+<meta name="description" content="What records the image. Light, film, exposure and the Zone System, then filters, natural and artificial light, and the whole of film development.">
+<link rel="stylesheet" href="../_shared/styles.css">
+<style>
+  :root{--paper:#F7F5F0;--ink:#1A1C1B;--grey:#4A4A48;--faint:#6B6B6B;
+        --rule:#C9CAC4;--live:#146B3A;
+        --mono:'IBM Plex Mono',ui-monospace,monospace;
+        --display:'Archivo','Instrument Sans',system-ui,sans-serif}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font-family:'Instrument Sans',system-ui,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:4vh 32px 9vh}
+  .back{display:inline-block;font-family:var(--mono);font-size:11px;
+        letter-spacing:.16em;text-transform:uppercase;text-decoration:none;
+        color:var(--faint);margin-bottom:26px}
+  .back:hover{color:var(--ink)}
+  h1{font-family:var(--display);font-size:clamp(30px,5vw,46px);font-weight:500;
+     letter-spacing:-.03em;margin:0 0 6px}
+  h2{font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+     text-transform:uppercase;color:var(--faint);font-weight:400;
+     margin:0 0 14px;padding-bottom:9px;border-bottom:1px solid var(--rule)}
+  .by{font-family:var(--mono);font-size:12px;color:var(--faint);margin:0 0 16px}
+  p.lead{font-size:17px;line-height:1.55;margin:0 0 26px;max-width:64ch}
+  .weeks{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
+  .wk{font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+      text-transform:uppercase;padding:8px 13px;background:transparent;
+      border:1.5px solid var(--rule);color:var(--grey);cursor:pointer}
+  .wk:hover{border-color:var(--live);color:var(--ink)}
+  .wk.on{background:var(--live);border-color:var(--live);color:#fff}
+  .find{display:block;margin:0 0 20px}
+  .find input{width:100%;max-width:560px;font-family:var(--mono);font-size:15px;
+    padding:13px 15px;border:1.5px solid var(--rule);background:#fff;
+    color:var(--ink);border-radius:0}
+  .find input:focus{outline:none;border-color:var(--live)}
+  .hits{display:flex;flex-direction:column;gap:0;margin-bottom:30px;
+        border-top:1px solid var(--rule)}
+  /* A class that sets display beats the browser's own [hidden] rule, so
+     emptying the search box left the results standing under an empty field.
+     Anything given a display here has to say what hidden means as well. */
+  .hits[hidden],.shelf[hidden],.none[hidden]{display:none}
+  .hit{display:block;padding:13px 2px;border-bottom:1px solid var(--rule);
+       text-decoration:none;color:inherit}
+  .hit:hover{background:#EEECE6}
+  .hk{display:block;font-size:17px;letter-spacing:-.01em}
+  .hb{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+      text-transform:uppercase;color:var(--live);margin-top:3px}
+  .hs{display:block;font-size:14px;line-height:1.5;color:var(--grey);
+      margin-top:5px;max-width:78ch}
+  .none{font-size:15px;color:var(--faint)}
+  .shelf{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+         border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+  .bk{display:flex;flex-direction:column;gap:7px;padding:18px 20px 20px;
+      border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);
+      text-decoration:none;color:inherit;background:#EEECE6}
+  .bk:hover{background:#fff}
+  .bt{font-size:23px;letter-spacing:-.02em;line-height:1.1}
+  .ba{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+      text-transform:uppercase;color:var(--faint)}
+  .bb{font-size:14px;line-height:1.5;color:var(--grey)}
+  .bn{margin-top:auto;padding-top:9px;font-family:var(--mono);font-size:10px;
+      letter-spacing:.1em;text-transform:uppercase;color:var(--live)}
+  .pph{margin:44px 0 0;font-size:12px;font-family:var(--mono);letter-spacing:.16em;
+       text-transform:uppercase;color:var(--faint)}
+  .pps{border-top:1px solid var(--rule)}
+  .pp{display:block;padding:16px 0 17px;border-bottom:1px solid var(--rule);
+      text-decoration:none;color:inherit}
+  .pp:hover .ppt{text-decoration:underline}
+  .ppt{display:block;font-size:19px;letter-spacing:-.015em;line-height:1.2}
+  .ppa{display:block;margin-top:5px;font-family:var(--mono);font-size:10px;
+       letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+  .ppw{display:block;margin-top:8px;font-size:14px;line-height:1.55;
+       color:var(--grey);max-width:78ch}
+  .why,.acc{border-left:2.5px solid var(--live);padding:2px 0 2px 16px;
+            margin:0 0 30px;max-width:70ch}
+  .why p,.acc p{margin:4px 0 0;font-size:15px;line-height:1.55;color:var(--grey)}
+  .wk2{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+      text-transform:uppercase;color:var(--live)}
+  .rf{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 30px}
+  .rf a,.rf span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+      text-transform:uppercase;padding:7px 12px;border:1px solid var(--rule);
+      color:var(--grey);text-decoration:none}
+  .rf a:hover{border-color:var(--live);color:var(--live)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-bottom:34px}
+  @media (max-width:820px){.cols{grid-template-columns:1fr;gap:30px}}
+  .chs{list-style:none;margin:0;padding:0;counter-reset:none}
+  .chs li{display:grid;grid-template-columns:26px 1fr auto;gap:8px;
+          align-items:baseline;padding:7px 0;border-bottom:1px solid var(--rule)}
+  .cn{font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .ct{font-size:15px}
+  .cp{font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .co{grid-column:2/4;font-size:13px;line-height:1.45;color:var(--grey);
+      margin-top:2px}
+  .tip{font-size:13px;line-height:1.5;color:var(--faint);margin:14px 0 0}
+  .tp{margin:0}
+  .tp dt{display:flex;justify-content:space-between;gap:14px;align-items:baseline;
+         font-size:15px;padding-top:11px;border-top:1px solid var(--rule)}
+  .tp dt:first-child{border-top:0;padding-top:0}
+  .tpp{font-family:var(--mono);font-size:11px;color:var(--live);white-space:nowrap}
+  .tp dd{margin:4px 0 11px;font-size:13.5px;line-height:1.5;color:var(--grey)}
+  .foot{margin-top:44px;padding-top:12px;border-top:1px solid var(--rule);
+        display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+        font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+        text-transform:uppercase;color:var(--faint)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">&larr; Library</a>
+  <h1>The Negative</h1>
+  <p class="by">Ansel Adams · The Ansel Adams Photography Series, Book 2 · Little, Brown and Company, 1981 · 2004 printing</p>
+  <p class="lead">What records the image. Light, film, exposure and the Zone System, then filters, natural and artificial light, and the whole of film development.</p>
+  <div class="why"><span class="wk2">Why it is here</span><p>The Zone System is here, and so are the two things we use most: the Exposure Formula and the reciprocity table.</p></div>
+  <span class="wk2">Read for</span><div class="rf"><a href="index.html#w2">Week 2 &middot; Composition &amp; Format</a><a href="index.html#w3">Week 3 &middot; Camera I</a><a href="index.html#w4">Week 4 &middot; Camera II</a><a href="index.html#w5">Week 5 &middot; Light I</a><a href="index.html#w6">Week 6 &middot; Light II</a><a href="index.html#w8">Week 8 &middot; Flash &amp; Continuous</a></div>
+
+  <div class="cols">
+    <section>
+      <h2>Contents</h2>
+      <ol class="chs"><li><span class="cn">1</span><span class="ct">Visualization and Image Values</span><span class="cp">p.1</span></li><li><span class="cn">2</span><span class="ct">Light and Film</span><span class="cp">p.9</span></li><li><span class="cn">3</span><span class="ct">Exposure</span><span class="cp">p.29</span><span class="co">reciprocity, filter and extension factors, meter technique</span></li><li><span class="cn">4</span><span class="ct">The Zone System</span><span class="cp">p.47</span><span class="co">the Exposure Formula, pp.66-67</span></li><li><span class="cn">5</span><span class="ct">Filters and Pre-exposure</span><span class="cp">p.99</span></li><li><span class="cn">6</span><span class="ct">Natural Light Photography</span><span class="cp">p.125</span></li><li><span class="cn">7</span><span class="ct">Artificial Light Photography</span><span class="cp">p.155</span><span class="co">flash, guide numbers, inverse square</span></li><li><span class="cn">8</span><span class="ct">Darkroom Processes</span><span class="cp">p.181</span></li><li><span class="cn">9</span><span class="ct">Darkroom Equipment and Procedures</span><span class="cp">p.195</span></li><li><span class="cn">10</span><span class="ct">Value Control in Processing</span><span class="cp">p.219</span></li></ol>
+      <p class="tip">Page numbers are the printed book's. This PDF's front
+         matter runs 16 pages, so a printed page <em>n</em> is PDF page
+         <em>n&nbsp;+&nbsp;16</em> — measured, not assumed.</p>
+    </section>
+    <section>
+      <h2>Look up</h2>
+      <dl class="tp"><dt>the Exposure Formula<span class="tpp">p.66-67</span></dt><dd>key stop = the square root of the ASA. At the key stop, the shutter that puts a surface on Zone V is one over its luminance in candles per square foot. ASA 125 gives f/11. The exposure triangle in one sentence.</dd><dt>reciprocity effect<span class="tpp">p.41-42, table p.45</span></dt><dd>E = I x T holds in the middle and fails at the ends. Metered 1 second wants 2; metered 10 wants 50; metered 100 wants 1200 - twenty minutes. Adams refuses the word failure.</dd><dt>the zones, and print values<span class="tpp">p.64-68</span></dt><dd>Zone V is the metered mid-grey and every zone is one stop from it. Value 0 is the maximum black the paper can give and Value X is the paper base; those two are the scale&#x27;s key reference values.</dd><dt>half zones and thirds<span class="tpp">p.68</span></dt><dd>A zone is a RANGE of greys and the named value is its midpoint - so rounding to a name is what a name means. Halves and thirds are available when precision is wanted.</dd><dt>filter and extension factors<span class="tpp">p.41</span></dt><dd>They multiply. They do not add. The commonest error in this area.</dd><dt>metering technique, five rules<span class="tpp">p.45</span></dt><dd></dd><dt>the Exposure Record form<span class="tpp">p.67</span></dt><dd>Write down what you metered and what you placed it on. The print is the only place you find out whether you were right.</dd><dt>inverse square law<span class="tpp">p.29, 172-174</span></dt><dd></dd><dt>flash exposure and guide numbers<span class="tpp">p.169-171</span></dt><dd></dd><dt>film speed<span class="tpp">p.18-19</span></dt><dd></dd></dl>
+    </section>
+  </div>
+
+  <div class="acc"><span class="wk2">Where the copy is</span>
+    <p><strong>In the studio.</strong> Ask Batu for the file, or read it on the studio machine. It is not published here.</p></div>
+
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 174 · 06.09.2026 19:08</span></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 740" width="980" height="740"
+     role="img" aria-label="A developing tray seen from above, with developer in it">
+  <!-- A DEVELOPING TRAY, STRAIGHT DOWN, LANDSCAPE.
+       Landscape because a sheet goes in flat and the long edge runs across the
+       bench; a portrait tray would have the student turning their head to read
+       a print that is the right way up in the real world.
+
+       The developer is almost clear. It was drawn as a warm bath first and that
+       was wrong: the print is judged THROUGH this liquid, and a bath strong
+       enough to look convincing warms every tone in the tray, so the student
+       reads the chemistry instead of their own exposure. What actually tells
+       you there is liquid in a tray is not its colour - it is the meniscus at
+       the wall and the one reflection running across the surface.
+
+       Layer order matters and is the whole reason this is drawn rather than
+       photographed:  floor + ribs -> bath -> THE SHEET -> surface.
+       The paper goes UNDER the reflection, so it lies in the tray instead of
+       sitting on a picture of one. -->
+  <defs>
+    <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0"   stop-color="#A9A9A5"/>
+      <stop offset="0.5" stop-color="#9C9C98"/>
+      <stop offset="1"   stop-color="#8C8C87"/>
+    </linearGradient>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#83837E"/>
+      <stop offset="1"   stop-color="#94948F"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0.15" y1="0" x2="0.9" y2="1">
+      <stop offset="0"    stop-color="#93938E"/>
+      <stop offset="0.55" stop-color="#8B8B86"/>
+      <stop offset="1"    stop-color="#82827D"/>
+    </linearGradient>
+    <!-- barely there: enough to warm the grey, not enough to warm a print -->
+    <linearGradient id="dev" x1="0.1" y1="0" x2="0.95" y2="1">
+      <stop offset="0" stop-color="#C6BA9E" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#B3A78C" stop-opacity="0.22"/>
+    </linearGradient>
+    <!-- the reflection: one band across the surface, off the near-left source -->
+    <linearGradient id="sheen" x1="0.05" y1="0" x2="0.75" y2="0.9">
+      <stop offset="0"    stop-color="#FFFFFF" stop-opacity="0.34"/>
+      <stop offset="0.22" stop-color="#FFFFFF" stop-opacity="0.10"/>
+      <stop offset="0.46" stop-color="#FFFFFF" stop-opacity="0.02"/>
+      <stop offset="1"    stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- the body, with the spout cut into its own outline -->
+  <path d="M44 28 h848 a24 24 0 0 1 24 24 v576
+           l-58 60 a24 24 0 0 1 -17 7 H44
+           a24 24 0 0 1 -24 -24 V52 a24 24 0 0 1 24 -24 z"
+        fill="url(#rim)" stroke="#6E6E69" stroke-width="2"/>
+
+  <!-- the sloped wall: a lip, not a frame -->
+  <path d="M64 56 h808 a12 12 0 0 1 12 12 v552
+           l-44 46 a12 12 0 0 1 -9 4 H64
+           a12 12 0 0 1 -12 -12 V68 a12 12 0 0 1 12 -12 z"
+        fill="url(#wall)" stroke="#767670" stroke-width="1.5"/>
+
+  <!-- the floor -->
+  <path d="M82 74 h772 a10 10 0 0 1 10 10 v528
+           l-36 38 a10 10 0 0 1 -8 4 H82
+           a10 10 0 0 1 -10 -10 V84 a10 10 0 0 1 10 -10 z"
+        fill="url(#floor)" stroke="#7B7B75" stroke-width="1.5"/>
+
+  <!-- the ribs, along the long axis, so a sheet does not lie flat and the
+       developer can get underneath it -->
+  <g stroke-linecap="round">
+    <g fill="none" stroke="#A2A29D" stroke-width="9" opacity="0.75">
+      <path d="M110 168 H842"/><path d="M110 268 H842"/><path d="M110 368 H842"/>
+      <path d="M110 468 H842"/><path d="M110 568 H830"/>
+    </g>
+    <g fill="none" stroke="#70706B" stroke-width="2" opacity="0.45">
+      <path d="M110 173 H842"/><path d="M110 273 H842"/><path d="M110 373 H842"/>
+      <path d="M110 473 H842"/><path d="M110 573 H830"/>
+    </g>
+  </g>
+
+  <!-- THE DEVELOPER — the tint, almost nothing -->
+  <path id="bath"
+        d="M78 70 h780 a10 10 0 0 1 10 10 v536
+           l-38 40 a10 10 0 0 1 -8 4 H78
+           a10 10 0 0 1 -10 -10 V80 a10 10 0 0 1 10 -10 z"
+        fill="url(#dev)"/>
+
+  <!-- where it climbs the wall: this line does most of the work -->
+  <path d="M78 70 h780 a10 10 0 0 1 10 10 v536
+           l-38 40 a10 10 0 0 1 -8 4 H78
+           a10 10 0 0 1 -10 -10 V80 a10 10 0 0 1 10 -10 z"
+        fill="none" stroke="#E4DCC8" stroke-width="3.5" opacity="0.8"/>
+
+  <!-- === THE SHEET GOES HERE, between the bath and the sheen === -->
+
+  <!-- the surface: one reflection, nothing else -->
+  <path id="sheen-face"
+        d="M78 70 h780 a10 10 0 0 1 10 10 v536
+           l-38 40 a10 10 0 0 1 -8 4 H78
+           a10 10 0 0 1 -10 -10 V80 a10 10 0 0 1 10 -10 z"
+        fill="url(#sheen)"/>
+
+  <!-- the finger notches moulded into the near wall -->
+  <g fill="#7C7C76" opacity="0.7">
+    <rect x="420" y="686" width="26" height="8" rx="4"/>
+    <rect x="462" y="686" width="26" height="8" rx="4"/>
+    <rect x="504" y="686" width="26" height="8" rx="4"/>
+  </g>
+
+  <!-- the light the rim catches -->
+  <path d="M56 42 h796" stroke="#C0C0BC" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+  <path d="M34 64 V612" stroke="#C0C0BC" stroke-width="5" stroke-linecap="round" opacity="0.38"/>
+</svg>

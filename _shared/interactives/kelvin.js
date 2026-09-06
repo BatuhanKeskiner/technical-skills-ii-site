@@ -26,7 +26,7 @@ function mountKelvin(fig) {
   const fCam = slider(controls, { label: 'Camera white balance', min: 1800, max: 9000, step: 50, value: state.cam, unit: ' K', cls: 'digital' });
   const fTint = slider(controls, { label: 'Tint · green ↔ magenta', min: -60, max: 60, step: 1, value: state.tint, cls: 'cinema' });
 
-  states(controls, {
+  const group = states(controls, {
     label: 'Presets', cls: 'span1', items: PRESETS.map((x) => x.name),
     onChange: (i) => {
       const q = PRESETS[i];
@@ -35,7 +35,6 @@ function mountKelvin(fig) {
       pull(); view.render();
     },
   });
-  const group = controls.querySelector('.states');
 
   legend(stage, [
     { c: p.film, label: 'Light', val: 'K' },
@@ -61,6 +60,15 @@ function mountKelvin(fig) {
     state.cam = +fCam.value;
     state.tint = +fTint.value;
     compute();
+    /* THE MARK IS ON THE PRESET YOU ARE STANDING ON, not the one you pressed
+       last. It used to stay lit on Tungsten room however far the sliders had
+       since been dragged from it - a control asserting a state the instrument
+       was no longer in, and a press that would have done something dressed as
+       one that would not. It follows the sliders now: the preset whose three
+       values are on them is marked and, being already applied, is not
+       pressable; off all of them, nothing is marked and all four are live. */
+    group.select(PRESETS.findIndex((q) =>
+      q.light === state.light && q.cam === state.cam && q.tint === state.tint));
   }
 
   /* mireds are the perceptually even unit for a white-balance error */

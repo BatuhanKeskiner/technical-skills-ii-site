@@ -20,7 +20,7 @@ window.TS2_WEEKS = [
     slug: '01-introduction',
     title: 'Introduction',
     desc: 'Who is teaching, what the course is, the five modules, the learning goals and the assessment criteria.',
-    status: 'wip',
+    status: 'done',
   },
   {
     n: '2',

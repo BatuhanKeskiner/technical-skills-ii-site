@@ -695,6 +695,27 @@ figure.demo .compare{aspect-ratio:16 / 9}
 .paper .states button,figure.slide .states button{border-left-color:var(--rule);color:var(--text-muted)}
 .paper .states button[aria-current=true],figure.slide .states button[aria-current=true]{background:var(--ink-900);color:var(--paper-100)}
 
+/* NOTHING IS LIVE THAT CANNOT BE USED. An instrument switches a control off
+   in every state where pressing it would do nothing (`disabled`,
+   `aria-disabled`, and this class), and this is what off looks like. Still
+   legible - it says what it WOULD do, and a control you cannot read is not
+   softened, it is gone - so no opacity: the text is a step dimmer and the
+   cell sinks a step below the bar. Measured on the bar's own ground the live
+   #8C908D is 5.8:1 and the off #7E8280 is 4.8:1; in its sunk cell, 5.1:1.
+   The cursor must not promise a press the button cannot take. */
+figure.demo button.off{cursor:default;pointer-events:none}
+figure.demo .states button.off{background:var(--stage);color:var(--ink-400)}
+figure.demo .states button.off .n{color:var(--ink-400)}
+/* The state you are already in is not a press either: nothing would change. */
+.states button[aria-current=true]{cursor:default}
+/* A slider with no say in the present mode - the distance in fixed framing -
+   is off as a whole: label, value and thumb. The thumb keeps a grey, not a
+   blank, because where it stands is still information. */
+figure.demo .ctl.off label,figure.demo .ctl.off label .val{color:var(--ink-400)}
+figure.demo input[type=range]:disabled{cursor:default;pointer-events:none}
+figure.demo input[type=range]:disabled::-webkit-slider-thumb{background:var(--ink-400)}
+figure.demo input[type=range]:disabled::-moz-range-thumb{background:var(--ink-400)}
+
 /* ============================================================
    READOUT — richer information cells
    ============================================================ */
@@ -969,6 +990,11 @@ figure.demo.light .states button .n{color:var(--on-paper-quiet)}
 figure.demo.light .states button:hover{color:var(--ink-900)}
 figure.demo.light .states button[aria-current=true]{background:var(--ink-900);color:var(--paper-100)}
 figure.demo.light .states button[aria-current=true] .n{color:var(--marker-500)}
+/* and off, on the light bar: a shade below the sheet, in the grey the editor's
+   own dead controls wear - #6C7066 on #F7F6F2 is 4.7:1. */
+figure.demo.light .states button.off{background:var(--paper-100);color:#6C7066}
+figure.demo.light .states button.off .n{color:#6C7066}
+figure.demo.light .ctl.off label,figure.demo.light .ctl.off label .val{color:#6C7066}
 /* chips were left on console colours over a white bar — invisible.
    Same treatment as .states: hairline at rest, full inversion when on. */
 figure.demo.light .chip{color:var(--text-primary);border-color:var(--rule-hairline);background:transparent}
@@ -8065,3 +8091,155 @@ figure.demo[data-size=page] .stage{min-height:68vh}
 /* An instrument that opens out of the page says so where the room can see it,
    not only in the panel. */
 figure.demo[data-fullscreen] .stage{position:relative}
+
+/* ============================================================
+   TEST STRIP — the two numbers you are holding
+   ------------------------------------------------------------
+   An instrument's controls are read across a room. The aperture
+   is one of the two things being changed, and it was set at the
+   same 11px as every label around it: present, and not readable
+   from where the class is sitting.
+   ============================================================ */
+figure.demo .ctl.ts-ap label{margin-bottom:2px}
+figure.demo .ts-step{display:flex;align-items:center;gap:10px}
+figure.demo .ts-step .st{min-width:34px;padding:2px 0;font-size:15px;line-height:1.2}
+figure.demo .ts-big{font-family:var(--font-mono);font-size:20px;letter-spacing:.04em;
+  color:var(--stage-fg);min-width:3.4em;text-align:center;
+  font-variant-numeric:tabular-nums}
+figure.demo.light .ts-big{color:var(--ink-900)}
+
+/* The test strip's four actions. The grid's own span classes are written
+   .ctl.span3 and this row is a .states, not a .ctl, so asking it for span3 did
+   nothing at all and four buttons stayed crushed into a quarter of the bar. */
+figure.demo .ts-acts{grid-column:span 3;min-width:0}
+figure.demo .ts-acts .st{flex:1 1 0;min-width:0;white-space:nowrap;padding-left:4px;padding-right:4px}
+@media (max-width:900px){ figure.demo .ts-acts{grid-column:1/-1} }
+
+/* ============================================================
+   TEST STRIP — the instrument's own name plate
+   In full screen the page's heading is gone and nothing on
+   screen says what the thing is.
+   ============================================================ */
+figure.demo .ts-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+  padding:11px 18px 10px;background:var(--stage-2);
+  border-bottom:1px solid var(--stage-rule);order:-1;flex:0 0 auto}
+figure.demo .ts-name{font-family:var(--font-display);font-size:16px;
+  letter-spacing:-.01em;color:var(--stage-fg)}
+figure.demo .ts-sub{font-family:var(--font-mono);font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* ============================================================
+   LIGHT METER — a part, not only a page
+   It stands alone and it sits inside other instruments, so it
+   carries its own layout and asks nothing of its host.
+   ============================================================ */
+figure.demo .lm{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%}
+figure.demo .lm-face{width:100%;max-width:min(100%,300px);aspect-ratio:539/925}
+figure.demo .lm-face canvas{width:100%;height:100%;display:block}
+figure.demo .lm-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  justify-content:center}
+figure.demo .lm-step{display:flex;align-items:center;gap:7px}
+figure.demo .lm-k{font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted)}
+figure.demo .lm-v{font-family:var(--font-mono);font-size:16px;color:var(--stage-fg);
+  min-width:3.2em;text-align:center;font-variant-numeric:tabular-nums}
+figure.demo .lm-bar .st{min-width:30px;padding:2px 0;font-size:14px;line-height:1.2}
+figure.demo .lm-mode{min-width:88px}
+figure.demo .lm-stage{display:flex;align-items:center;justify-content:center}
+figure.demo .lm-wrap{width:100%;display:flex;justify-content:center;padding:14px 0}
+figure.demo.light .lm-v{color:var(--ink-900)}
+
+/* ============================================================
+   THE METER GUIDE — a picture you can press, beside the words
+   ============================================================ */
+figure.demo .mg-stage{padding:0}
+figure.demo .mg-row{display:flex;gap:0;height:100%;align-items:stretch}
+figure.demo .mg-pic{flex:0 0 38%;min-width:200px;display:flex;position:relative}
+figure.demo .mg-pic canvas{width:100%;height:100%;display:block}
+figure.demo .mg-panel{flex:1 1 auto;overflow-y:auto;padding:22px 26px 26px;
+  border-left:1px solid rgba(255,255,255,.10)}
+figure.demo .mg-t{display:flex;align-items:center;gap:11px;
+  font-size:19px;letter-spacing:-.01em;color:var(--stage-fg);margin-bottom:4px}
+figure.demo .mg-n{display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:50%;background:#FFD600;color:#141414;
+  font-family:var(--font-mono);font-size:14px;flex:0 0 auto}
+figure.demo .mg-lead{margin:0 0 12px;font-family:var(--font-mono);font-size:11px;
+  letter-spacing:.1em;text-transform:uppercase;color:rgba(255,214,0,.85)}
+/* MEASURED, NOT ASSUMED. --stage-dim resolves to rgb(26,28,27) here, which is
+   1.16:1 against the stage's own rgb(8,10,9) - text that is present and cannot
+   be read. These are set to real values and checked: 12.4:1 for the body,
+   7.6:1 for the quieter lines. */
+figure.demo .mg-b{margin:0 0 11px;font-size:14.5px;line-height:1.55;
+  color:#BEC0BC;max-width:62ch}
+figure.demo .mg-range{display:flex;flex-wrap:wrap;gap:8px 22px;margin:18px 0 12px;
+  padding-top:14px;border-top:1px solid rgba(255,255,255,.10)}
+figure.demo .mg-rr{display:flex;flex-direction:column;gap:2px}
+figure.demo .mg-rk{font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;color:#9A9C98}
+figure.demo .mg-rv{font-family:var(--font-mono);font-size:13px;color:var(--stage-fg)}
+figure.demo .mg-note{margin:0;font-size:13px;line-height:1.5;color:#9A9C98;
+  max-width:62ch}
+@media (max-width:760px){
+  figure.demo .mg-row{flex-direction:column}
+  figure.demo .mg-pic{flex:0 0 300px}
+  figure.demo .mg-panel{border-left:0;border-top:1px solid rgba(255,255,255,.10)}
+}
+
+/* the sound switch sits beside Full screen, one step in from it */
+figure.demo .fs.snd{right:auto;left:0;border-left:0;border-right:1px solid var(--stage-rule-2)}
+
+/* the sound switch and its level, one strip in the stage's top-left corner */
+figure.demo .sndbar{position:absolute;top:0;left:0;z-index:2;display:flex;
+  align-items:stretch}
+figure.demo .sndbar .fs.snd{position:static;border-left:0;
+  border-right:1px solid var(--stage-rule-2)}
+figure.demo .sndlv{display:flex;align-items:flex-end;gap:2px;
+  background:rgba(8,10,9,.82);border:1px solid var(--stage-rule-2);
+  border-top:0;border-left:0;padding:5px 7px}
+figure.demo .sndm{width:5px;padding:0;border:0;border-radius:0;cursor:pointer;
+  background:rgba(255,255,255,.22);transition:background .1s}
+figure.demo .sndm:nth-child(1){height:6px}
+figure.demo .sndm:nth-child(2){height:9px}
+figure.demo .sndm:nth-child(3){height:12px}
+figure.demo .sndm:nth-child(4){height:15px}
+figure.demo .sndm.on{background:var(--signal-500)}
+figure.demo .sndm.off{cursor:default;background:rgba(255,255,255,.10)}
+figure.demo .sndm:not(.off):hover{background:rgba(255,255,255,.55)}
+figure.demo .sndm:focus-visible{outline:2px solid var(--signal-500);outline-offset:1px}
+figure.demo .sndstep{background:rgba(8,10,9,.82);border:1px solid var(--stage-rule-2);
+  border-top:0;border-left:0;color:var(--stage-fg);font-family:var(--font-mono);
+  font-size:12px;line-height:1;padding:0 8px;cursor:pointer;border-radius:0}
+figure.demo .sndstep:not(.off):hover{background:var(--signal-500);color:var(--on-signal)}
+figure.demo .sndstep.off{cursor:default;color:var(--stage-rule-2)}
+figure.demo .sndstep:focus-visible{outline:2px solid var(--signal-500);outline-offset:-3px}
+
+/* KEEP OR DISCARD, UNDER THE PRINT. Not in the control bar - the question is
+   asked once, when a developed strip is lying there, so it arrives with the
+   sheet and leaves with it. Placed from the sheet's own measured box by the
+   instrument, hence the bare left/top; the pair is centred on that point. */
+figure.demo .ts-pick{position:absolute;z-index:2;display:flex;gap:8px;
+  transform:translateX(-50%)}
+/* AND IT MUST BE ABLE TO GO AWAY. The browser hides [hidden] with display:none
+   at one class of specificity; the rule above sets display:flex at two, so the
+   pair stayed on screen through the whole exposure, sitting over the timer. */
+figure.demo .ts-pick[hidden]{display:none}
+figure.demo .ts-pick .pk{display:flex;align-items:center;gap:7px;
+  appearance:none;border-radius:0;cursor:pointer;padding:7px 11px;
+  background:var(--paper-100);border:1px solid var(--ink-900);
+  color:var(--ink-900);font-family:var(--font-mono);font-size:9px;
+  letter-spacing:.14em;text-transform:uppercase;line-height:1;
+  transition:var(--transition-control)}
+figure.demo .ts-pick .pk kbd{display:inline-flex;align-items:center;
+  justify-content:center;min-width:16px;height:15px;padding:0 3px;
+  border:1px solid var(--ink-400);border-radius:0;
+  font-family:var(--font-mono);font-size:10px;font-weight:600;line-height:1;
+  letter-spacing:0;text-transform:none;color:var(--ink-900)}
+figure.demo .ts-pick .pk:hover{background:var(--ink-900);color:var(--paper-100)}
+figure.demo .ts-pick .pk:hover kbd{border-color:var(--paper-100);
+  color:var(--paper-100)}
+figure.demo .ts-pick .pk:focus-visible{outline:2px solid var(--signal-500);
+  outline-offset:2px}
+figure.demo .ts-pick .pk.off{cursor:default;background:transparent;
+  border-color:var(--ink-400);color:var(--ink-400)}
+figure.demo .ts-pick .pk.off kbd{border-color:var(--ink-300);color:var(--ink-400)}
+figure.demo .ts-pick .pk.off:hover{background:transparent;color:var(--ink-400)}
