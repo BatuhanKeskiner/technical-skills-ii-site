@@ -507,8 +507,8 @@ function mountLightDiagram(fig) {
      tone below is read from it rather than fixed here. */
   /* AND IT CAN GO DARK AGAIN. The ground is a choice, kept in this browser:
      D swaps it, the palette is read again, and every tone follows. */
-  let light = true;
-  try { if (localStorage.getItem(LD_KEY + ':ground') === 'dark') light = false; } catch (e) { /* private */ }
+  let light = false;                 /* dark first (Batu, 08-09); a viewer's choice is kept */
+  try { if (localStorage.getItem(LD_KEY + ':ground') === 'light') light = true; } catch (e) { /* private */ }
   fig.classList.add('ld');
   fig.classList.toggle('light', light);
   let p = palette(fig);
