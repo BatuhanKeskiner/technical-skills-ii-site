@@ -68,16 +68,27 @@
            a10 10 0 0 1 -10 -10 V84 a10 10 0 0 1 10 -10 z"
         fill="url(#floor)" stroke="#7B7B75" stroke-width="1.5"/>
 
-  <!-- the ribs, along the long axis, so a sheet does not lie flat and the
-       developer can get underneath it -->
+  <!-- THE RIBS, from the photograph of a real tray Batu sent.
+
+       They are not broad ridges and they are not five hair lines either. On
+       the tray in front of him they are FOUR thin raised beads across the
+       floor, and what is wide is the CHANNEL between them - which is the part
+       that holds the developer, and the part he was calling the groove. So:
+       four beads, evenly spaced, each read as a highlight with its own shadow
+       under it, and five wide channels of bare floor between and around them.
+
+       Wrong twice on the way here. First they were nine wide in a hundred and
+       too faint to see, which he called thin; then they were made thirty-two
+       and forty-six wide, which he called too many - because widening a rib
+       narrows the channel, and it was the channel he wanted. -->
   <g stroke-linecap="round">
-    <g fill="none" stroke="#A2A29D" stroke-width="9" opacity="0.75">
-      <path d="M110 168 H842"/><path d="M110 268 H842"/><path d="M110 368 H842"/>
-      <path d="M110 468 H842"/><path d="M110 568 H830"/>
+    <g fill="none" stroke="#C6C6C1" stroke-width="11" opacity="0.9">
+      <path d="M110 188 H842"/><path d="M110 302 H842"/>
+      <path d="M110 416 H840"/><path d="M110 530 H834"/>
     </g>
-    <g fill="none" stroke="#70706B" stroke-width="2" opacity="0.45">
-      <path d="M110 173 H842"/><path d="M110 273 H842"/><path d="M110 373 H842"/>
-      <path d="M110 473 H842"/><path d="M110 573 H830"/>
+    <g fill="none" stroke="#5A5A55" stroke-width="5" opacity="0.5">
+      <path d="M110 196 H842"/><path d="M110 310 H842"/>
+      <path d="M110 424 H840"/><path d="M110 538 H834"/>
     </g>
   </g>
 

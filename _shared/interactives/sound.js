@@ -61,24 +61,72 @@ function enlargerSound() {
      after the thing it was announcing. */
   const clips = { close: [], open: [] };
   const last = { close: -1, open: -1 };
-  let looked = false;
-  function findClips() {
-    if (looked) return;
-    looked = true;
-    const c = wake();
-    if (!c) { looked = false; return; }        /* try again once sound is on */
+  const bytes = { close: [], open: [] };     /* downloaded, not yet decoded */
+  const waiting = { close: [], open: [] };   /* a press that arrived too early */
+
+  /* THE FIRST PRESS HAD NO RELAY IN IT. The files were not even asked for
+     until the first sound was wanted, and fetching and decoding six of them
+     takes longer than the gap between switching sound on and pressing Expose -
+     so the first click fell through to the synthesised stand-in, which is nine
+     milliseconds of quiet noise and reads as silence.
+
+     They are fetched the moment the instrument is built, whether sound is on
+     or not: 144 kB, once, and it means the recording is there before anybody
+     can ask for it. Decoding needs an AudioContext, which needs a press, so
+     that part waits - and a press that lands in the few milliseconds before
+     the decode finishes is HELD and answered when it does, rather than
+     answered with the wrong sound. */
+  let fetched = false;
+  function prefetch() {
+    if (fetched) return;
+    fetched = true;
     ['close', 'open'].forEach((slot) => {
       [1, 2, 3].forEach((n) => {
-        ['wav', 'mp3', 'm4a'].forEach((ext) => {
-          fetch('../_shared/interactives/art/relay-' + slot + '-' + n + '.' + ext)
-            .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject()))
-            .then((b) => c.decodeAudioData(b))
-            .then((buf) => { clips[slot].push(buf); })
-            .catch(() => { /* that one is not there; the others still are */ });
-        });
+        fetch('../_shared/interactives/art/relay-' + slot + '-' + n + '.wav')
+          .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject()))
+          .then((b) => { bytes[slot].push(b); decode(); })
+          .catch(() => { /* that one is not there; the others still are */ });
       });
     });
   }
+
+  /* IN FLIGHT COUNTS AS PRESENT. The first fix asked whether any bytes were
+     still waiting to be decoded - but decoding is kicked off from inside
+     wake(), which play() calls on its own first line, so by the time play
+     looked the queue had just been emptied and the decodes were in the air.
+     It concluded the recording would never come and rang the stand-in. What
+     matters is whether one is on its way, which is this counter. */
+  let decoding = 0;
+
+  /* A PRESS THAT ARRIVED TOO EARLY, ANSWERED WHEN IT CAN BE. Held presses are
+     let go when whatever they were waiting for turns up - the recording, or a
+     context that is actually running - and dropped if that took so long the
+     sound would arrive after the thing it was announcing. */
+  function drain(slot) {
+    const held = waiting[slot].splice(0, waiting[slot].length);
+    held.forEach((h) => {
+      if (performance.now() - h.at < 400) play(slot, h.level);
+    });
+  }
+  function decode() {
+    const c = ctx;
+    if (!c) return;                       /* no context yet: wait for one */
+    ['close', 'open'].forEach((slot) => {
+      const pending = bytes[slot].splice(0, bytes[slot].length);
+      pending.forEach((b) => {
+        decoding += 1;
+        c.decodeAudioData(b.slice(0))
+          .then((buf) => {
+            decoding -= 1;
+            clips[slot].push(buf);
+            drain(slot);
+          })
+          .catch(() => { decoding -= 1; /* unreadable; the synth stands in */ });
+      });
+    });
+  }
+
+  function findClips() { prefetch(); decode(); }
 
   /* NEVER THE SAME ONE TWICE RUNNING. A relay does not sound identical from
      one switching to the next, and three recordings played at random do - one
@@ -91,8 +139,23 @@ function enlargerSound() {
      let go - and that difference is information. */
   function play(slot, level) {
     const c = wake();
+    if (!c) return false;
+    if (c.state !== 'running') {
+      waiting[slot].push({ at: performance.now(), level: level });
+      return true;
+    }
     const bank = clips[slot];
-    if (!c || !bank.length) return false;
+    if (!bank.length) {
+      /* HOLD IT RATHER THAN ANSWER IT WRONGLY. If the recording is on its way,
+         the press waits for it - a relay forty milliseconds late is still a
+         relay, and the stand-in is not. */
+      if (bytes[slot].length || decoding > 0 || !fetched) {
+        waiting[slot].push({ at: performance.now(), level: level });
+        decode();
+        return true;
+      }
+      return false;
+    }
     let i = Math.floor(Math.random() * bank.length);
     if (bank.length > 1 && i === last[slot]) i = (i + 1) % bank.length;
     last[slot] = i;
@@ -107,8 +170,21 @@ function enlargerSound() {
     if (!on) return null;
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
-    if (!ctx) { try { ctx = new AC(); } catch (e) { return null; } }
-    if (ctx.state === 'suspended') ctx.resume();
+    if (!ctx) {
+      try { ctx = new AC(); } catch (e) { return null; }
+      decode();                      /* whatever arrived before there was one */
+    }
+    /* AND A SUSPENDED CONTEXT IS NOT A RUNNING ONE. resume() is a promise: a
+       sound started before it settles is started into a clock that is not
+       moving, and it does not come out. This is the case Batu kept hitting -
+       when sound is already on from a previous visit, the FIRST gesture of the
+       whole page is the exposure itself, so the context is created and resumed
+       on that very press and the relay was played into it a millisecond too
+       early. Turning sound on by hand hid the fault, because that press
+       created the context and by the exposure it was long running. */
+    if (ctx.state !== 'running') {
+      ctx.resume().then(() => { drain('close'); drain('open'); }, () => {});
+    }
     return ctx;
   }
 
@@ -181,6 +257,8 @@ function enlargerSound() {
       if (!on && ctx) { try { ctx.close(); } catch (e) { /* already gone */ } ctx = null; }
     },
   };
+  /* asked for at once, so the first press has a relay in it */
+  prefetch();
   return api;
 }
 

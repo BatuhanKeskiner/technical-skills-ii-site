@@ -109,6 +109,14 @@ figcaption{margin-left:auto;margin-right:auto}
 .zoom label{font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--stage-muted);white-space:nowrap;min-width:74px}
 .zoom label .val{color:var(--stage-fg);letter-spacing:.04em}
 .zoom input[type=range]{flex:1 1 auto;height:18px}
+/* the same slider in the top row, beside the corner buttons (the light diagram) */
+.zoom.top{left:auto;bottom:auto;top:0;width:auto;height:26px;padding:0 10px;background:rgba(8,10,9,.82);border:1px solid var(--stage-rule-2);border-top:0;gap:10px}
+.zoom.top label{margin:0;min-width:72px;flex:0 0 auto;font-size:9px}
+/* a short bar and a small thumb, clear of the value it follows */
+.zoom.top input[type=range]{flex:0 0 84px;width:84px;height:16px}
+.zoom.top input[type=range]::-webkit-slider-thumb{width:8px;height:8px;margin-top:-4px}
+.zoom.top input[type=range]::-moz-range-thumb{width:8px;height:8px}
+figure.demo.light .zoom.top{background:rgba(255,255,255,.86);border-color:var(--ink-900)}
 @media print{ .zoom{display:none} }
 .peek{position:absolute;top:0;left:0;z-index:2;display:none;background:rgba(8,10,9,.94);border:1px solid var(--stage-rule-2);border-top:0;border-left:0;padding:10px;max-width:300px}
 .peek.on{display:block}
@@ -154,6 +162,37 @@ input[type=range][hidden]{display:none}
 .readout .v.two{white-space:normal;height:2.6em;overflow:hidden}
 .readout .v.c{color:var(--c,var(--stage-fg))}
 @media (max-width:620px){ .readout.four > div{flex:1 1 50%} }
+
+/* ---------- memo row: a box free text is typed into (kit's noteRow) ---------- */
+figure.demo .readout.memo > div,body.pages .step.active figure.demo .readout.memo > div{min-height:0;padding:7px 18px 7px}
+figure.demo .readout.memo .k{margin-bottom:3px}
+figure.demo .readout.memo textarea.v,body.pages .step.active figure.demo .readout.memo textarea.v,body.present .step.active figure.demo .readout.memo textarea.v,figure.demo:fullscreen .readout.memo textarea.v,figure.demo.fs-on .readout.memo textarea.v{display:block;width:100%;box-sizing:border-box;resize:none;background:transparent;border:0;border-left:2px solid var(--stage-rule-2);padding:2px 0 2px 10px;font-family:var(--font-mono);font-size:13px;line-height:1.4;height:auto;color:var(--stage-fg);white-space:pre-wrap;overflow:auto;letter-spacing:0}
+figure.demo .readout.memo textarea.v:focus{outline:0;border-left-color:var(--signal-500)}
+figure.demo .readout.memo textarea.v::placeholder{color:var(--stage-faint)}
+figure.demo.light .readout.memo textarea.v,body.pages .step.active figure.demo.light .readout.memo textarea.v,body.present .step.active figure.demo.light .readout.memo textarea.v{color:var(--ink-900);border-left-color:var(--ink-300)}
+figure.demo.light .readout.memo textarea.v::placeholder{color:var(--on-paper-quiet)}
+@media print{ figure.demo .readout.memo textarea.v{border-left-color:#999} }
+/* the light diagram's extra notes hang under its set-up sheet, on the stage */
+.stage .readout.memo.sheet{position:absolute;z-index:2;background:transparent;border:0;width:300px}
+.stage .readout.memo.sheet > div{border:0;padding:0}
+.stage .readout.memo.sheet .k{margin-bottom:6px}
+@media print{ .stage .readout.memo.sheet{display:none} }
+/* the post-it's words, typed on the paper itself */
+figure.demo .ld-postedit{position:absolute;z-index:2;box-sizing:border-box;margin:0;border:0;outline:0;background:transparent;resize:none;overflow:hidden;font-family:var(--font-mono);line-height:1.25;letter-spacing:0;white-space:pre-wrap;transform-origin:50% 50%;pointer-events:none}
+figure.demo .ld-postedit:focus{outline:1px dashed var(--signal-500);outline-offset:-1px}
+/* the post-it's words, typed in the light diagram's cell over the rows */
+figure.demo .ctl{position:relative}
+figure.demo .ctl .readout.memo.post{position:absolute;left:0;right:0;top:24px;border:0;background:transparent;z-index:1}
+figure.demo .ctl .readout.memo.post > div{border:0;padding:0}
+figure.demo .ctl .readout.memo.post .k{display:none}
+/* the palette: two rows of twelve squares to press, the chosen one ringed */
+figure.demo .ld-pal{display:grid;grid-template-columns:repeat(12,18px);gap:3px;align-content:start}
+figure.demo .ld-pal .sw{width:18px;height:18px;padding:0;margin:0;border:1px solid var(--stage-rule-2);background:transparent;cursor:pointer;appearance:none;-webkit-appearance:none}
+figure.demo .ld-pal .sw.none{background:linear-gradient(135deg,transparent 45%,var(--stage-muted) 45%,var(--stage-muted) 55%,transparent 55%)}
+figure.demo .ld-pal .sw[aria-pressed=true]{outline:2px solid var(--signal-500);outline-offset:1px}
+figure.demo.light .ld-pal .sw{border-color:var(--ink-300)}
+/* the colour swatch beside a gel's or a tint's name */
+figure.demo .ld-swatch{display:inline-block;width:9px;height:9px;margin-left:5px;vertical-align:-1px;border:1px solid var(--stage-rule-2)}
 
 /* ---------- chips: system Tag on a dark ground ---------- */
 .chips{display:flex;flex-wrap:wrap;gap:5px}
@@ -8082,11 +8121,58 @@ figure.demo[data-size=l]{--w:min(var(--figw),100vw - 48px,230vh - 900px)}
 /* Edge to edge: out of the text column and across the page box. */
 figure.demo[data-size=bleed]{--w:calc(100% + 8vw);margin-left:-4vw;max-width:none}
 
-/* Its own page: everything the page has, top to bottom. Nothing else is
-   expected to sit beside it, so it takes the height too. */
-figure.demo[data-size=page]{--w:calc(100% + 8vw);margin-left:-4vw;max-width:none;
-  min-height:72vh}
-figure.demo[data-size=page] .stage{min-height:68vh}
+/* Its own page: everything the page has, top to bottom.
+   THE min-height PAIR THAT USED TO BE HERE WAS DEAD. `figure.demo[data-size=page]`
+   is two classes and an element; four rules in Pages mode are four and six
+   classes deep and every one of them sets min-height:0 - :1298, :1351, :4933,
+   :4934. So the instruction was written, read by nobody, and the page looked
+   as though the size did nothing. It did nothing.
+   And the height was never the place to ask. The figure already fills the row
+   it is in; the space is spent ABOVE it, on a page title sized for a page of
+   text and on a second row holding one line. So this asks there instead. */
+figure.demo[data-size=page]{--w:calc(100% + 8vw);margin-left:-4vw;max-width:none}
+
+/* A PAGE THAT IS ONE INSTRUMENT IS NOT A PAGE OF TEXT.
+   The title keeps its weight and loses its air, the rows close up, and any
+   row that is NOT the instrument stops growing - a caption or a note is worth
+   its own height and not a share of what is left. About 150px back. */
+body.pages .step.active.arranged:has(figure.demo[data-size=page]){--pg-row-gap:1.2vh}
+body.pages .step.active.arranged:has(figure.demo[data-size=page]) > .pg-title{
+  padding-bottom:.5vh;margin-bottom:.8vh}
+body.pages .step.active.arranged:has(figure.demo[data-size=page])
+  .pg-rows > .pg-row:not(:has(figure.demo[data-size=page])){flex:0 0 auto;min-height:0}
+/* AND THE 76px HELD AT THE FOOT OF EVERY PAGE. It is there so a paragraph
+   does not end on the footer rule; an instrument has its own border and needs
+   no such courtesy, and 76px is a fifth of what the stage had. */
+body.pages .step.active.arranged:has(figure.demo[data-size=page]) .pg-rows{
+  padding-bottom:12px}
+
+/* ---- the control strip pays for what it uses ----
+   It is a four-column grid at a fixed height, so an instrument showing two
+   controls was charged for four columns and the full 136px. The columns fit
+   their contents now, and the pad scales with the strip instead of being the
+   one fixed thing in it - it was 96px whether the picture was on a laptop or
+   across a wall, which is the wrong way round: the thing a hand has to hit is
+   the thing that should grow. */
+/* ONE ROW, AND IT FITS ITS CONTENTS. `repeat(auto-fit, minmax(150px, auto))`
+   read as one column and stacked three controls vertically - the strip went to
+   three rows and took a quarter of the instrument. A grid whose tracks size to
+   content is a flex row; say so. IG-01 6: at 1184 the strip is one row, and if
+   it wraps it has too much in it. */
+/* THE GAP HAS A CEILING. A plain 4vw is 58 pixels on a laptop and 77 on the
+   projector, so the wider the screen the more of the strip is nothing - and
+   on the projector the gaps alone pushed kelvin's fourth control onto a
+   second row (IG-01 06) while the controls themselves had room to spare. */
+figure.demo .controls{display:flex;flex-wrap:wrap;align-items:flex-start;
+  justify-content:flex-start;column-gap:clamp(22px,4vw,54px);row-gap:1vh}
+figure.demo .controls > .ctl{flex:0 1 auto;min-width:150px}
+figure.demo .controls > .ctl.wide{flex:1 1 100%}
+figure.demo .controls > .ctl.span2,figure.demo .controls > .ctl.span3{flex:1 1 320px}
+/* AND SO DOES THE PAD. At 11vh it is 119 pixels on the projector, which made
+   transform's strip 166 - forty over the ceiling IG-01 06 sets, and enough to
+   take the stage under its 70%. A pad is a diagram of four keys; it is legible
+   at a hundred pixels and it does not need to grow with the room. */
+figure.demo .controls .pad{width:clamp(76px,9vh,112px);height:clamp(76px,9vh,112px)}
 
 /* An instrument that opens out of the page says so where the room can see it,
    not only in the panel. */
@@ -8121,12 +8207,84 @@ figure.demo .ts-acts .st{flex:1 1 0;min-width:0;white-space:nowrap;padding-left:
    screen says what the thing is.
    ============================================================ */
 figure.demo .ts-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
-  padding:11px 18px 10px;background:var(--stage-2);
+  padding:9px 18px 9px;background:var(--stage-2);
   border-bottom:1px solid var(--stage-rule);order:-1;flex:0 0 auto}
-figure.demo .ts-name{font-family:var(--font-display);font-size:16px;
-  letter-spacing:-.01em;color:var(--stage-fg)}
+/* THE SAME FACE THE PAGE'S OWN TITLE IS SET IN. The bar said the instrument's
+   name in Archivo, the body face, while the heading three lines above it was
+   Instrument Sans - two different letters for one name, on one screen. And
+   bigger: in full screen the page heading is gone and this is the only thing
+   telling a room what it is looking at. */
+/* A BIGGER NAME IN A BAR THE SAME HEIGHT. Setting it at 26px took the bar
+   from 45 to 60 pixels, and the stage pays for every pixel a bar takes: dof,
+   focal, kelvin and transform all dropped under the 70% the guideline asks
+   for. The line box is the fix, not the type size - a title does not need a
+   line and a half of leading when it is one line long. */
+figure.demo .ts-name{font-family:var(--font-title);
+  font-size:clamp(19px,2.6vh,26px);font-weight:500;line-height:1.05;
+  letter-spacing:-.015em;color:var(--stage-fg)}
 figure.demo .ts-sub{font-family:var(--font-mono);font-size:10px;
   letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+/* the same plate on a light figure - the light diagram is drawn on paper */
+figure.demo.light .ts-head{background:var(--paper-000);border-bottom-color:var(--ink-900)}
+figure.demo.light .ts-name{color:var(--ink-900)}
+/* the ground switch stands beside Full screen; its right edge is set by the kit */
+.fs.gnd{right:auto;border-right:1px solid var(--stage-rule-2)}
+figure.demo.light .fs.gnd{border-right-color:var(--ink-900)}
+/* the light diagram's paper is white, and full screen shows no dark corners
+   round a letterboxed canvas: the figure's ground follows its palette */
+figure.demo.ld.light{--k-stage:#FFFFFF}
+/* THE LIGHT DIAGRAM CREATOR TAKES THE WHOLE PAGE. It is a bench with a room, a
+   tray and a sheet, not a picture with a strip, so its own page is full
+   width and its stage is as tall as the window allows. Batu, 08-09. */
+body.pages .wrap:has(figure.demo.ld){max-width:none;padding-left:0;padding-right:0}
+body.pages .wrap:has(figure.demo.ld) > :not(.step){padding-left:24px;padding-right:24px}
+body.pages .wrap:has(figure.demo.ld) .step{padding-left:0;padding-right:0}
+figure.demo.ld{border-left:0;border-right:0}
+/* the view bar: a row of the same shapes, top right of the stage */
+figure.demo.ld .viewbar{position:absolute;top:0;right:0;z-index:3;display:flex;align-items:stretch;gap:0}
+figure.demo.ld .viewbar .fs,figure.demo.ld .viewbar .zoom.top{position:static;height:26px;box-sizing:border-box;border-left:0}
+figure.demo.ld .viewbar .fs{border-right:1px solid var(--stage-rule-2)}
+figure.demo.ld .viewbar .fs:last-child{border-right:0}
+figure.demo.ld .viewbar .fs.off{color:var(--ink-400);cursor:default;pointer-events:none}
+/* only the room switch shows a pressed state; Light mode and Leave full screen say what they do next and stay quiet */
+figure.demo.ld .viewbar .fs.roomedit[aria-pressed=true]{background:var(--signal-500);color:var(--on-signal);border-color:var(--signal-500)}
+figure.demo.ld.light .viewbar .fs{border-right-color:var(--ink-900)}
+figure.demo.ld .ld-acts .states button{text-align:center;padding:9px 10px;letter-spacing:.14em}
+/* the diagram's row sits on the cell's floor, level with the selection cell's last row (Batu, 08-09: alt tarafa yasla) */
+figure.demo.ld .ld-acts{display:flex;flex-direction:column;align-self:stretch}
+figure.demo.ld .ld-acts .states{margin-top:auto}
+/* full screen: the strip runs the whole width, like the stage above it */
+figure.demo.ld:fullscreen .controls,figure.demo.ld.fs-on .controls{width:100%}
+figure.demo.ld .stage{aspect-ratio:auto;height:max(560px,calc(100vh - 250px))}
+figure.demo.ld .stage canvas{width:100%;height:100%}
+figure.demo.light:fullscreen,figure.demo.light.fs-on{background:var(--k-stage)}
+figure.demo.light:fullscreen::backdrop{background:var(--k-stage,#FFFFFF)}
+/* the light diagram's selection cell: one block per kind of thing, chips
+   for choices, steppers for ladders, the palette in a row; two columns
+   wide and one height in every state */
+figure.demo .ld-cell{min-height:150px}
+figure.demo .ld-slot{min-height:32px;display:flex;align-items:center}
+figure.demo .ld-slot input[type=range]{flex:1 1 auto;max-width:360px}
+figure.demo .ld-line{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+figure.demo .ld-row{display:flex;align-items:center;gap:6px;margin-top:7px;min-width:0}
+figure.demo .ld-k{font-family:var(--font-mono);font-size:8px;letter-spacing:.14em;color:var(--stage-muted);width:52px;flex:0 0 auto}
+figure.demo.light .ld-k{color:var(--text-muted)}
+figure.demo .ld-row .chips{gap:4px}
+figure.demo .ld-row .chip{padding:4px 8px;font-size:8px;letter-spacing:.12em}
+figure.demo .ld-stepper{margin-top:0}
+figure.demo .ld-stepper .st{min-width:22px;width:22px;font-size:9px;padding:0;line-height:2}
+figure.demo .ld-stepper.big .st{min-width:30px;width:30px;font-size:12px;line-height:2.1}
+figure.demo .ld-stepper.big .ts-big{min-width:70px;text-align:center}
+figure.demo .ld-v{font-family:var(--font-mono);font-size:11px;min-width:58px;text-align:center;color:var(--stage-fg)}
+figure.demo.light .ld-v{color:var(--ink-900)}
+figure.demo .ld-blk{margin-top:2px}
+figure.demo .ld-pal{display:flex;grid-template-columns:none;gap:3px;margin-top:9px;flex-wrap:wrap}
+/* the view bar's words change; their boxes do not, so the bar never shifts */
+figure.demo.ld .viewbar .fs.gridsize{min-width:112px;text-align:center}
+figure.demo.ld .viewbar .fs.roomedit{min-width:170px;text-align:center}
+figure.demo.ld .viewbar .fs.cones{min-width:104px;text-align:center}
+figure.demo.ld .viewbar .fs.gnd{min-width:96px;text-align:center}
+figure.demo.ld .viewbar .fs:not(.gnd):not(.cones):not(.gridsize):not(.roomedit){min-width:150px;text-align:center}
 
 /* ============================================================
    LIGHT METER — a part, not only a page
@@ -8135,6 +8293,18 @@ figure.demo .ts-sub{font-family:var(--font-mono);font-size:10px;
    ============================================================ */
 figure.demo .lm{display:flex;flex-direction:column;align-items:center;gap:10px;width:100%}
 figure.demo .lm-face{width:100%;max-width:min(100%,300px);aspect-ratio:539/925}
+/* beside the scene the meter has half the room, so it is sized to fit the
+   stage rather than to fill the width - it was running off the bottom */
+/* the canvas is wider than the meter: MEASURE reads to the right of its
+   button, and the button is at the body's own edge */
+/* AND IT IS A HAND TOOL, NOT THE SUBJECT. At 367 it stood as tall as the
+   studio beside it and read as the thing being taught; the light is. Down a
+   fifth, so it sits next to the scene the size it would sit in a hand. */
+figure.demo .lm-wrap .lm-face{max-width:min(100%,294px);aspect-ratio:669/925}
+/* AND THE STAGE IS TALLER THAN SIXTEEN BY NINE. The meter is a tall object
+   standing beside a landscape scene, so on a 16:9 stage it had to be small to
+   fit. Three by two gives it its own size back. */
+figure.demo .lm-stage{aspect-ratio:3/2}
 figure.demo .lm-face canvas{width:100%;height:100%;display:block}
 figure.demo .lm-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;
   justify-content:center}
@@ -8144,14 +8314,52 @@ figure.demo .lm-k{font-family:var(--font-mono);font-size:9px;letter-spacing:.16e
 figure.demo .lm-v{font-family:var(--font-mono);font-size:16px;color:var(--stage-fg);
   min-width:3.2em;text-align:center;font-variant-numeric:tabular-nums}
 figure.demo .lm-bar .st{min-width:30px;padding:2px 0;font-size:14px;line-height:1.2}
-figure.demo .lm-mode{min-width:88px}
 figure.demo .lm-stage{display:flex;align-items:center;justify-content:center}
-figure.demo .lm-wrap{width:100%;display:flex;justify-content:center;padding:14px 0}
+figure.demo .lm-wrap{width:100%;display:flex;align-items:center;justify-content:center;
+  gap:22px;padding:14px 0;flex-wrap:wrap}
+/* the light beside the meter that is measuring it */
+figure.demo .lm-pic{flex:1 1 440px;max-width:none;min-width:260px;
+  aspect-ratio:4/3;border:1px solid var(--stage-rule-2)}
+figure.demo .lm-pic canvas{width:100%;height:100%;display:block}
+/* the column has to be as wide as the canvas wants, or the body shrinks to
+   make room for a word that was supposed to sit in the margin */
+figure.demo .lm-wrap > .lm{flex:0 1 294px;min-width:220px}
+/* WHEN THE TWO STOP FITTING SIDE BY SIDE, THE STAGE HAS TO GROW.
+   The scene wants 440 and the meter 294 with 22 between them, so they wrap
+   below a stage of 756 - about a 890px window. The old breakpoint was 720,
+   and in the gap between the two the meter dropped under the scene inside a
+   box still holding itself to three-by-two with overflow hidden: the picture
+   was cropped top and bottom and the meter was cut in half. Stacked, the stage
+   takes the height of what is in it. */
+@media(max-width:900px){
+  figure.demo .lm-pic{flex:1 1 100%;max-width:none;min-width:0}
+  figure.demo .lm-wrap > .lm{flex:1 1 100%}
+  figure.demo .lm-stage{aspect-ratio:auto}
+}
 figure.demo.light .lm-v{color:var(--ink-900)}
 
 /* ============================================================
    THE METER GUIDE — a picture you can press, beside the words
    ============================================================ */
+/* ---------- the light meter's two views ----------
+   One instrument, two things to look at: the meter reading a light, and the
+   same meter taken apart. Press the body and they swap. Only one stage is in
+   the figure at a time, so the stage keeps its whole share of the height in
+   both - a hidden stage measuring zero is what lets that be true. */
+/* `display:none` and it means none: `body.pages .step.active figure.demo
+   .stage` sets display:flex from four classes deep, so the rule that puts a
+   stage away has to reach at least as far. */
+figure.demo[data-view=meter] .mg-stage,
+figure.demo[data-view=guide] .lm-stage,
+body.pages .step.active figure.demo[data-view=meter] .mg-stage,
+body.pages .step.active figure.demo[data-view=guide] .lm-stage,
+body.present .step.active figure.demo[data-view=meter] .mg-stage,
+body.present .step.active figure.demo[data-view=guide] .lm-stage{display:none}
+figure.demo[data-view=meter] .lm-back,
+figure.demo[data-view=guide] .controls > .ctl:not(.lm-back){display:none}
+figure.demo[data-view=guide] .readout{display:none}
+figure.demo .lm-back .st{white-space:nowrap}
+
 figure.demo .mg-stage{padding:0}
 figure.demo .mg-row{display:flex;gap:0;height:100%;align-items:stretch}
 figure.demo .mg-pic{flex:0 0 38%;min-width:200px;display:flex;position:relative}
@@ -8243,3 +8451,127 @@ figure.demo .ts-pick .pk.off{cursor:default;background:transparent;
   border-color:var(--ink-400);color:var(--ink-400)}
 figure.demo .ts-pick .pk.off kbd{border-color:var(--ink-300);color:var(--ink-400)}
 figure.demo .ts-pick .pk.off:hover{background:transparent;color:var(--ink-400)}
+
+/* ============================================================
+   LINES OVER A PICTURE
+   The analysis is not in the JPEG any more (see overlayBox in
+   render.js), so it is drawn here and can be turned off. Off is
+   the important state: the class looks at the picture first.
+   ============================================================ */
+/* THE BOX CHANGES NOTHING ABOUT THE PICTURE. `display:contents` takes it out
+   of the layout entirely, so the image is still the figure's own flex child
+   and every rule that sizes it - max-height:66vh presenting, max-height:100%
+   on a page - goes on working. The SVG is placed on the image by measurement
+   (overlayBox in render.js), which is the only way to be right in both. */
+figure.slide .ovl{display:contents}
+figure.slide .ovl-svg{position:absolute;pointer-events:none}
+/* Two strokes for one line: a dark one under a light one, because a single
+   white line vanishes into a white dress and a single black one vanishes into
+   a dark corner, and a painting has both. */
+figure.slide .ovl svg line,figure.slide .ovl svg ellipse{
+  fill:none;stroke:#fff;stroke-width:1.6;
+  paint-order:stroke;
+  filter:drop-shadow(0 0 1.5px rgba(0,0,0,.85)) drop-shadow(0 0 3px rgba(0,0,0,.55))}
+figure.slide .ovl svg g[hidden]{display:none}
+/* the switches, under the picture, in the hand the rest of the deck is set in */
+figure.slide .ovl-bar{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;
+  line-height:1.2}
+figure.slide .ovl-b{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;padding:6px 11px;border:1px solid var(--stage-rule-2);
+  background:transparent;color:var(--muted);cursor:pointer;border-radius:0;
+  -webkit-appearance:none;appearance:none;transition:color .12s,border-color .12s}
+figure.slide .ovl-b:hover{color:var(--stage-fg);border-color:var(--stage-fg)}
+figure.slide .ovl-b.on{color:var(--paper);background:var(--ink);border-color:var(--ink)}
+figure.slide .ovl-b:focus-visible{outline:2px solid var(--live);outline-offset:2px}
+
+/* ============================================================
+   THE SCHEDULE SITS IN THE MIDDLE OF ITS PAGE
+   Every week, week 1 included. The timetable is short and the
+   page is tall, so left at the top of the column it hung under
+   the title with the rest of the page empty beneath it. There
+   is already a rule centring the schedule when it is the whole
+   page body; an arranged page puts it inside a column instead,
+   and that column is the box that has to centre it.
+   ============================================================ */
+.step .pg-col:has(> .pg-item > .schedule){justify-content:center}
+
+/* ============================================================
+   A PAGE THE COLOUR OF WHAT IS ON IT
+   `cls: 'white'` on a step. For a plate that is itself on pure
+   white — an engraving, a scan, a diagram on paper — the paper
+   ground of the deck puts a visible edge round it and it reads
+   as a picture OF the thing. On white the plate has no edge.
+   The rail and the footer are untouched: this is the page, not
+   the furniture round it.
+   ============================================================ */
+body.pages .step.white,body.present .step.white{background:#fff}
+body.pages .step.white .pg-body,body.pages .step.white .pg-rows{background:#fff}
+.step.white .line,.step.white .text p,.step.white h1,.step.white h2{color:#101010}
+.step.white .kicker,.step.white .cap,.step.white figcaption{color:#5A5A5A}
+/* ---- `cls: 'mid'` on a figure: put it in the middle of its column ----
+   Written at the weight of the rules it has to beat. An arranged solo figure
+   is pinned left by `margin-inline:0` and `align-items:flex-start`, both at
+   eight classes deep, so centring it needs to reach the same depth or it
+   silently loses - which it did, and the eye sat a hundred pixels left of
+   where it was asked to be. */
+body.pages .step.active.arranged .pg-col > .pg-item > figure.slide.mid,
+body.pages .step.active .pg-item > figure.slide.mid,
+body.present .step .pg-item > figure.slide.mid,
+.step .pg-item > figure.slide.mid{margin-inline:auto}
+body.pages .step.active figure.slide.mid,
+body.present .step figure.slide.mid,
+figure.slide.mid{align-items:center}
+figure.slide.mid img{margin-inline:auto}
+.step.white figure.slide img{background:transparent}
+
+/* ============================================================
+   THE CHAIN — stages down the page, variables on the arrows
+   The stage names are the page's own display type so they read
+   as headings; the variables are monospaced so they read as
+   settings. That difference is the point: one is a place light
+   passes through, the other is a number somebody chose.
+   ============================================================ */
+.chain{display:flex;flex-direction:column;align-items:flex-start;
+  width:100%;padding:2px 0}
+.chain .ch-stage{display:flex;align-items:baseline;gap:.7em;min-height:0}
+/* THE INK OF THE PAGE, NOT OF THE STAGE. --stage-fg is the colour type takes
+   ON an instrument's dark stage; on a paper page it is nearly white, so every
+   stage name in this chain was drawn in white on white and the diagram
+   arrived as five arrows pointing at nothing. */
+.chain .ch-n{font-family:var(--font-display,var(--font-sans));
+  font-size:clamp(17px,2.9vh,30px);line-height:1.06;letter-spacing:-.012em;
+  color:var(--ink-900,#0B0C0C)}
+.chain .ch-note{font-family:var(--font-mono);font-size:clamp(8px,1.15vh,11px);
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+/* the arrow and what rides on it, side by side */
+.chain .ch-link{display:flex;align-items:center;gap:1.1em;
+  padding:.25vh 0 .25vh 2px}
+.chain .ch-arrow{width:clamp(9px,1.1vw,13px);height:clamp(24px,4.4vh,46px);
+  flex:0 0 auto;overflow:visible}
+.chain .ch-arrow line{stroke:var(--signal,#C42D00);stroke-width:2.2}
+.chain .ch-arrow polygon{fill:var(--signal,#C42D00)}
+/* the variables, in one line while there is room and stacked when there is not */
+.chain .ch-vars{display:flex;flex-wrap:wrap;align-items:baseline;
+  gap:.35em .9em;min-width:0}
+.chain .ch-v{font-family:var(--font-mono);font-size:clamp(9.5px,1.45vh,14px);
+  letter-spacing:.05em;color:var(--ink-900,#111);white-space:nowrap}
+/* a dot between them, and none after the last */
+.chain .ch-v + .ch-v::before{content:'·';margin-right:.9em;color:var(--muted)}
+figure.demo .chain .ch-n,.stage .chain .ch-n{color:var(--stage-fg)}
+/* a slider that is a cell like any other, wide enough to drag with */
+figure.demo .controls > .ctl.zoomcell{flex:0 1 auto;min-width:260px;max-width:420px}
+/* fovea: three named pictures, and a sharp-field slider that does not need
+   a whole row to say one number */
+figure.demo .controls > .ctl.piccell{flex:0 1 auto;min-width:330px}
+figure.demo .controls > .ctl.degcell{flex:0 1 auto;min-width:190px;max-width:280px}
+figure.demo .controls > .ctl.statecell{flex:0 1 auto;min-width:190px}
+
+/* ISO and Shutter, in the control strip where a control belongs. They were
+   drawn under the meter inside the picture; IG-01 02 names that as the fault
+   and 12 as the fix. Same shape as they had, at the strip's own size. */
+figure.demo .controls > .ctl.lm-step{flex:0 1 auto;min-width:170px}
+figure.demo .controls .lm-stepper{display:flex;align-items:center;gap:10px;margin-top:4px}
+figure.demo .controls .lm-stepper .lm-v{font-family:var(--font-mono);
+  font-size:clamp(18px,2.6vh,26px);color:var(--stage-fg);min-width:3.1em;
+  text-align:center;font-variant-numeric:tabular-nums}
+figure.demo .controls .lm-stepper .st{min-width:34px;padding:4px 0;font-size:15px}

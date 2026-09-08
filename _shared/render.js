@@ -11,11 +11,12 @@ const DEMOS = {
   transform: { url: './interactives/transform.js', fn: 'mountTransform' },
   viewfinder: { url: './interactives/viewfinder.js', fn: 'mountViewfinder' },
   fovea: { url: './interactives/fovea.js', fn: 'mountFovea' },
+  frame: { url: './interactives/frame.js', fn: 'mountFrame' },
   teststrip: { url: './interactives/teststrip.js', fn: 'mountTestStrip' },
   photogram: { url: './interactives/photogram.js', fn: 'mountPhotogram' },
   lightmeter: { url: './interactives/lightmeter.js', fn: 'mountLightMeter' },
   meterguide: { url: './interactives/meterguide.js', fn: 'mountMeterGuide' },
-  formats: { url: './interactives/formats.js', fn: 'mountFormats' },
+  lightdiagram: { url: './interactives/lightdiagram.js', fn: 'mountLightDiagram' },
 };
 
 /* A bare file name is the week's own assets/ folder. A name with a slash is
@@ -766,11 +767,66 @@ const BLOCK = {
     return s;
   },
 
+  /* ============================================================
+     THE CHAIN — what a photograph passes through, and what acts
+     on it at each step.
+     ------------------------------------------------------------
+     Last year's slide had this as two things that never met: the
+     stages down the left, the variables in a list on the right,
+     and nothing saying which belonged to which. The whole lesson
+     is in that pairing - focal length is a thing the LENS does,
+     dynamic range is a thing the SENSOR does - so here the
+     variables sit on the arrow they act on and cannot be read
+     apart from it.
+
+     { type: 'chain',
+       stages: [ { name, note } ... ],
+       links:  [ [var, var, ...], ... ] }      links[i] rides the
+     arrow from stages[i] to stages[i+1]; an empty one is drawn
+     as a bare arrow, because a step with nothing on it yet is
+     still a step.
+     ============================================================ */
+  chain: (b) => {
+    const box = el('div', 'chain');
+    const NS = 'http://www.w3.org/2000/svg';
+    (b.stages || []).forEach((st, i) => {
+      const row = el('div', 'ch-stage');
+      row.append(el('span', 'ch-n', st.name || ''));
+      if (st.note) row.append(el('span', 'ch-note', st.note));
+      box.append(row);
+      if (i === (b.stages || []).length - 1) return;
+      const link = el('div', 'ch-link');
+      /* the arrow, drawn: a stem and a head, so it stays sharp at any
+         size and takes the page's own ink colour */
+      const svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('class', 'ch-arrow');
+      svg.setAttribute('viewBox', '0 0 12 40');
+      svg.setAttribute('aria-hidden', 'true');
+      const stem = document.createElementNS(NS, 'line');
+      stem.setAttribute('x1', 6); stem.setAttribute('y1', 0);
+      stem.setAttribute('x2', 6); stem.setAttribute('y2', 30);
+      svg.append(stem);
+      const head = document.createElementNS(NS, 'polygon');
+      head.setAttribute('points', '6,40 0.5,28 11.5,28');
+      svg.append(head);
+      link.append(svg);
+      const vars = (b.links && b.links[i]) || [];
+      if (vars.length) {
+        const list = el('div', 'ch-vars');
+        vars.forEach((v) => list.append(el('span', 'ch-v', v)));
+        link.append(list);
+      }
+      box.append(link);
+    });
+    return box;
+  },
+
   figure: (b) => {
     const f = el('figure', 'slide' + (b.cls ? ' ' + b.cls : ''));
     if (b.fig) f.setAttribute('data-fig', b.fig === true ? '' : b.fig);
     f.setAttribute('data-layout', b.layout || 'stacked');
-    f.append(b.src ? img(b.src, b.alt, b.ar) : phBox(b.label || 'Plate', b.shape || ''));
+    const pic = b.src ? img(b.src, b.alt, b.ar) : phBox(b.label || 'Plate', b.shape || '');
+    f.append(b.overlay ? overlayBox(pic, b.overlay) : pic);
     if (b.caption || b.cap) f.append(capEl(b));
     return f;
   },
@@ -941,6 +997,9 @@ const BLOCK = {
   demo: (b) => {
     const f = el('figure', 'demo');
     f.setAttribute('data-demo', b.id);
+    /* an instrument that has more than one thing to show can be pinned to one
+       of them by the page, so the same code serves two pages saying two things */
+    if (b.space) f.setAttribute('data-space', b.space);
     f.setAttribute('data-size', b.size || 'column');
     if (b.shape) f.setAttribute('data-shape', b.shape);
     if (b.pos && (b.size || 'column') !== 'column') f.setAttribute('data-pos', b.pos);
@@ -1248,6 +1307,94 @@ function cell(i, node) {
   c.append(node);
   c.append(el('p', 'cell-cap', i.cap));
   return c;
+}
+
+/* ============================================================
+   LINES OVER A PICTURE, DRAWN BY THE PAGE
+   ------------------------------------------------------------
+   A composition slide used to arrive with its analysis burnt
+   into the JPEG: the circle over Gravity, the triangles over
+   the Botticelli. That costs three things. The picture can
+   never be shown WITHOUT the lines, so the class cannot look
+   first and be told after. The lines cannot be talked about one
+   at a time. And the file can only ever be as good as the
+   screenshot somebody drew on.
+
+   So the picture stays clean and the lines live here, as pairs
+   of points in the picture's own 0..1 coordinates. The SVG is
+   stretched over the image with preserveAspectRatio="none", so
+   0.5 is the middle of the picture at any size on any screen
+   and nothing has to be measured again when the layout moves.
+
+   overlay: {
+     open: 'axis',                    // lit when the page opens
+     sets: [ { id, name, lines: [[ax,ay,bx,by], ...] } ]
+   }
+   ============================================================ */
+function overlayBox(pic, o) {
+  const box = el('div', 'ovl');
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'ovl-svg');
+  svg.setAttribute('viewBox', '0 0 1 1');
+  svg.setAttribute('preserveAspectRatio', 'none');
+  svg.setAttribute('aria-hidden', 'true');
+  const open = String(o.open || '').split(/[\s,]+/).filter(Boolean);
+  const bar = el('div', 'ovl-bar');
+  (o.sets || []).forEach((set) => {
+    const g = document.createElementNS(NS, 'g');
+    g.setAttribute('data-set', set.id);
+    (set.lines || []).forEach((L) => {
+      const ln = document.createElementNS(NS, 'line');
+      ln.setAttribute('x1', L[0]); ln.setAttribute('y1', L[1]);
+      ln.setAttribute('x2', L[2]); ln.setAttribute('y2', L[3]);
+      /* THE STROKE IS NOT SCALED WITH THE BOX. Without this, stretching a 1x1
+         viewBox over 1200x750 makes every near-horizontal line heavier than
+         every near-vertical one. */
+      ln.setAttribute('vector-effect', 'non-scaling-stroke');
+      g.append(ln);
+    });
+    (set.marks || []).forEach((m) => {
+      const c = document.createElementNS(NS, 'ellipse');
+      c.setAttribute('cx', m[0]); c.setAttribute('cy', m[1]);
+      c.setAttribute('rx', m[2]); c.setAttribute('ry', m[3] == null ? m[2] : m[3]);
+      c.setAttribute('vector-effect', 'non-scaling-stroke');
+      g.append(c);
+    });
+    if (!open.includes(set.id)) g.setAttribute('hidden', '');
+    svg.append(g);
+    const btn = el('button', 'ovl-b' + (open.includes(set.id) ? ' on' : ''),
+                   set.name || set.id);
+    btn.type = 'button';
+    btn.setAttribute('aria-pressed', open.includes(set.id) ? 'true' : 'false');
+    btn.addEventListener('click', () => {
+      const lit = g.hasAttribute('hidden');
+      if (lit) g.removeAttribute('hidden'); else g.setAttribute('hidden', '');
+      btn.classList.toggle('on', lit);
+      btn.setAttribute('aria-pressed', lit ? 'true' : 'false');
+    });
+    bar.append(btn);
+  });
+
+  /* THE PICTURE IS NOT WRAPPED IN ANYTHING. It was, once, and the wrapper
+     broke the deck: a figure here is a flex column whose image is held to
+     max-height:100% of it, and a percentage inside a new box has nothing to
+     resolve against - so the image stopped shrinking, the switches pushed it
+     past the figure, and justify-content:center floated the lot up over the
+     paragraph above. The image is left exactly where the deck put it and the
+     lines are laid ON it, measured. */
+  box.append(pic, svg, bar);
+  const place = () => {
+    if (!pic.offsetWidth) return;
+    svg.style.left = pic.offsetLeft + 'px';
+    svg.style.top = pic.offsetTop + 'px';
+    svg.style.width = pic.offsetWidth + 'px';
+    svg.style.height = pic.offsetHeight + 'px';
+  };
+  if (pic.tagName === 'IMG') { pic.addEventListener('load', place); }
+  new ResizeObserver(place).observe(pic);
+  requestAnimationFrame(place);
+  return box;
 }
 
 function img(src, alt, ar) {

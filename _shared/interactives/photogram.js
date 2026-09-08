@@ -38,7 +38,15 @@
 /* THE SHEET'S OWN PROPORTION, measured off Batu's photograph rather than
    chosen: the paper in it is 1422 x 1177 pixels, so 1.208 wide to tall. A
    buffer of a different shape would stretch the print. */
-const PG_W = 460, PG_H = 381;
+/* AND THE GRID IS THE PRINT'S RESOLUTION. Every dose, every object's mask and
+   every tone is one number per cell of this grid, and the finished print is
+   that picture scaled to whatever size the paper is drawn at - so this number
+   is how sharp a photogram can be. It was 460 across, which is smaller than
+   the sheet is drawn even in a window and a third of what a projector asks
+   for, and the feather came out of the bath softer than it went in.
+   The cost is one pass over the grid per frame during the reveal, and only
+   then: measured below at 60 frames a second with room to spare. */
+const PG_W = 960, PG_H = 795;
 
 /* WHERE THE PAPER LIES IN THE PHOTOGRAPH, as fractions of the picture. Read
    off the exposed frame by finding the neutral white of the lit sheet - the
@@ -50,14 +58,30 @@ const PG_SHEET = { x0: 0.3162, x1: 0.6838, y0: 0.2424, y1: 0.7987 };
    through, because one of each would only teach half of it. x and
    y are the centre as a fraction of the sheet, so they survive a
    resize. T is what fraction of the lamp gets past. */
+/* SIZED AT THEIR OWN PROPORTIONS. w and h are fractions of the SHEET, and the
+   sheet is 1.208 wide to tall, so a picture keeps its shape only when
+   w/h = (its own aspect) x 0.828. The feather was at 0.44 by 0.30, which drew
+   a nearly square photograph at an aspect of 1.77: it was stretched to nearly
+   twice its width and nobody had checked.
+
+   The sizes are the real ones. On a sheet whose short edge is about 20 cm: a
+   key of eight centimetres, a lemon slice of six, a leaf of twelve. */
 const PG_KIT = [
-  { id: 'key',     name: 'Key',      T: 0,    w: 0.34, h: 0.13, x: 0.27, y: 0.28, put: true },
-  { id: 'feather', name: 'Feather',  T: 0.10, w: 0.44, h: 0.30, x: 0.62, y: 0.35, put: true,
-    img: 'obj-feather.png' },
-  { id: 'glass',   name: 'Glass',    T: 0.55, w: 0.26, h: 0.26, x: 0.30, y: 0.70, put: true },
-  { id: 'leaf',    name: 'Leaf',     T: 0,    w: 0.22, h: 0.34, x: 0.70, y: 0.72, put: false },
+  { id: 'key',     name: 'Key',      T: 0,    w: 0.113, h: 0.40, x: 0.30, y: 0.32, put: true,
+    img: 'obj-key.png' },
+  /* A LEAF IS TRANSLUCENT, and at 0.02 to 0.22 this one was not: it blocked so
+     nearly everything that the whole blade came out white and its structure -
+     the reason anybody puts a leaf on paper - never reached the print. A real
+     leaf passes a good deal of light between its veins and very little through
+     them, which is the whole picture: the thicker it gets, the lighter it
+     prints. */
+  { id: 'leaf',    name: 'Leaf',     T: 0.10, T2: 0.40, w: 0.30, h: 0.50, x: 0.68, y: 0.44,
+    put: false, img: 'obj-leaf.png', read: 'inv' },
+  { id: 'lemon',   name: 'Lemon',    T: 0.20, T2: 0.78, w: 0.25, h: 0.305, x: 0.62, y: 0.68,
+    put: true, img: 'obj-lemon.png', read: 'lum' },
   { id: 'tracing', name: 'Tracing',  T: 0.50, w: 0.24, h: 0.22, x: 0.45, y: 0.50, put: false },
 ];
+
 
 /* Each object drawn into a box, in a grey whose VALUE IS ITS
    TRANSMISSION — black passes nothing, mid-grey passes half. The
@@ -120,18 +144,22 @@ function mountPhotogram(fig) {
      black on this paper is 24 seconds at f/8, so that is where the exposure
      starts, and the range goes far enough that f/11 can reach it too. Twelve
      seconds, which was the old default, leaves the ground at Zone II. */
-  /* THE DEFAULT IS ONE BURST SHORT OF BLACK, deliberately. It used to be 24
-     seconds, which is maximum black in one go - fine when a sheet got one
-     exposure, and useless now: a second burst on an already-black sheet
-     changes nothing and the whole point is that the light adds up. Twelve
-     seconds lands bare paper around Zone II, so the second burst takes it to
-     black and anything covered for only one of the two sits between. Three
-     tones from two presses. */
-  const PG_EXP = [6, 12, 16, 20, 24, 30, 36, 48, 60];
+  /* ONE TIMER, ONE SET OF NUMBERS. This had a dial of its own - 6, 12, 16, 20,
+     24, 30, 36, 48, 60 - which is not what the timer beside it offers, and two
+     enlarger timers in one darkroom that disagree about what seconds are is
+     one of them lying. It reads TS_TIMES now, the same 1 to 10 the test strip
+     sets its interval in.
+
+     THE DEFAULT IS STILL ONE BURST SHORT OF BLACK. Eight seconds at f/8 is a
+     dose of 0.67 and lands bare paper around Zone III; a second burst takes it
+     to 1.33, which is nearly black; anything covered for only one of the two
+     sits between. Three tones from two presses, and the aperture is there for
+     anyone who wants black in one. */
+  const PG_EXP = TS_TIMES;
 
   const state = {
     stop: 2,                 /* index into TS_STOPS — f/8 */
-    ei: 1,                   /* index into PG_EXP — 12 s, about Zone II */
+    ei: 7,                   /* index into PG_EXP — 8 s, about Zone III */
     obj: PG_KIT.map((o) => ({ ...o })),
     sel: 0,
     phase: 'place',          /* place ⇄ expose, then develop → read */
@@ -179,32 +207,97 @@ function mountPhotogram(fig) {
       cut.width = i.naturalWidth; cut.height = i.naturalHeight;
       const gc = cut.getContext('2d', { willReadFrequently: true });
       gc.drawImage(i, 0, 0);
-      const px = gc.getImageData(0, 0, cut.width, cut.height);
-      const dd = px.data;
-      for (let q = 0; q < dd.length; q += 4) {
-        const l = 0.2126 * dd[q] + 0.7152 * dd[q + 1] + 0.0722 * dd[q + 2];
-        /* the ground is 254 and the file carries a little compression noise
-           around it, so anything within seven levels is ground. Two was not
-           enough: it left a faint dithered rectangle of nearly-nothing that
-           blocked nearly-nothing, and printed as a visible box. */
-        const a = Math.max(0, Math.min(1, (254 - l - 16) / 26));
-        dd[q + 3] = Math.round(a * 255);
+      if (o.cut) {
+        /* ONLY THE FEATHER NEEDS THIS. Its file is a feather on white, not a
+           feather on transparency, so the shape has to be lifted off the
+           ground. Batu's own cut-outs arrive with their alpha already in them
+           and running this over one would eat the object's own dark parts. */
+        const px = gc.getImageData(0, 0, cut.width, cut.height);
+        const dd = px.data;
+        for (let q = 0; q < dd.length; q += 4) {
+          const l = 0.2126 * dd[q] + 0.7152 * dd[q + 1] + 0.0722 * dd[q + 2];
+          /* the ground is 254 and the file carries a little compression noise
+             around it, so anything within seven levels is ground. Two was not
+             enough: it left a faint dithered rectangle of nearly-nothing that
+             blocked nearly-nothing, and printed as a visible box. */
+          const a = Math.max(0, Math.min(1, (254 - l - 16) / 26));
+          dd[q + 3] = Math.round(a * 255);
+        }
+        gc.putImageData(px, 0, 0);
       }
-      gc.putImageData(px, 0, 0);
       pics[o.id] = cut;
-      /* A SILHOUETTE, BAKED ONCE. Darkening the photograph where it is drawn
-         needs the fill to land on the OBJECT's alpha, not on the whole
-         rectangle - source-atop over the sheet filled the box instead of the
-         feather. So the dark copy is made in a canvas of its own, where the
-         only thing present is the feather. */
-      const c2 = document.createElement('canvas');
-      c2.width = cut.width; c2.height = cut.height;
-      const g2 = c2.getContext('2d');
+
+      /* THE SAME OBJECT UNDER THE SAFELIGHT. They were painted out to a flat
+         near-black, which is what you draw when you have no photograph; with
+         one, the honest thing is the object itself under a red lamp. The
+         picture is multiplied by the safelight's own red and its alpha put
+         back, exactly as the tray is - so a lemon on the bench is a lemon, and
+         a dark one. */
+      /* AND IT IS DARKER THAN THE PAPER IT LIES ON. Multiplied by the tray's
+         own red, a lemon came out at (144,15,4) on paper that reads (149,8,3),
+         and Batu could not see it at all. Nothing on a bench is exactly as
+         bright as a sheet of white paper: the paper is the brightest thing in
+         a darkroom, which is why you can find it in the dark. A deeper red for
+         the objects, and they sit ON the sheet instead of vanishing into it. */
+      const red = document.createElement('canvas');
+      red.width = cut.width; red.height = cut.height;
+      const g2 = red.getContext('2d');
       g2.drawImage(cut, 0, 0);
-      g2.globalCompositeOperation = 'source-in';
-      g2.fillStyle = 'rgb(10,2,2)';
-      g2.fillRect(0, 0, c2.width, c2.height);
-      pics[o.id + ':dark'] = c2;
+      g2.globalCompositeOperation = 'multiply';
+      g2.fillStyle = 'rgb(96,11,7)';
+      g2.fillRect(0, 0, red.width, red.height);
+      g2.globalCompositeOperation = 'destination-in';
+      g2.drawImage(cut, 0, 0);
+      pics[o.id + ':red'] = red;
+
+      /* THE SHADOW IT CASTS. An object lying on paper has one, and without it
+         the object reads as printed on the sheet rather than resting on it. */
+      const sh = document.createElement('canvas');
+      sh.width = cut.width; sh.height = cut.height;
+      const g4 = sh.getContext('2d');
+      g4.drawImage(cut, 0, 0);
+      g4.globalCompositeOperation = 'source-in';
+      g4.fillStyle = 'rgb(0,0,0)';
+      g4.fillRect(0, 0, sh.width, sh.height);
+      pics[o.id + ':shade'] = sh;
+
+      /* AND WHAT IT LETS THROUGH, PIXEL BY PIXEL, when the photograph can say.
+         A flat number per object is right for a key, which is metal, and wrong
+         for a slice of lemon, whose whole interest is that the flesh passes
+         light and the pith and rind do not.
+
+         Which way round depends on how the thing was photographed, and it is
+         not a matter of taste:
+           'lum' - photographed THROUGH, backlit. Brightness IS transmission.
+                   The lemon slice is lit from behind; its bright flesh is
+                   bright because the light came through it.
+           'inv' - photographed in reflected light. Brightness is DENSITY: the
+                   thicker a leaf's veins, the more light they scatter back and
+                   the less they pass. So the picture is read upside down, and
+                   the veins print light on a dark blade - which is what a leaf
+                   photogram looks like.
+         The feather is left on one number, because its file is neither: the
+         shaft reads bright because the light caught it and the barbs read dark
+         because they were in shadow, so believing either reading of it would
+         be inventing physics. The right artefact there is a flatbed scan - a
+         scanner IS a contact printer, so the scan IS the photogram. Asked for. */
+      if (o.read) {
+        const tm = document.createElement('canvas');
+        tm.width = cut.width; tm.height = cut.height;
+        const g3 = tm.getContext('2d', { willReadFrequently: true });
+        g3.drawImage(cut, 0, 0);
+        const tp = g3.getImageData(0, 0, tm.width, tm.height);
+        const td = tp.data;
+        const lo = o.T, hi = (o.T2 == null ? o.T : o.T2);
+        for (let q = 0; q < td.length; q += 4) {
+          const l = (0.2126 * td[q] + 0.7152 * td[q + 1] + 0.0722 * td[q + 2]) / 255;
+          const f = o.read === 'inv' ? 1 - l : l;
+          const v = Math.round((lo + (hi - lo) * f) * 255);
+          td[q] = v; td[q + 1] = v; td[q + 2] = v;
+        }
+        g3.putImageData(tp, 0, 0);
+        pics[o.id + ':T'] = tm;
+      }
       buildMasks(); view.render();
     };
     i.src = '../_shared/interactives/art/' + o.img;
@@ -319,9 +412,16 @@ function mountPhotogram(fig) {
       const x = o.x * PG_W - w / 2, y = o.y * PG_H - h / 2;
       const t = Math.round(o.T * 255);
       if (o.img) {
-        /* the photograph's own alpha, painted in the grey of its transmission:
-           colour says how much gets through where the object is solid, alpha
-           says how solid it is */
+        /* WHERE THE PICTURE CAN SAY, THE PICTURE SAYS. An object with a
+           transmission map is drawn straight in: its greys ARE how much light
+           gets through at each point, and its alpha is still its shape. That
+           is the lemon's segments and the leaf's veins, and it costs nothing
+           here because the map was baked once when the file loaded. */
+        const tm = pics[o.id + ':T'];
+        if (tm) { g.drawImage(tm, x, y, w, h); return; }
+        /* otherwise the photograph's own alpha, painted in the grey of its
+           transmission: colour says how much gets through where the object is
+           solid, alpha says how solid it is */
         const im = pics[o.id];
         if (!im) return;
         g.drawImage(im, x, y, w, h);
@@ -455,22 +555,48 @@ function mountPhotogram(fig) {
      near-black whose weight is its transmission; a photographed one is the
      photograph, darkened the same amount, because on the paper you are looking
      at a silhouette either way. */
-  function drawObject(ctx, o, x, y, w, h, lit) {
-    const solid = 'rgba(10,2,2,' + (0.94 - o.T * 0.55) + ')';
+  /* TWO APPEARANCES, AND THE ROOM DECIDES WHICH. Under the safelight the
+     object is itself under a red lamp; with the enlarger burning it is itself
+     under a white one. They were a flat near-black either way, which is what
+     you draw when you have no photograph of the thing. */
+  function drawObject(ctx, o, x, y, w, h, sel, dark) {
+    /* A DRAWN OBJECT HAS TWO STATES TOO. Tracing paper is white and it lets
+       light through - that is the whole of what it is - and it was a dark
+       shape in every light, which is what a photographed object looks like and
+       not what a sheet of tracing paper looks like. Under the safelight it is
+       a dull red sheet on brighter paper; with the lamp on it is milky white
+       and you can see the sheet through it. The more it transmits, the more
+       you see through it, which is one number doing both jobs. */
+    const solid = dark
+      ? 'rgba(10,2,2,' + (0.94 - o.T * 0.55) + ')'
+      : 'rgba(250,249,244,' + (0.30 + (1 - o.T) * 0.50) + ')';
     if (o.img) {
-      const im = pics[o.id + ':dark'];
+      const im = pics[o.id + (dark ? ':red' : '')];
       if (im) {
         ctx.save();
-        ctx.globalAlpha = lit ? 1 : 0.94 - o.T * 0.55;
+        const sh = pics[o.id + ':shade'];
+        if (sh) {
+          const d = Math.max(2, w * 0.02);
+          ctx.globalAlpha = 0.30;
+          ctx.drawImage(sh, x + d, y + d, w, h);
+        }
+        /* what passes light is drawn as passing light */
+        ctx.globalAlpha = 1 - o.T * 0.30;
         ctx.drawImage(im, x, y, w, h);
         ctx.restore();
       }
     } else {
-      pgShape(ctx, o.id, x, y, w, h, solid,
-              o.id === 'glass' ? 'rgba(10,2,2,0.92)' : null);
+      pgShape(ctx, o.id, x, y, w, h, solid, null);
+      /* AND AN EDGE, for the one that is a rectangle. A milky rectangle with
+         no edge is a smudge on the paper; with one it is a sheet lying on it. */
+      if (o.id === 'tracing') {
+        ctx.strokeStyle = dark ? 'rgba(255,150,130,0.35)' : 'rgba(90,90,86,0.45)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+      }
     }
-    if (lit) {
-      ctx.strokeStyle = 'rgba(255,235,220,0.85)';
+    if (sel) {
+      ctx.strokeStyle = dark ? 'rgba(255,235,220,0.85)' : 'rgba(20,20,20,0.7)';
       ctx.lineWidth = 1.6;
       ctx.strokeRect(x - 5.5, y - 5.5, w + 11, h + 11);
     }
@@ -484,7 +610,7 @@ function mountPhotogram(fig) {
     return { x: ev.clientX - r.left, y: ev.clientY - r.top };
   }
   function onRack(pt) {
-    return rack && pt.x >= rack.x;
+    return rack && pt.x <= rack.x + rack.w;
   }
   /* WHAT IS UNDER THE POINTER, on the paper or on the bench. The bench is
      checked first because a slot can overlap nothing else, and the paper is
@@ -650,7 +776,20 @@ function mountPhotogram(fig) {
   /* The print, at whatever stage of developing it has reached. The darkest
      arrive first and the faintest last, which is the reveal doing a second
      job: the exposure is over and the reading is still coming in. */
+  /* AND IT IS NOT REPAINTED EVERY FRAME. A pass over the grid costs 9 ms at
+     this size - measured, on this machine - and a sixteen millisecond frame
+     cannot spend nine on one picture and still draw the room round it. It does
+     not need to: the bath takes four and a half seconds, so a hundred distinct
+     states of the image is more than an eye can separate. The tone is repainted
+     when it has moved by a hundredth and the frames between reuse the canvas,
+     which turns nine milliseconds a frame into two. */
+  let painted = { devT: -1, light: -1, stamp: 0 };
   function paint(devT, light) {
+    const q0 = Math.round(devT * 100) / 100;
+    if (painted.devT === q0 && painted.light === light
+        && painted.stamp === state.shots) return img;
+    painted = { devT: q0, light: light, stamp: state.shots };
+    devT = q0;
     const d = idata.data, t = state.tone;
     for (let q = 0; q < PG_W * PG_H; q++) {
       let v = t[q] / 255;
@@ -687,19 +826,20 @@ function mountPhotogram(fig) {
        work on. The paper is given the room it needs, the photograph is scaled
        so its own paper lands exactly there, and whatever falls off the sides
        falls off: it is a darkroom, and you are standing at the board. */
-    /* THE SPACE AT THE LEFT. His photograph puts the board in the middle and
-       leaves a strip of bench down the left side, and that strip is where a
-       timer stands - which is also where it stands on the test strip, so the
-       two rooms are the same room. */
+    /* THE TIMER STANDS AT THE RIGHT. His photograph puts the board in the
+       middle and leaves a strip of bench down either side; the clock is on the
+       right of them, which is the side Batu wants it on and the side his hand
+       is on. The objects that are not on the paper wait on the left instead -
+       beside his boxes of paper, which is a bench with things on it already. */
     let tmH = Math.min(h * 0.56, 300), tmW = tmH * DT.w / DT.h;
-    const leftRoom = w * 0.185;
-    if (tmW > leftRoom - 10) { tmW = leftRoom - 10; tmH = tmW * DT.h / DT.w; }
-    const tmX = 8, tmY = h - tmH - 10;
+    const sideRoom = w * 0.185;
+    if (tmW > sideRoom - 10) { tmW = sideRoom - 10; tmH = tmW * DT.h / DT.w; }
+    const tmX = w - tmW - 8, tmY = h - tmH - 10;
 
     const rw0 = Math.min(120, Math.max(78, w * 0.15));
     const pad = Math.max(14, w * 0.025);
-    const left0 = Math.max(pad, tmX + tmW + 12);
-    const avail = (w - rw0) - left0 - pad;
+    const left0 = rw0 + pad;
+    const avail = (tmX - 12) - left0;
     let tw = avail, th = tw * PG_H / PG_W;
     const room = h - 104;                /* the caption and the key row */
     if (th > room) { th = room; tw = th * PG_W / PG_H; }
@@ -740,10 +880,15 @@ function mountPhotogram(fig) {
        comes back. The strip is always drawn, empty or not, so the paper never
        jumps sideways when the last object leaves it. */
     const rw = Math.min(120, Math.max(78, w * 0.15));
-    rack = { x: w - rw, y: 0, w: rw, h: h };
-    ctx.fillStyle = dark ? 'rgba(0,0,0,0.30)' : 'rgba(0,0,0,0.055)';
+    rack = { x: 0, y: 0, w: rw, h: h };
+    /* AND THE BENCH IS A HINT, NOT A PANEL. On the right it lay over the dark
+       side of the photograph and cost nothing. On the left it lies over the
+       boxes of paper - which is the part of his picture worth keeping - so it
+       is barely there: the objects have their own pale cards to be seen
+       against, and the strip only has to say where they go. */
+    ctx.fillStyle = dark ? 'rgba(0,0,0,0.13)' : 'rgba(0,0,0,0.055)';
     ctx.fillRect(rack.x, 0, rw, h);
-    line(ctx, rack.x, 0, rack.x, h,
+    line(ctx, rack.x + rw, 0, rack.x + rw, h,
          dark ? 'rgba(255,120,100,0.22)' : 'rgba(0,0,0,0.14)');
 
     /* THE TIMER, on the bench at the left. Its three live buttons are the
@@ -815,7 +960,13 @@ function mountPhotogram(fig) {
       if (state.phase === 'develop' || state.phase === 'read') return;
       const ow = o.w * sw, oh = o.h * sh;
       const ox = sx + o.x * sw - ow / 2, oy = sy + o.y * sh - oh / 2;
-      drawObject(ctx, o, ox, oy, ow, oh, i === state.sel || i === state.hot);
+      /* WHILE THE LAMP BURNS, WHAT IS UNDER IT IS LIT. The red copy is for
+         the safelight; the enlarger's lamp is white, and the objects standing
+         in the beam are in that white light whether or not the room lamp is
+         on. They were staying red through the whole exposure - the paper
+         blazing and the leaf still in the safelight, which cannot happen. */
+      drawObject(ctx, o, ox, oy, ow, oh, i === state.sel || i === state.hot,
+                 dark && !state.run);
     });
 
     /* what is on the bench, stacked down the strip */
@@ -832,8 +983,10 @@ function mountPhotogram(fig) {
          pale card, the way anything waits on a darkroom bench. */
       ctx.fillStyle = dark ? 'rgba(255,150,125,0.20)' : 'rgba(0,0,0,0.05)';
       ctx.fillRect(bx, by, bw, bh);
+      /* THE BENCH IS NOT IN THE BEAM, though. What is waiting at the side
+         stays in the safelight until somebody turns the room light on. */
       drawObject(ctx, q.o, bx + (bw - ow) / 2, by + (bh - oh) / 2, ow, oh,
-                 q.i === state.hotSlot);
+                 q.i === state.hotSlot, dark);
       label(ctx, q.o.name, rack.x + rack.w / 2, by + bh + 11,
             dark ? 'rgba(255,150,130,0.75)' : p.muted, 9, 'center');
       return { i: q.i, x: bx, y: by, w: bw, h: bh };
@@ -843,10 +996,11 @@ function mountPhotogram(fig) {
             dark ? 'rgba(255,120,100,0.45)' : p.muted, 9, 'center');
     }
 
-    if (state.run) {
-      label(ctx, tsSecs(Math.max(0, state.run.total - state.run.done)) + ' s',
-            sx + sw / 2, sy - 12, 'rgba(255,120,100,0.9)', 15, 'center');
-    } else if (state.phase === 'place') {
+    /* NO NUMBER OVER THE PAPER. The seconds were floated above the sheet
+       because nothing else was counting them; the timer stands on the bench
+       now and counts them on its own face, which is where a printer reads
+       them. Two clocks in one room is one clock too many. */
+    if (state.phase === 'place' && !state.run) {
       label(ctx, state.shots
               ? 'move something and expose again — the light adds up'
               : 'drag things on and off the bench, then expose',

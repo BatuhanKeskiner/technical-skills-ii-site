@@ -138,14 +138,28 @@ const MG_RANGE = [
   ['Film speed', 'ISO 3 to 8000'],
 ];
 
-function mountMeterGuide(fig) {
+/* IT IS PART OF THE LIGHT METER NOW, not a second instrument.
+   IG-01 10, Q1: the same object on the stage - Batu's own L-308X, drawn from
+   the same 539 x 925 frame - so the answer is extend, and the older listing
+   retires. `embedded` mounts it inside lightmeter.js: no head of its own,
+   because the instrument already has one, and its stage handed back so the
+   host can put it away. Mounted alone it still works, which is how the pages
+   that already carry it keep working. */
+function mountMeterGuide(fig, opts) {
+  const o = opts || {};
+  const embedded = !!o.embedded;
   const p = palette(fig);
   const stage = el('div', 'stage wide mg-stage');
-  fig.prepend(stage);
-  const head = el('div', 'ts-head');
-  head.append(el('span', 'ts-name', 'The meter, part by part'),
-              el('span', 'ts-sub', 'sekonic l-308x · press a number'));
-  fig.prepend(head);
+  /* embedded, the host says where it goes and owns the head and the full
+     screen button; alone, it is the whole figure and owns both itself */
+  if (embedded) (o.host || fig).append(stage);
+  else {
+    fig.prepend(stage);
+    const head = el('div', 'ts-head');
+    head.append(el('span', 'ts-name', 'The Meter, Part by Part'),
+                el('span', 'ts-sub', 'sekonic l-308x · press a number'));
+    fig.prepend(head);
+  }
 
   const row = el('div', 'mg-row');
   const left = el('div', 'mg-pic');
@@ -259,6 +273,9 @@ function mountMeterGuide(fig) {
     });
   }
 
+  /* full screen from either view: the host's button lives on the host's
+     stage, and that stage is put away while this one is up */
   fsButton(stage, fig);
   say();
+  return { stage: stage, render: view.render, focus: () => cv.focus() };
 }

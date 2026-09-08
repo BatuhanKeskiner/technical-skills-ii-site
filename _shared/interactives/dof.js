@@ -12,6 +12,16 @@ function mountDof(fig) {
   const p = palette(fig);
   const stage = el('div', 'stage wide');
   fig.prepend(stage);
+
+  /* A NAME ON THE INSTRUMENT. In full screen the page's own heading is gone
+     and there is nothing on screen saying what this is. IG-01 02: the head is
+     the name and a three-noun eyebrow. Added to every instrument 08-09-2026 -
+     five of eleven had one, and on a wall the other six were anonymous. */
+  const head = el('div', 'ts-head');
+  head.append(el('span', 'ts-name', 'Depth of Field'),
+              el('span', 'ts-sub', 'aperture · distance · focal length'));
+  fig.prepend(head);
+
   const controls = el('div', 'controls');
   const caption = fig.querySelector('figcaption');
   fig.insertBefore(controls, caption);

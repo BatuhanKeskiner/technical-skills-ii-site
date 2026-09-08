@@ -107,6 +107,42 @@ function readout(fig, cells, extraCls) {
   return map;
 }
 
+/* A NOTE ROW: free text, written by the student, under the strip where a
+   readout would stand. The kit had no text entry until 08-09-2026, when
+   Batu asked for a box a note can be typed into; this is that box, once, for
+   every instrument that wants one. Returns the textarea.
+     noteRow(fig, { label, value, placeholder, onChange, rows }) */
+function noteRow(fig, opts) {
+  const o = opts || {};
+  /* 'memo', not 'note': the site has a .note block of its own */
+  const box = el('div', 'readout memo' + (o.cls ? ' ' + o.cls : ''));
+  const cell = el('div', 'span2');
+  cell.append(el('div', 'k', o.label || 'Note'));
+  const ta = el('textarea', 'v');
+  ta.rows = o.rows || 2;
+  ta.spellcheck = false;
+  if (o.placeholder) ta.placeholder = o.placeholder;
+  ta.value = o.value || '';
+  /* GROWS AS IT IS WRITTEN IN, when asked to: the box is as tall as its
+     words, never a scrollbar over a note. `ta.fit()` for a value set from
+     code. Batu, 08-09. */
+  ta.fit = () => {
+    if (!o.grow) return;
+    ta.style.height = 'auto';
+    ta.style.height = Math.max(ta.scrollHeight, 0) + 'px';
+  };
+  ta.addEventListener('input', () => { ta.fit(); if (o.onChange) o.onChange(ta.value); });
+  if (o.grow) { ta.style.overflow = 'hidden'; requestAnimationFrame(ta.fit); }
+  cell.append(ta);
+  box.append(cell);
+  /* a host puts the box somewhere else - on the stage, say - instead of the
+     readout's place under the strip */
+  if (o.host) { o.host.append(box); return ta; }
+  const cap = fig.querySelector('figcaption');
+  if (cap) fig.insertBefore(box, cap); else fig.append(box);
+  return ta;
+}
+
 /* A legend, placed in a stage corner. rows: [{c, label, val, kind}] */
 function legend(stage, rows, corner = 'tr') {
   const ov = el('div', 'overlay ' + corner);
@@ -200,6 +236,42 @@ function fsButton(stage, fig) {
   document.addEventListener('fullscreenchange', say);
   say();
   stage.append(b);
+  return b;
+}
+
+/* DARK AND LIGHT ARE A SWITCH. An instrument that can draw on both grounds
+   carries this beside Full screen, in the same corner and the same shape, and
+   like Full screen it says what it will do next: "Dark mode" while the ground
+   is light, "Light mode" while it is dark. The choice is the viewer's and is kept in
+   this browser under the key the instrument gives. Batu's rule, 08-09-2026:
+   a ground toggle is a switch on the instrument, never only a key.
+     groundButton(stage, fig, { key, onChange })
+   The instrument keeps drawing from palette(fig); this only flips the class
+   and calls back so the drawing re-reads its tones. */
+function groundButton(stage, fig, opts) {
+  const o = opts || {};
+  const b = el('button', 'fs gnd');
+  b.type = 'button';
+  const say = () => {
+    const lightOn = fig.classList.contains('light');
+    b.textContent = lightOn ? 'Dark mode' : 'Light mode';   /* the words are Batu's, 08-09 */
+    b.setAttribute('aria-pressed', String(!lightOn));
+    /* it stands to the left of Full screen, whose width changes with its word */
+    const fs = stage.querySelector('.fs:not(.gnd)');
+    b.style.right = fs ? (fs.offsetWidth + 6) + 'px' : '0';
+  };
+  b.addEventListener('click', () => {
+    const lightOn = !fig.classList.contains('light');
+    fig.classList.toggle('light', lightOn);
+    if (o.key) { try { localStorage.setItem(o.key, lightOn ? 'light' : 'dark'); } catch (e) { /* private */ } }
+    if (o.onChange) o.onChange(lightOn);
+    say();
+  });
+  document.addEventListener('fullscreenchange', say);
+  stage.append(b);
+  say();                       /* the word at once; a frame may not come in a hidden tab */
+  requestAnimationFrame(say);  /* and again once Full screen has its width */
+  b.refresh = say;
   return b;
 }
 
@@ -481,7 +553,17 @@ function panorama(src, horizon, onReady) {
 }
 
 /* A round pan/tilt pad. Reports the position as −1…1 on both axes. */
-function padControl(controls, { label, onChange, cls }) {
+/* A ROUND PAD IS GRABBED, NOT POINTED AT.
+   It used to map the pointer's place straight onto the value, so touching the
+   pad anywhere threw the camera to that angle before you had moved a
+   millimetre - and then every small movement crossed a big arc, because the
+   whole range is packed into a circle a hundred pixels wide. Two changes:
+   pressing takes hold of the knob where it already is and moves it BY the
+   drag, and the drag is geared down, so the pad is something you nudge.
+   `gain` is how much of the pointer's movement the knob takes; the default is
+   a little over half, which on a 100px pad is about 3° of pan per pixel
+   instead of 7. */
+function padControl(controls, { label, onChange, cls, gain }) {
   const ctl = el('div', 'ctl' + (cls ? ' ' + cls : ''));
   const lab = el('label', null, label + ' <span class="val"></span>');
   const pad = el('div', 'pad');
@@ -493,29 +575,42 @@ function padControl(controls, { label, onChange, cls }) {
   ctl.append(lab, pad);
   controls.append(ctl);
 
-  const api = { out: lab.querySelector('.val') };
+  /* the control block itself, so an instrument can put a pad away when the
+     thing it drives is not in the room - a Position pad on a photograph */
+  const api = { out: lab.querySelector('.val'), ctl: ctl, pad: pad };
   api.place = (x, y) => {
     const l = Math.hypot(x, y);
     if (l > 1) { x /= l; y /= l; }
     knob.style.left = (50 + x * 42) + '%';
     knob.style.top = (50 + y * 42) + '%';
   };
-  let on = false;
-  const set = (e) => {
+  let on = false, from = null;
+  const K = gain == null ? 0.30 : gain;
+  /* where the knob is now, read back off the element the instrument placed */
+  const knobAt = () => [
+    (parseFloat(knob.style.left) - 50) / 42 || 0,
+    (parseFloat(knob.style.top) - 50) / 42 || 0,
+  ];
+  const move = (e) => {
+    if (!from) return;
     const r = pad.getBoundingClientRect();
-    let x = ((e.clientX - r.left) / r.width - 0.5) / 0.42;
-    let y = ((e.clientY - r.top) / r.height - 0.5) / 0.42;
+    let x = from.x + ((e.clientX - from.px) / (r.width * 0.42)) * K;
+    let y = from.y + ((e.clientY - from.py) / (r.height * 0.42)) * K;
     const l = Math.hypot(x, y);
     if (l > 1) { x /= l; y /= l; }
     onChange(x, y);
   };
   pad.addEventListener('pointerdown', (e) => {
     if (document.body.classList.contains('design')) return;
-    on = true; pad.setPointerCapture(e.pointerId); set(e);
+    on = true;
+    const k = knobAt();
+    from = { x: k[0], y: k[1], px: e.clientX, py: e.clientY };
+    pad.setPointerCapture(e.pointerId);
+    /* NOTHING HAPPENS ON THE PRESS ITSELF. Grabbing is not an instruction. */
   });
-  pad.addEventListener('pointermove', (e) => { if (on) set(e); });
-  pad.addEventListener('pointerup', () => { on = false; });
-  pad.addEventListener('pointercancel', () => { on = false; });
+  pad.addEventListener('pointermove', (e) => { if (on) move(e); });
+  pad.addEventListener('pointerup', () => { on = false; from = null; });
+  pad.addEventListener('pointercancel', () => { on = false; from = null; });
   return api;
 }
 

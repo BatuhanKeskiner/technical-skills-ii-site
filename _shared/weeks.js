@@ -9,8 +9,13 @@
    Order is the teaching order. `slug` is the folder.
 
    `status` is where the week has got to, and the index shows it:
-     'done'  — finished, ready to teach
-     'wip'   — being written
+     'done'  — finished. A door, and the card says whether the site has it.
+     'open'  — a door, and the card says IN PROGRESS. For a week Batu wants
+               reachable while it is still being made. Added 08-09-2026: the
+               only way to give week 2 a door was 'done', which announced it
+               as published while we were working on it and while nothing had
+               been pushed at all.
+     'wip'   — no door. The address still works for him.
      'todo'  — not started
    ('live' is read as 'wip' so nothing written earlier breaks.)
    ============================================================ */
@@ -27,7 +32,7 @@ window.TS2_WEEKS = [
     slug: '02-composition-format',
     title: 'Composition & Format',
     desc: 'Aspect ratio, sensor and film size, crop factor, and what a crop costs. Gaze, composition, and the form exercise.',
-    status: 'wip',
+    status: 'open',
   },
 ];
 

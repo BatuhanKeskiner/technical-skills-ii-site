@@ -14,8 +14,9 @@
    ============================================================ */
 
 const TS_STOPS = [4, 5.6, 8, 11];
-/* Round numbers off a timer's own dial. */
-const TS_TIMES = [1, 2, 3, 4, 5, 7, 8, 9, 10];
+/* Round numbers off a timer's own dial. It went 5, 7 - the six was simply
+   missing, and a dial that skips a number is a dial nobody made. */
+const TS_TIMES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 /* Twelve seconds at f/8 is maximum black: the reference everything is measured
    against, so the numbers on screen are the ones a darkroom actually uses. */

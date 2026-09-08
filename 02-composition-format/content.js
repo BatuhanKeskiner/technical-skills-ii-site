@@ -45,17 +45,16 @@ window.TS2_WEEK = {
                 'Composition',
                 'Break*',
                 'Exercise · Form',
-                'The Test',
                 'Format · Assignment #1',
                 'End',
               ],
               classes: [
                 { name: 'PHft2A', group: 'Full time', when: 'Thursday 10.09 · morning',
-                  times: ['09:30', '10:30', '10:40', '11:30', '11:50', '12:30'] },
+                  times: ['09:30', '10:30', '10:40', '11:50', '12:30'] },
                 { name: 'PHft2B', group: 'Full time', when: 'Thursday 10.09 · afternoon',
-                  times: ['13:30', '14:30', '14:40', '15:30', '15:50', '16:30'] },
+                  times: ['13:30', '14:30', '14:40', '15:50', '16:30'] },
                 { name: 'PHptc2', group: 'Part time', when: 'Monday 14.09 · afternoon',
-                  times: ['13:30', '14:30', '14:40', '15:30', '15:50', '16:30'] },
+                  times: ['13:30', '14:30', '14:40', '15:50', '16:30'] },
               ],
             },
             { type: 'todo', fix: true, html: '<b>Draft timetable</b> — minutes to be fixed by Batu. Same plan for all three groups; PHptc2 takes the lesson the following Monday.' },
@@ -74,27 +73,48 @@ window.TS2_WEEK = {
       head: { kicker: 'Part A · Composition', standfirst: 'An open three-dimensional world, a bounded two-dimensional frame.' },
       steps: [
         {
-          id: 's-a1',
-          layout: 'stacked',
-          title: 'Photography: 3D → 2D',
-          blocks: [
-            { type: 'line', html: '3D open world → 2D constrained frame' },
-            { type: 'demo', id: 'transform', fig: 1,
-              caption: 'Transformation — the world behind the camera, and the frame the camera makes of it on its screen. Drag the picture or the pad to pan and tilt; the slider zooms.' },
-            { type: 'todo', html: '<b>Interactive v6</b> — pan · tilt on a round pad (drag inside the circle, or drag the picture), zoom on a slider; fullscreen keeps the stage’s aspect ratio (theatre). <i>Photograph</i>: the 360° panorama, blurred. <i>3D model</i>: the space from behind and above, the camera a small model with its field of view. Batu picks one space; the other goes.' },
-          ],
-        },
-        {
           id: 's-a2',
           layout: 'stacked',
           title: 'Transformation',
           blocks: [
-            { type: 'line', html: 'Real world → lens → sensor → display → editing → print. The variables in between.' },
-            { type: 'text', paras: [
-              'The world is three-dimensional; from the sensor onwards everything is two-dimensional. The variables on the right are the controls you have over the result. Some belong to this week — position, focal length, framing, time — and the rest (exposure, focus, depth of field, dynamic range, sensor type) come in the following weeks. Keep the list; the course is the list.',
+            { type: 'line', place: { row: 1, col: 1, w: 'full' }, html: 'Real world → lens → sensor → display → editing → print. The variables in between.' },
+            { type: 'text', place: { row: 2, col: 2, w: '1/2' }, paras: [
+              'The world is three-dimensional; from the sensor onwards everything is two-dimensional. The variables on the arrows are the controls you have over the result. Some belong to this week — position, focal length, framing, time — and the rest (exposure, focus, depth of field, dynamic range, sensor type) come in the following weeks. Keep the list; the course is the list.',
             ] },
-            { type: 'figure', src: 'deck-04.jpg', alt: 'Real World → Lens → Sensor / Film → Display / Scan → Editing → Printing, with the list of variables' },
-            { type: 'todo', html: '<b>Interactive (agreed)</b> — one scene; sliders for camera rotation and focal length change what the camera sees; the result appears on the screen/viewfinder of a real camera image.' },
+            /* Drawn, not a screenshot of last year's slide. Every variable is
+               on the arrow it acts on: nothing about the sensor is written
+               beside the lens, and the chain can be read down without
+               crossing to a list on the other side of the page. */
+            { type: 'chain', place: { row: 2, col: 1, w: '1/2', v: 'middle' },
+              stages: [
+                { name: 'Real world', note: '3 dimensional' },
+                { name: 'Lens' },
+                { name: 'Sensor / Film', note: '2 dimensional' },
+                { name: 'Display / Scan' },
+                { name: 'Editing' },
+                { name: 'Printing' },
+              ],
+              links: [
+                ['Time', 'Position'],
+                ['Filters', 'Focal length', 'Depth of field', 'Focus'],
+                ['Framing', 'Sensor type', 'Exposure', 'Dynamic range'],
+                [], [],
+              ] },
+          ],
+        },
+        {
+          id: 's-a1',
+          layout: 'stacked',
+          title: 'Photography: 3D → 2D',
+          blocks: [
+            /* The line that stood here read "3D open world → 2D constrained
+               frame". The page is called Photography: 3D → 2D and the stage
+               writes both halves on itself, at the two corners they belong
+               to. Three sayings of one thing, and the one that was only words
+               went. */
+            { type: 'demo', id: 'transform', space: 'model', size: 'page', fig: 1,
+              caption: 'The room, the camera standing in it, and the cone in front of the lens — that cone is the frame. Walk with W A S D, look with the arrow keys, and the slider changes the focal length.' },
+            { type: 'todo', html: '<b>Both spaces are in.</b> <i>Photograph</i> — the 360° panorama, blurred. <i>3D model</i> — the room from behind and above, the camera a small model with its field of view drawn as a cone. Ported from Batu’s own build in <code>Lectures (old)</code>. Still open: the panorama is the San Gregorio placeholder.' },
           ],
         },
         {
@@ -103,8 +123,8 @@ window.TS2_WEEK = {
           title: 'What the camera sees',
           blocks: [
             { type: 'line', html: 'Turn the camera, change the lens: the same world, a different picture.' },
-            { type: 'demo', id: 'viewfinder', fig: 2,
-              caption: 'One scene, one camera. Rotation moves the camera through the world; focal length decides how much of it the frame holds. The result is what appears on the camera’s own screen.' },
+            { type: 'demo', id: 'transform', space: 'photo', size: 'page', fig: 2,
+              caption: 'The same instrument standing inside a photograph instead of a model. You cannot walk here — a photograph has no depth to walk into — so all that is left is where you point and how much you take.' },
           ],
         },
         {
@@ -116,7 +136,14 @@ window.TS2_WEEK = {
             { type: 'text', paras: [
               'Everything two-dimensional has two components: a height and a width. The image lives inside that rectangle and nowhere else. Composition is simply the question of how things are placed inside it — and how consciously that placing is done.',
             ] },
-            { type: 'figure', src: 'deck-05.jpg', alt: 'A frame with X (height) and Y (width) arrows' },
+            /* Drawn rather than photographed, and draggable rather than
+               fixed: the corner is pinned at the top left and pulled from the
+               bottom right, so the two numbers are the two directions a hand
+               moves in. The landscape behind does not scale - the frame CUTS
+               it, which is the difference between a frame and a zoom and the
+               thing the page before this one is about. */
+            { type: 'demo', id: 'frame', size: 'page', fig: 3,
+              caption: '' },
           ],
         },
       ],
@@ -141,13 +168,15 @@ window.TS2_WEEK = {
               'A painter starts from an empty canvas: the canvas is chosen first, the objects are sketched into it, and the distribution of things inside the frame is settled before the work is made. Composition is at the very beginning of the process. A photographer does the opposite: the world already exists, and the frame is a section cut out of it and simplified. The distribution of things is not decided in advance. Film is lens-based too, but on a produced film everything inside the frame passes through the hands of tens or hundreds of people — in the final frame, everything was put there on purpose.',
               'So the photographer’s relationship with composition starts by a more indirect route: not by placing things, but by choosing where to stand and what to leave out.',
             ] },
-            { type: 'trio',
-              big: { src: 'a3-painting.jpg', alt: 'An unfinished painted portrait, the sketched composition still visible' },
-              small: [
-                { src: 'a3-film-set.jpg', alt: 'A film set in a warehouse: crew, lights, monitor, camera' },
-                { src: 'a3-viewfinder.jpg', alt: 'A twin-lens reflex on the beach, the scene framed in its waist-level finder' },
-              ],
-              caption: 'Left: unfinished portrait, the composition sketched before the paint — painter and source to be credited. Right: a film set; a twin-lens reflex framing the shore — sources to be credited.' },
+            /* Three at once made the class read them as a comparison chart.
+               One at a time, in the order the paragraph names them, and the
+               picture is looked at rather than scanned. No captions: the
+               paragraph beside them already says which is which. */
+            { type: 'carousel', images: [
+              { src: 'a3-painting.jpg', alt: 'An unfinished painted portrait, the sketched composition still visible' },
+              { src: 'a3-film-set.jpg', alt: 'A film set in a warehouse: crew, lights, monitor, camera' },
+              { src: 'a3-viewfinder.jpg', alt: 'A twin-lens reflex on the beach, the scene framed in its waist-level finder' },
+            ] },
           ],
         },
       ],
@@ -173,14 +202,20 @@ window.TS2_WEEK = {
         },
         {
           id: 's-a5b',
+          cls: 'white',
           layout: 'stacked',
           title: 'The Eye as a Camera',
+          /* The engraving is on pure white and was sitting on the paper
+             ground with its own edge showing, which made it a picture OF an
+             engraving. On a white page the plate has no edge, so the eye is
+             on the page rather than pasted to it. Words after the picture:
+             the eye is the thing to look at first. */
           blocks: [
+            { type: 'figure', src: 'a4-eye-anatomy.jpg', alt: 'Engraving of a human eye', cls: 'mid' },
             { type: 'line', html: 'Lens · Aperture · Sensor · Focus' },
             { type: 'text', paras: [
               'The parallels are exact enough to use as a vocabulary: the lens is the lens, the iris is the aperture, the retina is the sensor, the eye muscles are the focus.',
             ] },
-            { type: 'figure', src: 'a4-eye-anatomy.jpg', alt: 'Engraving of a human eye' },
           ],
         },
         {
@@ -188,20 +223,42 @@ window.TS2_WEEK = {
           layout: 'stacked',
           title: 'Human Vision Specs',
           blocks: [
-            { type: 'line', place: { row: 1, col: 1, w: 'full' }, html: 'The eye is not a single-frame camera.' },
-            { type: 'text', place: { row: 1, col: 1, w: 'full' }, paras: [
-              'Every figure below is true and every one of them is misleading: the eye is not a single-frame camera. It moves in small jumps and only appears to see everything at once.',
-            ] },
-            { type: 'sheet', title: 'As a camera', place: { row: 2, col: 1, w: '1/3', ruled: true, rgrow: true, fillH: true }, items: [
+            { type: 'line', place: { row: 1, col: 1, w: 'full' }, html: 'If your eyes would be a camera' },
+            /* The eye written out as if it were a body somebody could buy.
+               COLOUR: ≈ 10 million distinguishable colours is the CIE 1931
+               figure, which is about 24 bits. It is the number usually quoted
+               and it is not settled — other measurements put it nearer 2
+               million, about 20 bits — so it is given as an approximation and
+               the paragraph above already says every figure here misleads. */
+            { type: 'sheet', title: 'As a camera', place: { row: 2, col: 2, w: '1/2', ruled: true, rgrow: true, fillH: true }, items: [
+              /* ONE FACT PER ROW. "automatic · variable aperture" and
+                 "≈ 10 million · about 24-bit" both wrapped in a third of the
+                 page and broke mid-phrase, which is how a spec sheet stops
+                 looking like one. Split, they fit on one line each. */
               ['Resolution', '576 MP'],
-              ['Angle of view', 'up to 200°'],
-              ['Dynamic range', '≈ 22 stops'],
+              ['Colour', '≈ 10 million'],
+              ['Colour depth', '≈ 24-bit'],
+              ['Sight', '3D'],
+              ['Angle of view', '120–200° · 22 mm'],
+              ['Central field', '40–60°'],
               ['Sharp field', '≈ 2°'],
+              ['ISO', '1–800'],
+              ['Dynamic range', '22–24 stops'],
+              ['White balance', 'automatic'],
+              ['Exposure', 'automatic'],
+              ['Aperture', 'variable'],
               ['Focus', 'automatic'],
-              ['Frame rate', 'none — continuous', 'out'],
             ] },
-            { type: 'figure', src: 'deck-10.jpg', alt: 'Human Vision Specs and the visual field diagram', place: { row: 2, col: 2, w: '2/3', fillH: true } },
-            { type: 'todo', fix: true, html: '<b>Image</b> — the slide on the right now repeats the spec column on the left; only the visual-field diagram is still wanted from it. Batu adds the collage of competing claims about these “specs”, and the diagram on its own.' },
+            /* THE DIAGRAM ON ITS OWN. Last year's slide carried the two
+               field-of-view drawings, a second copy of the spec column beside
+               them, and a paragraph explaining both - so the page said
+               everything twice and the drawings were the smallest thing on
+               it. Cut to the drawings and desaturated, they are the only
+               thing here the words cannot say. */
+            { type: 'figure', src: 'a5-visual-field.jpg',
+              alt: 'Two diagrams of the human visual field: from above, binocular vision and symbol recognition; from the side, upper and lower field with the limits of eye rotation',
+              place: { row: 2, col: 1, w: '1/2', v: 'middle', align: 'left' } },
+            { type: 'todo', fix: true, html: '<b>Image</b> — the visual-field diagram is in, cut from last year’s slide and desaturated. Still wanted from Batu: the collage of competing claims about these “specs”.' },
           ],
         },
         {
@@ -242,7 +299,7 @@ window.TS2_WEEK = {
           title: 'How we look',
           blocks: [
             { type: 'demo', id: 'fovea', fig: 3,
-              caption: 'A photograph seen the way the eye sees it: sharp where you are fixating, vague everywhere else. Each click moves the fixation; the trail is the route your gaze has taken.' },
+              caption: 'A picture seen the way the eye sees it: sharp where you are looking, falling away to vague and almost colourless at the edge. The sharp patch follows the mouse; a click leaves a mark, and the marks joined up are the route your gaze has taken.' },
           ],
         },
       ],
@@ -273,7 +330,7 @@ window.TS2_WEEK = {
             { type: 'text', paras: [
               'Ilya Repin, <i>Unexpected Visitors</i>, 1884.',
             ] },
-            { type: 'reveal', src: 'deck-14.jpg', seconds: 15,
+            { type: 'reveal', src: 'a6-repin.jpg', seconds: 15,
               alt: 'Ilya Repin, Unexpected Visitors (1884)',
               cover: 'Click to see the painting for 15 seconds' },
           ],
@@ -305,7 +362,7 @@ window.TS2_WEEK = {
             { type: 'text', paras: [
               'With a question in mind the eyes take a different route: Yarbus found that the same viewer, given a different task, produced a different scan path over the same painting. What you are looking for changes what you look at.',
             ] },
-            { type: 'reveal', src: 'deck-17.jpg', seconds: 15,
+            { type: 'reveal', src: 'a6-repin.jpg', seconds: 15,
               alt: 'Ilya Repin, Unexpected Visitors, shown again',
               cover: 'Click to see the painting for 15 seconds' },
             { type: 'todo', html: '<b>Interactive candidate</b> — choose a task (how wealthy is the family? how old are they? what were they doing before he came in?) and see Yarbus’s scan path for that task.' },
@@ -388,7 +445,7 @@ window.TS2_WEEK = {
             { type: 'text', paras: [
               'Architecture as a frame within the frame: the receding arches and the floor pattern all converge on one vanishing point, and it sits exactly between the two central figures, so the eye arrives at Plato and Aristotle whichever way it enters. The two are also the picture’s argument — Plato points upward, to the ideal and the divine; Aristotle holds his hand flat over the ground, the earthly and the observed. The crowd is sorted the same way: on Plato’s side the philosophers of the abstract (Pythagoras writing, Heraclitus brooding on the steps), on Aristotle’s the empirical sciences (Euclid bending over his slate, Ptolemy with the globe). Left and right groups mirror each other in mass; the steps and the parapet make horizontal bands that keep the whole crowd readable; the statues of Apollo and Minerva in the niches repeat the split above the heads. Nothing here is accidental: the geometry carries the meaning.',
             ] },
-            { type: 'figure', src: 'deck-22.jpg', alt: 'Raphael, The School of Athens',
+            { type: 'figure', src: 'a7-school-of-athens.jpg', alt: 'Raphael, The School of Athens',
               caption: 'Raphael, <i>The School of Athens</i>, 1509–11.' },
           ],
         },
@@ -400,7 +457,25 @@ window.TS2_WEEK = {
             { type: 'text', paras: [
               'Three groups, one axis: the triangles hold the figures apart and tie them together at the same time.',
             ] },
-            { type: 'figure', src: 'deck-23.jpg', alt: 'Botticelli, The Birth of Venus, with triangular construction lines',
+            { type: 'figure', src: 'a7-birth-of-venus.jpg', alt: 'Botticelli, The Birth of Venus',
+            /* The lines are not in the picture. They were read off last year's
+               slide - the white web drawn on deck-23 - and turned into points,
+               so the painting can be shown clean first and the analysis put
+               over it afterwards, one set at a time. */
+            overlay: { open: '', sets: [
+                { id: 'tri', name: 'Triangles', lines: [
+                  [0.0047, 0.0088, 0.9945, 0.4386],
+                  [0.0047, 0.7494, 0.9826, 0.9912],
+                  [0.5607, 0.0075, 0.9945, 0.9912],
+                  [0.0047, 0.0113, 0.4361, 0.9912],
+                  [0.5584, 0.0075, 0.0047, 0.7444],
+                  [0.5591, 0.0075, 0.2516, 0.9912],
+                  [0.7468, 0.0075, 0.4385, 0.9912],
+                  [0.7476, 0.0088, 0.9945, 0.99],
+                  [0.0047, 0.015, 0.2508, 0.9912],
+                  [0.5599, 0.0075, 0.9945, 0.4373],
+                ] },
+              ] },
               caption: 'Botticelli, <i>The Birth of Venus</i>, c. 1485.' },
           ],
         },
@@ -755,26 +830,24 @@ window.TS2_WEEK = {
     /* ================================================== Close */
     {
       id: 'c-close',
-      title: 'Test · Assignment · Next week',
+      title: 'Assignment · Next week',
       n: '',
-      head: { standfirst: 'What is checked, what goes out, and what comes next.' },
+      head: { standfirst: 'What goes out, and what comes next.' },
       steps: [
-        {
-          id: 's-test',
-          layout: 'argument',
-          title: 'The Test',
-          blocks: [
-            { type: 'line', html: 'In-class check.' },
-            { type: 'todo', fix: true, html: '<b>Content to come</b> — question set from Batu.' },
-          ],
-        },
         {
           id: 's-ass',
           layout: 'argument',
           title: 'Photogram',
           blocks: [
             { type: 'tag', tone: 'signal', place: { row: 1, col: 1, w: 'full' }, text: 'Assignment #1' },
-            { type: 'line', place: { row: 1, col: 1, w: 'full' }, html: 'Out today · due Week #4, 24.09.' },
+            /* NO DATE HERE. It said "due Week #4, 24.09." while the
+               assignments board said Week #5, 01.10 - two places disagreeing
+               about a deadline, which is exactly the disagreement a student
+               acts on. CLAUDE.md: an assignment never carries its own dates;
+               they come from ASSIGNMENTS in make-site.py so the board and the
+               brief cannot disagree. The lecture says it goes out; the brief
+               says when it is due. */
+            { type: 'line', place: { row: 1, col: 1, w: 'full' }, html: 'Out today. The brief carries the date.' },
             { type: 'text', place: { row: 2, col: 1, w: '1/2', ruled: true, rgrow: true }, paras: [
               'A photogram is an exposure with no lens. What reaches the paper is the only thing recorded, which makes it the shortest possible route to the two questions this week is about: what shape is the frame, and what is placed inside it.',
             ] },

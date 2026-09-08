@@ -80,7 +80,7 @@ function mountTestStrip(fig) {
   /* A NAME ON THE INSTRUMENT. In full screen the page's own heading is gone
      and there is nothing on screen saying what this is. */
   const head = el('div', 'ts-head');
-  head.append(el('span', 'ts-name', 'Test strip'),
+  head.append(el('span', 'ts-name', 'Test Strip'),
               el('span', 'ts-sub', 'enlarger timer · aperture · paper'));
   fig.prepend(head);
 
@@ -997,9 +997,21 @@ function mountTestStrip(fig) {
     const lit = state.run ? state.run.upto : 0;
     ctx.save();
     ctx.globalAlpha = alpha;
+    /* AND THEY OVERLAP. Two filled paths that share an edge do NOT meet on a
+       canvas: each is antialiased against the background at about half
+       coverage, and a half and a half leave a gap - so a hairline of whatever
+       is behind shows through every join. Behind these is the lit paper, so
+       every join came out as a bright white line ruled down the strip. The
+       flat strip has had `bw + 0.5` for this all along; the board's bands were
+       laid edge to edge and had not. Each band now reaches half a band into
+       the next, which cannot fail at any size - the next band is painted after
+       it and covers the overlap exactly - and the last one stops at the
+       paper's edge. */
+    const lap = 0.5 / n;
     for (let i = 0; i < n; i++) {
-      const a = onBoard(box, i / n, 0), b = onBoard(box, (i + 1) / n, 0);
-      const c = onBoard(box, (i + 1) / n, 1), d = onBoard(box, i / n, 1);
+      const u1 = Math.min(1, (i + 1) / n + lap);
+      const a = onBoard(box, i / n, 0), b = onBoard(box, u1, 0);
+      const c = onBoard(box, u1, 1), d = onBoard(box, i / n, 1);
       ctx.beginPath();
       ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]);
       ctx.lineTo(c[0], c[1]); ctx.lineTo(d[0], d[1]); ctx.closePath();
