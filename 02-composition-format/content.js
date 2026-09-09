@@ -439,16 +439,6 @@ window.TS2_WEEK = {
           ],
         },
         {
-          id: 's-a21',
-          layout: 'statement',
-          title: 'Composition in Photography',
-          centred: true,
-          blocks: [
-            { type: 'quote', who: 'Ernst Haas',
-              html: '“My theory of composition? Simple: do not release the shutter until everything in the viewfinder feels just right.”' },
-          ],
-        },
-        {
           id: 's-a4',
           layout: 'split',
           title: 'Painting · Film · Photography',
@@ -540,6 +530,16 @@ window.TS2_WEEK = {
          subtitle'da ayni cumle tekrar ediyor ... subtitle'i kaldir." (W15) */
       head: { kicker: 'Part A · Composition' },
       steps: [
+        {
+          id: 's-a21',
+          layout: 'statement',
+          title: 'Composition in Photography',
+          centred: true,
+          blocks: [
+            { type: 'quote', who: 'Ernst Haas',
+              html: '“My theory of composition? Simple: do not release the shutter until everything in the viewfinder feels just right.”' },
+          ],
+        },
         {
           id: 's-a22',
           layout: 'stacked',
