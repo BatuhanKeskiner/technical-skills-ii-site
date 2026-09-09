@@ -246,7 +246,7 @@ function mountTransform(fig) {
         state.tilt = Math.max(-lim, Math.min(lim, state.tilt));
         /* S18: it keeps its place and goes off - hiding it moved the
            two cells to its right every time the space was switched */
-        ctlOff(walkPad.ctl, state.space !== 'model');
+        if (walkPad) ctlOff(walkPad.ctl, state.space !== 'model');
         view.render();
       },
     });
@@ -257,7 +257,13 @@ function mountTransform(fig) {
      it too. A pad on top of both was a third way to do one thing, and it cost
      the strip forty pixels it does not have - IG-01 11's verdict drawing for
      this instrument shows PAN · TILT as a value, and that is what it is. */
-  const pad = valueCell(controls, { label: 'Pan · tilt' });
+  /* PAN AND TILT ARE NOT WRITTEN DOWN AT ALL. They were a reading in the
+     strip; his note of 09-09-2026 struck them from the photograph - "Pan ve
+     Tilt bilgisine de ihtiyacimiz yok sadece zooma ihtiyacimiz var ... bu
+     bilginin bir islevi var mi? yok" - and on 09-09-2026 from the model too.
+     The camera turning is the whole of what the stage shows; a number beside
+     it is the same sentence said twice (W15). The keys are printed on the
+     stage and the drag turns it, so nothing is lost with the cell. */
 
   /* WHERE IT STANDS, on a plan of the room. The first pad is where the camera
      LOOKS; this one is where it IS, and the two are the only things a
@@ -265,7 +271,12 @@ function mountTransform(fig) {
      on the floor, so walking with the keys moves it and you can see yourself
      move. There is no such pad in the photograph: a panorama is one point in
      the world and staying there is the whole nature of it. */
-  const walkPad = padControl(controls, {
+  /* AND WHERE IT STANDS IS A CONTROL THE PHOTOGRAPH DOES NOT HAVE. A
+     panorama is one point in the world; there is nowhere to walk to. On a
+     page that is pinned to the photograph the pad is not built at all - it
+     is not a state this instrument can be in, so nothing moves when it is
+     missing (S18 is about states, not about pages). */
+  const walkPad = (pinned === 'photo') ? null : padControl(controls, {
     label: 'Position',
     onChange: (x, y) => {
       state.x = Math.max(-X_LIM, Math.min(X_LIM, x * X_LIM));
@@ -273,7 +284,7 @@ function mountTransform(fig) {
       view.render();
     },
   });
-  ctlOff(walkPad.ctl, state.space !== 'model');
+  if (walkPad) ctlOff(walkPad.ctl, state.space !== 'model');
 
   const fZoom = slider(controls, {
     /* NOT `wide`, which is what slider() defaults to. A wide control takes the
@@ -315,10 +326,11 @@ function mountTransform(fig) {
   const hfov = () => 2 * Math.atan(18 / state.f);
 
   function sync() {
-    pad.textContent = state.pan + '° · ' + state.tilt + '°';
-    walkPad.out.textContent = state.x.toFixed(1) + ' · ' + state.z.toFixed(1) + ' m';
-    walkPad.place(state.x / X_LIM,
-      -((state.z - (Z_FWD + Z_BACK) / 2) / ((Z_FWD - Z_BACK) / 2)));
+    if (walkPad) {
+      walkPad.out.textContent = state.x.toFixed(1) + ' · ' + state.z.toFixed(1) + ' m';
+      walkPad.place(state.x / X_LIM,
+        -((state.z - (Z_FWD + Z_BACK) / 2) / ((Z_FWD - Z_BACK) / 2)));
+    }
   }
 
   /* ---- WALKING ---------------------------------------------------------
@@ -498,7 +510,17 @@ function mountTransform(fig) {
     const cx = state.space === 'model'
       ? F.x + F.w - cw - F.w * 0.015
       : F.x + (F.w - cw) / 2;
-    const cy = F.y + F.h - chh * 0.88;
+    /* AND HOW MUCH OF IT YOU SEE. It used to be cut off at the bottom in both
+       spaces - the body ran 12% of its own height past the floor - which read
+       as a photograph of half a camera. His round of 09-09-2026: "Move the
+       camera higher so we can see the entire camera body" in the model, and
+       "Center the cameras position horiz and vertically" in the photograph.
+       So in the model it stands ON the floor, whole; in the photograph it is
+       in the middle of the picture, whole, because there is nothing behind it
+       that needs the room. */
+    const cy = state.space === 'model'
+      ? F.y + F.h - chh - F.h * 0.02
+      : F.y + (F.h - chh) / 2;
 
     const sx = Math.round(cx + (T_SCREEN.x - T_BODY.x) * scale);
     const sy = Math.round(cy + (T_SCREEN.y - T_BODY.y) * scale);

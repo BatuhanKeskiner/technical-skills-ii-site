@@ -18,6 +18,11 @@ function css(name, fallback) {
 }
 
 /* A control-bar slider. Returns the input. */
+/* A ONE EURO COIN IS 23.25 MM ACROSS, and it is the only ruler a student
+   always has on them. Two instruments draw it at their own scale, so the
+   number lives here rather than in either of them. */
+const EURO_MM = 23.25;
+
 /* S18 · A VALUE NEVER CHANGES THE SIZE OF THE THING THAT HOLDS IT.
    "3.0 m" and "10.0 m" are not the same width, so a slider whose value was
    read out beside its name made its own cell grow as it was dragged, and the
@@ -200,12 +205,20 @@ function stepper(controls, opts) {
   if (i < 0) i = 0;
   const fmt = o.format || ((v) => String(v));
 
+  /* PLUS AND MINUS ARE FOR A QUANTITY. His rule of 09-09-2026: "+ ve - degil
+     oklar ... burada bir seyi arttirmiyoruz, degistiriyoruz." A stepper that
+     walks f/2.8 to f/4 is making a number bigger and says so with a +; one
+     that walks Four Thirds to APS-C is changing the thing, not increasing it,
+     and says so with an arrow. The ladder decides: all numbers, plus and
+     minus; anything else, arrows. `arrows: true|false` overrides. (C21) */
+  const walks = o.arrows != null ? o.arrows
+    : !lad.every((v) => typeof v === 'number' || (v !== '' && !isNaN(+v)));
   const ctl = el('div', 'ctl stp' + (o.cls ? ' ' + o.cls : ''));
   ctl.append(el('label', null, o.label));
   const row = el('div', 'stp-row');
-  const dn = el('button', 'st', '−');
+  const dn = el('button', 'st', walks ? '◀' : '−');
   const val = el('span', 'stp-v');
-  const up = el('button', 'st', '+');
+  const up = el('button', 'st', walks ? '▶' : '+');
   [dn, up].forEach((b) => { b.type = 'button'; });
   row.append(dn, val, up);
   ctl.append(row);
@@ -544,6 +557,85 @@ function palette(scope) {
     wash: scoped(scope, '--k-wash', 'rgba(242,242,238,0.06)'),
     band: scoped(scope, '--k-band', 'rgba(228,255,26,0.14)'),
   };
+}
+
+/* ============================================================
+   W4 · WORDS CLAUDE WROTE, WAITING FOR HIM
+   ------------------------------------------------------------
+   His rule, 08-09-2026: "Review'imdan gecene kadar da turuncu
+   yap textleri, ve altlarina bir tik koy." It was law and it had
+   no machinery, so generated sentences went onto pages looking
+   exactly like his own. This is the machinery, and it is small:
+
+     REVIEW.json at the root lists every line Claude wrote, by
+     key, true once he has ticked it. The page reads it; an
+     unticked line is orange and carries a tick under it; the
+     tick POSTs to the working copy's server, which flips the
+     key. make-site.py --push refuses while any key is false, so
+     the rule's second half - "publish etme" - is enforced by
+     the thing that publishes rather than by memory.
+
+   Off the working copy there is no REVIEW.json, the fetch fails,
+   and nothing is marked: the build has already guaranteed that
+   what shipped was ticked.
+   ============================================================ */
+const TS2_REVIEW = { map: null, ready: false, waiting: [] };
+(function loadReview() {
+  const done = (j) => {
+    TS2_REVIEW.map = (j && j.approved) || null;
+    TS2_REVIEW.ready = true;
+    const q = TS2_REVIEW.waiting.splice(0);
+    q.forEach((f) => f());
+  };
+  try {
+    fetch('/REVIEW.json', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then(done)
+      .catch(() => done(null));
+  } catch (e) { done(null); }
+})();
+
+/* true when the line may be shown as his: either there is no register at all
+   (the published site) or he has ticked this key. */
+function reviewed(key, then) {
+  const ask = () => then(!TS2_REVIEW.map || TS2_REVIEW.map[key] === true);
+  if (TS2_REVIEW.ready) ask(); else TS2_REVIEW.waiting.push(ask);
+}
+
+/* Mark a node as text Claude wrote. Orange, with a tick beneath it, until he
+   has approved it. `key` is what REVIEW.json is keyed by. */
+function pending(node, key) {
+  if (!node) return;
+  reviewed(key, (ok) => {
+    node.classList.toggle('gen-say', !ok);
+    const host = node.parentElement;
+    if (!host) return;
+    /* THE TICK BELONGS TO ITS OWN LINE. It is found by the key, not by being
+       the only one in the box - two generated paragraphs in one text block
+       shared a single tick, and ticking it approved whichever of the two had
+       been drawn last. It is inserted directly after the line it is about, so
+       "altlarina bir tik koy" is true of each of them. */
+    let tick = host.querySelector('.gen-tick[data-key="' + key + '"]');
+    if (ok) { if (tick) tick.remove(); return; }
+    if (tick) return;
+    tick = el('button', 'gen-tick', '<span class="tk">✓</span> claude wrote this');
+    tick.type = 'button';
+    tick.dataset.key = key;
+    tick.title = 'Approve this line';
+    tick.addEventListener('click', () => {
+      const k = tick.dataset.key;
+      fetch('/__approve', {
+        method: 'POST',
+        body: JSON.stringify({ key: k }),
+      }).then((r) => {
+        if (!r.ok) return;
+        if (TS2_REVIEW.map) TS2_REVIEW.map[k] = true;
+        node.classList.remove('gen-say');
+        tick.remove();
+      }).catch(() => {});
+    });
+    node.insertAdjacentElement('afterend', tick);
+  });
 }
 
 /* Dashed / solid hairline helpers. */

@@ -42,16 +42,18 @@ function mountFrame(fig) {
      readout looked like a broken measurement rather than a ratio. */
   const state = { w: 0.62, h: 0.58, hot: false, set: false };
 
-  /* ONE ROW, ONE SENTENCE — IG-01 07, at the three gates.
-       Width and Height failed G1: the drag sets them, and a number written
-       over the control that sets it is a second thing to read. They were in
-       here because they were easy to compute, which is not a reason.
-       Ratio passes all three: nobody sets it (G1), nothing in the picture
-       draws it (G2), and it is what the student carries into Part B, where
-       the shape of the frame is the subject (G3). */
+  /* WIDTH AND HEIGHT STAY. They went out with the pixels on 09-09-2026 and
+     that was one instruction too far - "width and height sunumda olacakti sen
+     sanirim yanlis anlayip kaldirdin tamamen". What he struck was the pixel
+     count, which is a fact about this screen and not about the frame; the two
+     sides themselves are the instrument's name and half its subject.
+     They come back as a share of the field - how much of the world you kept -
+     which is a real second reading and not the ratio said twice (W15). Two
+     cells, which is the readout's budget: the pair, and the shape they make. */
   const out = readout(fig, [
-    { id: 'ar', key: 'Ratio', cls: 'hi', wide: true },
-  ], 'one');
+    { id: 'wh', key: 'Width · height' },
+    { id: 'ar', key: 'Ratio', cls: 'hi' },
+  ]);
 
   const view = canvas(stage, draw);
   fsButton(stage, fig);
@@ -128,8 +130,17 @@ function mountFrame(fig) {
     ctx.restore();
   }
 
+  /* THE FRAME IS FIXED AT THE CENTRE and grows out of it in both directions.
+     It used to be pinned at the top left and pulled from the bottom right,
+     which put the picture in one corner of the stage and left the other three
+     empty. His note of 09-09-2026: "su cerceve ortaya sabitlenmeli" - and the
+     house rule underneath it, that a picture sits in the middle of the space
+     it has. Growing from the centre also says the true thing about a frame:
+     it opens around what you are pointing at, it does not unroll from a
+     corner. */
   function box(F) {
-    return { x: F.x, y: F.y, w: F.w * state.w, h: F.h * state.h };
+    const w = F.w * state.w, h = F.h * state.h;
+    return { x: F.x + (F.w - w) / 2, y: F.y + (F.h - h) / 2, w: w, h: h };
   }
 
   function draw(ctx, w, h) {
@@ -238,16 +249,35 @@ function mountFrame(fig) {
     const r = ratio(B.w, B.h);
     /* the sentence, in the instrument's own terms: the shape, and then the two
        numbers it came out of - which is the whole lesson of the page */
-    out.ar.textContent = r + '  \u00b7  ' + Math.round(B.w) + ' \u00d7 ' + Math.round(B.h) + ' px';
+    /* THE SHAPE, AND NOT THE PIXELS. The two sides are given in ONE unit -
+       the height of the field is a hundred - so the pair and the ratio beside
+       it agree with each other: 150 x 100 is 3:2 and can be checked by eye.
+       Read them as a share of each axis instead and they do not agree (a 3:2
+       frame in a wide field came out "49% x 82%"), which reads as a fault in
+       the instrument. Nothing here is a pixel count: "Remove pixel
+       information", his round of 09-09-2026. Padded to three characters so
+       the cell cannot change width as the numbers run (S18). */
+    const u = (v) => String(Math.round(v)).padStart(3, ' ');
+    out.wh.textContent = u(B.w / F.h * 100) + ' · ' + u(B.h / F.h * 100);
+    out.ar.textContent = r;
   }
 
   /* ---- dragging the corner, and nothing else ---- */
   const clamp = (v) => Math.max(FR_MIN, Math.min(1, v));
+  /* THE JUMP. dragArea reports the distance from where the hand GRABBED, not
+     from the last move - so adding it to the frame on every pointermove added
+     the same distance again and again and the corner ran away from the
+     cursor. His round of 09-09-2026: "Drag option works very buggy and
+     jumpy." The size at the moment of the grab is kept, and every move sets
+     the frame from that, so the corner stays under the hand. */
+  let grabW = 0, grabH = 0;
   dragArea(view.canvas, (dx, dy, start) => {
-    if (start) return;
+    if (start) { grabW = state.w; grabH = state.h; return; }
     state.set = true;                       /* the hand takes over from 3:2 */
-    state.w = clamp(state.w + dx * (1 / 0.80));
-    state.h = clamp(state.h + dy * (1 / 0.80));
+    /* the corner is half the frame away from the centre, so a hand that moves
+       one step out opens the frame by two */
+    state.w = clamp(grabW + dx * 2 * (1 / 0.80));
+    state.h = clamp(grabH + dy * 2 * (1 / 0.80));
     view.render();
   });
   view.canvas.addEventListener('pointermove', (e) => {

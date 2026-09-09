@@ -2143,8 +2143,18 @@ body.pages .step.active figure.slide.carousel{width:100%;flex:1 1 auto;min-heigh
 body.pages .step.active figure.slide.carousel .car-stage{position:relative;flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;cursor:pointer}
 body.pages .step.active figure.slide.carousel .car-plate{display:none;width:auto;height:auto;max-width:100%;max-height:100%;min-height:0;object-fit:contain}
 body.pages .step.active figure.slide.carousel .car-plate.on{display:block}
-body.pages .step.active figure.slide.carousel .car-count{position:absolute;right:0;top:0;font-family:var(--font-mono);font-size:clamp(9px,1.3vh,12px);letter-spacing:.14em;color:var(--on-paper-quiet);pointer-events:none}
-body.pages .step.active figure.slide.carousel .car-rail{flex:0 0 auto;display:flex;gap:.6vw;margin-top:1.2vh;width:100%}
+/* THE COUNTER SITS UNDER THE PICTURE IT COUNTS. Above it, at the top right,
+   it read as a heading over the image rather than as a caption for it -
+   his round of 09-09-2026: "01/03 put this under the image, aligned to
+   right of the image." */
+body.pages .step.active figure.slide.carousel .car-count{position:absolute;right:0;bottom:0;transform:translateY(115%);font-family:var(--font-mono);font-size:clamp(9px,1.3vh,12px);letter-spacing:.14em;color:var(--on-paper-quiet);pointer-events:none}
+/* THE THUMBNAILS SIT ON THE PICTURE'S OWN CENTRE LINE. They were ranged left
+   while the picture above them was centred, so the two had two different
+   middles and every photograph appeared to shift as it came up. His note of
+   09-09-2026: "Su thumbnailler goruntuyu ortalasin ... her fotografin ortasi
+   o bulundugu yerin ortasindan degissin." One centre for both, so the
+   pictures change on the spot instead of sliding. */
+body.pages .step.active figure.slide.carousel .car-rail{flex:0 0 auto;display:flex;justify-content:center;gap:.6vw;margin-top:1.2vh;width:100%}
 body.pages .step.active figure.slide.carousel .car-thumb{flex:0 0 auto;width:clamp(38px,6.4vh,64px);height:clamp(26px,4.4vh,44px);padding:0;border:1px solid var(--rule-hairline);background:transparent;cursor:pointer;overflow:hidden;transition:var(--transition-control)}
 body.pages .step.active figure.slide.carousel .car-thumb img{width:100%;height:100%;object-fit:cover;opacity:.45;transition:opacity var(--dur-fast) var(--ease-mech)}
 body.pages .step.active figure.slide.carousel .car-thumb:hover img{opacity:.8}
@@ -3375,9 +3385,24 @@ body.present figure.slide.reveal img{max-height:100%}
    range against, so it is centred. A gallery is untouched: its
    pictures live in a strip and the strip is meant to fill.
    ============================================================ */
-body.pages .step.active .pg-ev figure.slide > img,
-body.pages .step.active .pg-ev figure.slide > .reveal-frame,
-body.pages .step.active .pg-ev figure.slide > .ph{margin-left:auto;margin-right:auto}
+body.pages .step.active figure.slide > img,
+body.pages .step.active figure.slide > .reveal-frame,
+body.pages .step.active figure.slide > svg,
+body.pages .step.active figure.slide > .ph{margin-left:auto;margin-right:auto}
+
+/* ============================================================
+   W16 - AND IT IS CENTRED WHEREVER IT STANDS, NOT ONLY IN .pg-ev
+   ------------------------------------------------------------
+   The rule above was written for one kind of slot and the figure
+   rule two thousand lines up says align-items:flex-start for
+   every figure in pages mode - so a picture in any other slot
+   went back to the left edge. Page 18 (Gaze) showed it plainly:
+   a 663px plate in a 1061px column with 398px of nothing to its
+   right, after he had asked for centring in capitals. The margin
+   is on the picture itself, which beats align-items on the flex
+   parent, so `beside` and `plate` keep their own alignment and
+   a gallery strip - which is meant to fill - is untouched.
+   ============================================================ */
 
 /* ============================================================
    The schedule's class tabs change with a movement
@@ -4793,8 +4818,12 @@ body.pages .step.active.arranged .pg-col[data-h=centre]
    align. A picture sharing a column with data belongs to the column's width
    instead — otherwise three frames meant to be compared come out three
    different sizes. */
+/* ...and it sits in the middle of the column it hugs itself inside. Without
+   the two auto margins `width:max-content` pins the picture to the left
+   edge, which is what he was looking at when he asked whether he had an
+   old version in front of him. */
 body.pages .step.active.arranged .pg-col > .pg-item.pg-solo > figure.slide{width:max-content;
-  max-width:100%;margin-inline:0}
+  max-width:100%;margin-inline:auto}
 body.pages .step.active.arranged .pg-col > .pg-item:not(.pg-solo) > figure.slide{width:100%;
   margin-inline:0}
 body.pages .step.active.arranged .pg-col > .pg-item:not(.pg-solo) > figure.slide > img{width:100%}
@@ -6775,6 +6804,20 @@ body.editing .step.active.arranged .pg-item[data-bleed]{
    a photograph in a group can never again be reduced to a line.
    ============================================================ */
 body.pages .step.active.arranged .pg-col > .pg-item.pg-solo > figure.slide.stack{width:100%;max-width:100%}
+/* A DRAWING HAS NO NATURAL SIZE, SO max-content GIVES IT THE BROWSER'S 300px.
+   The lone-picture rule above sizes a figure to its content, which is right
+   for a photograph - it has pixels - and wrong for an <svg>, whose intrinsic
+   width is the CSS default 300px whatever the viewBox says. Page 31, the four
+   shapes, drew at 300px wide inside a 1061px column and the shapes came out
+   59px tall: "objeler cok kucuk kalmislar. goruntuyu buyut", 09-09-2026. A
+   drawing takes the column, like the group above it. */
+body.pages .step.active.arranged .pg-col > .pg-item.pg-solo > figure.slide.icons{width:100%;max-width:100%}
+body.pages .step.active figure.slide.icons > svg{width:100%;height:auto;
+  max-width:100%;max-height:100%}
+/* A TALL DRAWING IS BOUND BY THE HEIGHT, NOT THE WIDTH. width:100% on a
+   portrait viewBox asks for a drawing taller than the page; max-height
+   catches it and preserveAspectRatio centres what is left, so an A4 drawn
+   upright is as big as the row allows and centred in it (W16). */
 body.pages .step.active figure.slide.stack .strip > *{min-width:8%}
 /* A picture in a group is never cropped to make a row fit. shell.js measures
    the height at which every picture in the row is whole and hands it over;
@@ -6847,7 +6890,14 @@ body.editing .step figcaption.gen-cap > svg{width:.9em;height:.9em;fill:currentC
    written yet. It is drawn in the violet everything generated is
    drawn in, and dashed, because a solid border reads as finished.
    ============================================================ */
-.timerbox{display:flex;flex-direction:column;align-items:flex-start;gap:10px;
+/* A BOX IS AS WIDE AS WHAT IS IN IT. The timer's frame ran the whole page
+   with two thirds of it empty on the right - his note of 09-09-2026:
+   "Neden sag tarafinda bu kadar bosluk olsun ki? ... solundaki pay kadar
+   sag tarafta bitse zaten dogru ve yeterli." So it closes on its own
+   contents, with the same air on the right as on the left, and sits in
+   the middle of whatever it is given. (S11) */
+.timerbox{width:max-content;max-width:100%;margin-left:auto;margin-right:auto;
+  display:flex;flex-direction:column;align-items:flex-start;gap:10px;
   padding:18px 20px;border:1px solid var(--ink-200);background:var(--paper-000)}
 .timer-lab{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--ink-500);margin:0}
@@ -8210,8 +8260,21 @@ body.pages .step.active.arranged:has(figure.demo[data-size=page]) .pg-rows{
    projector, so the wider the screen the more of the strip is nothing - and
    on the projector the gaps alone pushed kelvin's fourth control onto a
    second row (IG-01 06) while the controls themselves had room to spare. */
+/* THE CELLS ARE SPREAD ACROSS THE STRIP, not stacked against its left edge.
+   Three cells ended at two thirds of the bar with the last third empty - his
+   note of 09-09-2026: "elementlerin dogru sekilde panele dagilmamasi soz
+   konusu. Su alanin dogru kullanilmasi kuralina uymuyor." The cells keep
+   their own widths, as they must (S18); it is the space between them that
+   takes the slack. */
 figure.demo .controls{display:flex;flex-wrap:wrap;align-items:flex-start;
-  justify-content:flex-start;column-gap:clamp(22px,4vw,54px);row-gap:1vh}
+  justify-content:space-between;column-gap:clamp(22px,4vw,54px);row-gap:1vh}
+/* TWO CELLS ARE NOT TWO ENDS. space-between reads as "spread" from three
+   cells up; with two it is a pair of bookends and a hole in the middle -
+   Transformation on the 3D page, once Pan/tilt went, was a pad hard left,
+   a zoom hard right and 700px of nothing between them. With two the slack
+   is shared around them instead of piled between them. Widths are still
+   the cells' own (S18); only the gaps change. */
+figure.demo .controls:has(> .ctl:nth-child(2):last-child){justify-content:space-evenly}
 figure.demo .controls > .ctl{flex:0 1 auto;min-width:150px}
 /* ONE CELL, CONTENT WIDTH - the class `span1` was reaching for and never had.
    span1 was written in five instruments and the stylesheet defined nothing by
@@ -8306,8 +8369,17 @@ figure.demo .stp-v{font-family:var(--font-mono);font-size:clamp(20px,2.4vh,26px)
 figure.demo .ctl.stp.answering .stp-v{color:var(--signal-500)}
 figure.demo .ctl.stp.answering label::after{content:' — answering';
   font-size:9px;letter-spacing:.16em;color:var(--stage-muted)}
+/* EVERY CELL PUTS ITS NAME IN THE SAME PLACE. `.ctl label` is a flex row that
+   sets the name and the value on one baseline - fine for a slider, where the
+   value is 12px, and wrong for a value cell, where it is 22px: the name was
+   dragged down to the big number's baseline while POSITION and ZOOM kept
+   theirs at the top of the cell. Three cells, three different heights for the
+   same word. His note of 09-09-2026: "alt barda pozisyon kaymasi ve
+   elementlerin dogru sekilde panele dagilmamasi." The name goes on its own
+   line, at the top, in every cell. */
+figure.demo .ctl.vcell label{display:block}
 figure.demo .ctl.vcell label .val{display:block;margin-top:4px;font-size:22px;
-  color:var(--stage-fg);letter-spacing:-.01em}
+  color:var(--stage-fg);letter-spacing:-.01em;line-height:1.05}
 figure.demo .controls > .ctl.wide{flex:1 1 100%}
 figure.demo .controls > .ctl.span2,figure.demo .controls > .ctl.span3{flex:1 1 320px}
 /* AND SO DOES THE PAD. At 11vh it is 119 pixels on the projector, which made
@@ -8655,6 +8727,81 @@ figure.slide .ovl-b:focus-visible{outline:2px solid var(--live);outline-offset:2
    The rail and the footer are untouched: this is the page, not
    the furniture round it.
    ============================================================ */
+/* ============================================================
+   A PICTURE SITS IN THE MIDDLE OF THE SPACE IT HAS
+   ------------------------------------------------------------
+   HIS RULE, 09-09-2026, after asking for it sixteen times in one
+   round: "sayfada sadece tek bir gorsel varsa o hep ortali yatay
+   ve duseyde", and "gorsele eger yazi eslik ediyorsa ve yazi
+   gorsel ile ilgiliyse altinda olur."
+
+   IT WAS ASKED SIXTEEN TIMES BECAUSE IT WAS ANSWERED IN THE
+   WRONG FILE. Each time I gave the block `place: {w:'full',
+   rgrow, fillH}` - which decides WHICH CELL and HOW MUCH ROOM,
+   not where the picture sits inside that room. The container
+   grew; `height:auto` left the image at the top of it, with the
+   empty half underneath. The round's own first line says it:
+   a design rule goes in _shared/ and holds for every week, and
+   is never satisfied by editing a page.
+
+   So: the figure is a centring box, and the picture inside it
+   is centred on both axes. A figure that has been given the
+   room to grow takes it - no 58vh cap, because the cap is the
+   room. ============================================================ */
+/* `data-fillh` lands on the FIGURE, not on the item - render.js:2022. The
+   first version of this rule looked for it on the item and matched nothing. */
+.step.arranged .pg-item figure.slide{display:flex;flex-direction:column;
+  align-items:center;justify-content:center;margin-left:auto;margin-right:auto}
+.step.arranged .pg-item figure.slide > img{width:auto;max-width:100%;height:auto;
+  margin:0 auto;object-fit:contain}
+body.pages .step.active.arranged .pg-item > figure.slide[data-fillh],
+body.present .step.active.arranged .pg-item > figure.slide[data-fillh]{height:100%}
+/* AS BIG AS THE SPACE ALLOWS, and in the middle of it. `width:auto` kept the
+   picture at its own pixel size - a 784px file sat small against the left of a
+   1900px page and looked like nothing had been done. width and height at 100%
+   with object-fit:contain does both halves of his rule at once: the picture
+   grows until one of its sides meets the box, and it is centred on the other.
+   Whether the file has the pixels for it is a question about the file. */
+body.pages .step.active.arranged .pg-item > figure.slide[data-fillh] > img,
+body.present .step.active.arranged .pg-item > figure.slide[data-fillh] > img{
+  width:100%;height:100%;max-width:100%;max-height:100%;min-height:0;
+  object-fit:contain;flex:1 1 auto}
+/* and the same for the other things a page can be about */
+.step.arranged .pg-item > .schematic,.step.arranged .pg-item > .timerbox,
+.step.arranged .pg-item > figure.demo{margin-left:auto;margin-right:auto}
+body.pages .step.active.arranged .pg-item > .schematic[data-fillh],
+body.pages .step.active.arranged .pg-item > .timerbox[data-fillh]{
+  height:100%;display:flex;align-items:center;justify-content:center}
+
+/* ---- MORE THAN ONE PICTURE IN A ROW ------------------------------------
+   His rule of the same day: "Birden cok gorsel yan yana ise same height
+   kurali genellikle gecerli olmali ve crop olmamali." So a strip levels its
+   pictures by HEIGHT and lets the widths fall where they fall - the row is
+   ragged and centred rather than flush and cropped. Cropping is the
+   exception, and it is for objects photographed at different sizes (the
+   camera strips), never for a photographer's photograph. */
+figure.slide.gallery .strip,figure.slide.trio .strip{align-items:center;
+  justify-content:center;flex-wrap:nowrap}
+figure.slide.gallery .strip img,figure.slide.trio .strip img{flex:0 1 auto;
+  width:auto;max-width:100%;height:var(--rowh);object-fit:contain}
+body.pages .step.active.arranged .pg-item > figure.slide.gallery[data-fillh]{height:100%}
+body.pages .step.active.arranged .pg-item > figure.slide.gallery[data-fillh] .strip{
+  flex:1 1 auto;min-height:0;max-width:100%}
+body.pages .step.active.arranged .pg-item > figure.slide.gallery[data-fillh] .strip img{
+  height:100%;max-height:100%}
+/* the one place a crop is right: things of different sizes, shown as things */
+figure.slide.gallery.crop .strip img{object-fit:cover;flex:1 1 0;width:0}
+
+/* A PAGE THAT IS ONLY A PICTURE. `noTitle` on a step keeps the title in the
+   file - the contents, the deck and the editor all still name the page - and
+   takes it off the wall. For a painting shown to be looked at, a heading over
+   it is one more thing in the room. (His round, 09-09-2026, pages 15 and 18.) */
+.step h3.unseen,body.pages .step h3.unseen,body.present .step h3.unseen{
+  position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);
+  white-space:nowrap;margin:0;padding:0;border:0}
+/* A GALLERY LEVELLED. Two photographs of different shapes read as a pair only
+   when their tops and their feet line up, so `cls: 'level'` gives every one of
+   them the same height and lets the width follow. */
 body.pages .step.white,body.present .step.white{background:#fff}
 body.pages .step.white .pg-body,body.pages .step.white .pg-rows{background:#fff}
 .step.white .line,.step.white .text p,.step.white h1,.step.white h2{color:#101010}
@@ -8726,3 +8873,60 @@ figure.demo .controls .lm-stepper .lm-v{font-family:var(--font-mono);
   font-size:clamp(18px,2.6vh,26px);color:var(--stage-fg);min-width:3.1em;
   text-align:center;font-variant-numeric:tabular-nums}
 figure.demo .controls .lm-stepper .st{min-width:34px;padding:4px 0;font-size:15px}
+
+
+/* ============================================================
+   W4 · TEXT CLAUDE WROTE IS ORANGE UNTIL HE HAS TICKED IT
+   ------------------------------------------------------------
+   "Review'imdan gecene kadar da turuncu yap textleri, ve
+   altlarina bir tik koy." Orange is the signal colour, which is
+   the colour of the one thing on a page that wants acting on -
+   and an unapproved sentence is exactly that. The tick sits
+   under the line, in the same cell, and disappears the moment he
+   presses it. Nothing here reaches the published site: the build
+   refuses to push while a line is still waiting.
+   ============================================================ */
+.gen-say{color:var(--signal-500)}
+figure.demo .readout .v.gen-say{color:var(--signal-500)}
+.gen-tick{display:inline-flex;align-items:center;gap:6px;margin-top:6px;
+  padding:2px 8px 3px;border:1px solid var(--signal-500);background:transparent;
+  color:var(--signal-500);font-family:var(--font-mono);font-size:9px;
+  letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
+  transition:var(--transition-control)}
+.gen-tick:hover{background:var(--signal-500);color:var(--ink-900)}
+.gen-tick .tk{font-size:11px;line-height:1}
+
+/* ============================================================
+   A DATA ROW WHOSE VALUE IS A SENTENCE READS FROM THE LEFT
+   ------------------------------------------------------------
+   .datarows right-aligns its values, which is right for figures
+   in a column - 24 stops, 576 MP - and wrong for a clause that
+   wraps onto three lines, where the ragged left edge is what the
+   eye has to find each time. `['key', 'value', 'say']` opts one
+   row out. Built for A4 · Where you read it, 09-09-2026.
+   ============================================================ */
+.datarows .dr.say .dr-v{text-align:left}
+
+/* ============================================================
+   A LINK TO ANOTHER PAGE OF THE SITE
+   ------------------------------------------------------------
+   Not a download and not a departure: the brief for the
+   assignment this page announces. A press, at the size a room
+   can see, carrying where it goes rather than the word "here".
+   ============================================================ */
+.golink{display:inline-flex;align-items:center;gap:14px;text-decoration:none;
+  padding:12px 18px;border:1px solid var(--ink-900);background:transparent;
+  color:var(--ink-900);transition:var(--transition-control);max-width:100%}
+.golink:hover{background:var(--ink-900);color:var(--paper-100)}
+.golink-face{display:flex;flex-direction:column;gap:3px;min-width:0}
+.golink-k{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--signal-600)}
+.golink:hover .golink-k{color:var(--marker-500)}
+.golink-t{font-size:clamp(15px,1.9vh,19px);line-height:1.25}
+.golink svg{width:16px;height:16px;flex:0 0 auto;fill:currentColor}
+.golink-n{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;opacity:.7}
+body.pages .step.active .golink{width:max-content}
+
+/* the two presses that empty the cumulative request list (edit mode only) */
+.ed-reqs-clear{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}

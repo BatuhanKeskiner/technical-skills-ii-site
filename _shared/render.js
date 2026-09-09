@@ -23,6 +23,8 @@ const DEMOS = {
   delivery: { url: './interactives/delivery.js', fn: 'mountDelivery' },
   crop: { url: './interactives/crop.js', fn: 'mountCrop' },
   aseries: { url: './interactives/aseries.js', fn: 'mountASeries' },
+  sizechart: { url: './interactives/sizechart.js', fn: 'mountSizeChart' },
+  root2: { url: './interactives/root2.js', fn: 'mountRoot2' },
 };
 
 /* A bare file name is the week's own assets/ folder. A name with a slash is
@@ -395,7 +397,39 @@ function wireCarousel(fig) {
     plates.forEach((p, k) => p.classList.toggle('on', k === at));
     thumbs.forEach((t, k) => t.classList.toggle('on', k === at));
     if (count) count.textContent = pad(at + 1) + ' / ' + pad(plates.length);
+    alignCount(); kick();
   }
+  /* 01 / 03 SITS UNDER THE PICTURE, AT THE PICTURE'S RIGHT EDGE - not at the
+     stage's. His note of 09-09-2026: "01/03 put this under the image, aligned
+     to right of the image." The count is absolutely positioned against the
+     stage, so it is `right` that moves, not a margin; and the plates are
+     different shapes, so the gap is measured again on every change, on every
+     picture that finishes loading, and whenever the stage is resized. */
+  function alignCount() {
+    if (!count || !stage) return;
+    const sr = stage.getBoundingClientRect();
+    const pr = plates[at].getBoundingClientRect();
+    if (!pr.width || !sr.width) return;
+    count.style.right = Math.max(0, Math.round(sr.right - pr.right)) + 'px';
+  }
+  /* THE PAGE IS NOT ITS FINAL SIZE WHEN IT IS WIRED. A step that is not the
+     active one measures zero, and the plate reaches its own width a frame or
+     two after the step opens - so one measurement at wire time recorded a gap
+     of nothing and left the count at the stage's edge for ever. Measure again
+     on the frames that follow every trigger. */
+  const kick = () => {
+    requestAnimationFrame(alignCount);
+    setTimeout(alignCount, 80);
+    setTimeout(alignCount, 400);
+  };
+  plates.forEach((pl) => {
+    const im = pl.tagName === 'IMG' ? pl : pl.querySelector('img');
+    if (im && !im.complete) im.addEventListener('load', kick, { once: true });
+  });
+  if (window.ResizeObserver) new ResizeObserver(kick).observe(stage);
+  window.addEventListener('resize', kick);
+  window.addEventListener('hashchange', kick);
+  kick();
   /* the thumbs stop the click going further; the stage does not, so that in
      edit mode choosing the slideshow and stepping it are the same gesture */
   thumbs.forEach((t, i) => t.addEventListener('click', (e) => { e.stopPropagation(); show(i); }));
@@ -551,6 +585,27 @@ const BLOCK = {
     return box;
   },
 
+  /* ---- A LINK TO ANOTHER PAGE OF THIS SITE ----
+     The catalogue could hand over a FILE (pdf, ebook) and it could send you
+     somewhere ELSE on the web, and it had no word for "the brief for this
+     assignment is over there" - a page of the same site, which is neither a
+     download nor a departure. His note of 09-09-2026: "We need to create a
+     link to the Assignment Brief page. So it can lead to the page." It is a
+     press, not a sentence with a link in it: a room reads a button.
+       { type: 'link', href: '...', kicker: 'Assignment #1', text: 'Read the brief', away: false } */
+  link: (b) => {
+    const a = el('a', 'golink');
+    a.setAttribute('href', b.href || '#');
+    if (b.away) { a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener noreferrer'); }
+    const face = el('span', 'golink-face');
+    if (b.kicker) face.append(el('span', 'golink-k', b.kicker));
+    face.append(el('span', 'golink-t', b.text || b.href || 'Open'));
+    a.append(face);
+    a.append(arrowMark());
+    if (b.note) a.append(el('span', 'golink-n', b.note));
+    return a;
+  },
+
   pdf: (b) => {
     /* a — the slip. b — the proof. a1..a4 are the slip with the name above and
        the way to get it below rather than beside it, one per button design. */
@@ -593,9 +648,20 @@ const BLOCK = {
      is not read out; while editing it is the place a block can be dropped. */
   slot: () => el('div', 'slot'),
 
+  /* W4 · A PARAGRAPH CLAUDE WROTE SAYS SO UNTIL HE HAS TICKED IT.
+     `gen: 'name'` keys the block; every paragraph in it is orange with a tick
+     under it until REVIEW.json says he has approved that line, and the build
+     refuses to publish while any of them is still waiting. Without `gen` the
+     block is his and nothing is marked. */
   text: (b) => {
     const d = el('div', 'text');
-    b.paras.forEach((t) => d.append(el('p', null, t)));
+    b.paras.forEach((t, i) => {
+      const par = el('p', null, t);
+      d.append(par);
+      if (b.gen && typeof pending === 'function') {
+        pending(par, 'text/' + b.gen + '/' + i);
+      }
+    });
     return d;
   },
 
@@ -1956,8 +2022,15 @@ function renderStep(st, ch) {
   if (st.rowGap) step.setAttribute('data-row-gap', st.rowGap);
   if (st.dupTitle) step.append(el('h3', 'dup', st.dupTitle));
   /* Every page carries a title in the same place. A step without one takes
-     the chapter's name — the row is never empty. */
-  step.append(el('h3', null, st.title || ch.title));
+     the chapter's name — the row is never empty.
+       EXCEPT when the page IS the picture. `noTitle: true` is for a page whose
+     whole content is one image meant to be looked at without a word over it -
+     his round of 09-09-2026, pages 15 and 18: "Even remove the title for this
+     one." The title is still written, so the deck, the contents and the
+     editor all still know what the page is called; it is not drawn. */
+  const h3 = el('h3', null, st.title || ch.title);
+  if (st.noTitle) h3.classList.add('unseen');
+  step.append(h3);
   if (!st.layout) console.warn('step ' + st.id + ' names no layout — the automatic sort applied');
   if (st.dupLine) step.append(el('p', 'line dup', st.dupLine));
   (st.blocks || []).forEach((b, i) => {

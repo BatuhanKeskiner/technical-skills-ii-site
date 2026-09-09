@@ -18,22 +18,24 @@ const X_STAGE_AR = 1012 / 600;
    already credited in ASSETS.md, and all three are public domain. Repin
    first: it is the painting Yarbus put in front of his readers, and the
    lecture's Yarbus page is three pages away. */
+/* ONE PLATE, AND IT IS THE ROOM. There were four - Repin, Raphael,
+   Botticelli and a film set - and his round of 09-09-2026 took the three
+   paintings out: "remove repin, raphael, boticelli. leave only the the room."
+   A painting is built to be looked at in an order, so what the eye does on one
+   is partly the painter's doing; on a set that nobody arranged for a viewer,
+   the habit itself is what shows - the eye goes to the faces, and it goes
+   there first. The three files stay in assets/ for the pages that use them. */
+/* AND A PAGE MAY PIN A DIFFERENT ONE. His note of 09-09-2026: "add fovea's
+   interactive with a pepin image after the 15th slide. same interactive but
+   pepin image." The room stays the default, so page 13 is untouched and still
+   has no picker; a page that says `pin: { plate: 'repin' }` gets the painting
+   instead. Either way the page offers exactly one picture, so the picker
+   never comes back - a control with one option is furniture. */
 const X_PLATES = [
-  { name: 'Repin', file: 'a6-repin.jpg',
-    credit: 'ILYA REPIN · UNEXPECTED VISITORS · 1884' },
-  { name: 'Raphael', file: 'a7-school-of-athens.jpg',
-    credit: 'RAPHAEL · THE SCHOOL OF ATHENS · 1511' },
-  { name: 'Botticelli', file: 'a7-birth-of-venus.jpg',
-    credit: 'SANDRO BOTTICELLI · THE BIRTH OF VENUS · c. 1485' },
-  /* AND ONE THAT NOBODY COMPOSED. Three paintings are three pictures built to
-     be looked at in a particular order, so what the eye does on them is partly
-     the painter's doing. His word, 08-09-2026: "bunlar sanat eseri olduğu için
-     bir tane de gerçek sahne lazım ki gözün alışkanlığı okunabilsin." This is
-     the plate the instrument opened with - a film set with its crew, nobody
-     arranged for a viewer - and it is the one that shows the habit plainly:
-     the eye goes to the faces, and it goes there first. */
-  { name: 'A room', file: 'a3-film-set.jpg',
+  { id: 'room', name: 'A room', file: 'a3-film-set.jpg',
     credit: 'A FILM SET, WITH ITS CREW' },
+  { id: 'repin', name: 'Repin', file: 'a6-repin.jpg',
+    credit: 'ILYA REPIN, UNEXPECTED VISITORS, 1884' },
 ];
 const X_DIR = '../02-composition-format/assets/';
 
@@ -56,6 +58,11 @@ function mountFovea(fig) {
 
   /* the fixation is kept in picture coordinates (0–1), so it stays
      put when the stage is resized or thrown full screen */
+  /* THE PAGE CHOOSES THE PICTURE, AND IT CHOOSES ONE. Unpinned, the room. */
+  const wanted = fig.dataset.plate || 'room';
+  const PLATES = X_PLATES.filter((q) => q.id === wanted);
+  if (!PLATES.length) PLATES.push(X_PLATES[0]);
+
   const state = { x: 0.5, y: 0.5, deg: 4, path: [], pi: 0 };
 
   let plate = null;
@@ -76,7 +83,7 @@ function mountFovea(fig) {
   function usePlate(i) {
     state.pi = i;
     plate = null; L = null;
-    loadImage(X_DIR + X_PLATES[i].file, (bx) => {
+    loadImage(X_DIR + PLATES[i].file, (bx) => {
       plate = bx.img; L = null; view.render();
     });
     view.render();
@@ -84,11 +91,18 @@ function mountFovea(fig) {
 
   const view = canvas(stage, draw);
 
-  states(controls, {
-    label: 'Picture', cls: 'piccell',
-    items: X_PLATES.map((q) => q.name),
-    onChange: (i) => { state.path = []; refresh(); usePlate(i); },
-  });
+  /* NO PICTURE PICKER. There is one picture, and a control with one option is
+     not a control - it is a button that cannot be pressed. His note of
+     09-09-2026: "Because there is no other picture, you need to delete these
+     scene selection." It comes back on its own if a second plate is ever
+     added. */
+  if (PLATES.length > 1) {
+    states(controls, {
+      label: 'Picture', cls: 'piccell',
+      items: PLATES.map((q) => q.name),
+      onChange: (i) => { state.path = []; refresh(); usePlate(i); },
+    });
+  }
 
   const fDeg = slider(controls, {
     label: 'Sharp field', min: 1, max: 20, step: 1, value: state.deg, unit: '°',
@@ -305,9 +319,11 @@ function mountFovea(fig) {
     /* the scan path */
     if (state.path.length) {
       ctx.save();
+      /* thicker on his word of 09-09-2026 - "make the path thicker so it can
+         be seen" - and it is seen from six metres, not from a laptop */
       ctx.strokeStyle = p.signal;
-      ctx.lineWidth = 1;
-      ctx.setLineDash([3, 3]);
+      ctx.lineWidth = 3;
+      ctx.setLineDash([7, 5]);
       ctx.beginPath();
       state.path.forEach((q, i) => {
         const qx = P.x + q.x * P.w, qy = P.y + q.y * P.h;
@@ -364,7 +380,7 @@ function mountFovea(fig) {
     /* the picture says what it is, in the corner, because the site credits
        every artwork where it is shown - and the other corner says what a
        click is for, now that a click no longer moves anything */
-    label(ctx, X_PLATES[state.pi].credit, P.x + 14, P.y + P.h - 13, 'rgba(255,255,255,0.78)', 9);
+    label(ctx, PLATES[state.pi].credit, P.x + 14, P.y + P.h - 13, 'rgba(255,255,255,0.78)', 9);
     label(ctx, 'CLICK TO MARK A FIXATION',
           P.x + P.w - 14 - 138, P.y + P.h - 13, 'rgba(255,255,255,0.55)', 9);
     sync(P);

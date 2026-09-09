@@ -37,12 +37,21 @@ function mountDof(fig) {
      rule 01): a page about the look holds the framing, a page about cropping
      holds the lens. `data-hold` pins it, `data-view` pins Frame / Plan / Both,
      and pinning both keeps the strip at four cells. */
-  const HOLD = fig.dataset.hold === 'lens' ? 'lens' : 'framing';
+  /* AND WHICH ONE IS HELD IS THE LESSON, SO IT IS A HAND AGAIN. It was pinned
+     by the page; his note of 09-09-2026 sent me back to the Cowork module this
+     instrument was ported from (Fig. 6, format-aspect-ratio), where the two
+     modes are a pair of chips INSIDE the lens cell - because they are about
+     the lens, and because the strip has four cells and no fifth. Comparing
+     the two is the whole argument: hold the framing and the format changes
+     the lens, and the depth with it; hold the lens and the depth does not move
+     at all, because the format only crops. `data-hold` still says where it
+     starts. */
   const VIEWS = ['frame', 'plan', 'both'];
   const state = {
     stop: 2, focal: 85, dist: 3.0,
     mode: Math.max(0, VIEWS.indexOf(fig.dataset.view || 'both')),
     fmt: 'ff',
+    hold: fig.dataset.hold === 'lens' ? 'lens' : 'framing',
   };
   /* the formats a photograph is actually made on, with the diagonal that sets
      both the crop factor and what a normal lens is */
@@ -67,13 +76,13 @@ function mountDof(fig) {
      makes the format drop out of the equation and become a crop and nothing
      else. His own module, ported (Fig. 6 of the 26-08 page). */
   const FF_DIAG_MM = Math.hypot(36, 24);
-  const coc = () => (HOLD === 'framing' ? dDiag(dfmt()) : FF_DIAG_MM) / 1500;
+  const coc = () => (state.hold === 'framing' ? dDiag(dfmt()) : FF_DIAG_MM) / 1500;
 
   /* Holding the framing means the lens IS the format: one metre of scene at
      the subject, on every format, is f = width × distance / field. Not a
      ratio nudge — the equation. */
   const FIELD_MM = 1000;
-  const lensForFraming = () => dfmt().w * (state.dist * 1000) / FIELD_MM;
+  const lensForFraming = (f) => (f || dfmt()).w * (state.dist * 1000) / FIELD_MM;
 
   const view = canvas(stage, draw);
 
@@ -92,7 +101,7 @@ function mountDof(fig) {
       /* HOLDING THE FRAMING MEANS THE LENS ANSWERS. Change the format and the
          focal length moves with it, so the subject stays the same size in the
          frame - which is the only way two formats can be compared at all. */
-      if (HOLD === 'framing') syncFraming();
+      if (state.hold === 'framing') syncFraming();
       compute(); view.render();
     },
   });
@@ -101,10 +110,28 @@ function mountDof(fig) {
     state.focal = Math.max(+fFocal.min, Math.min(+fFocal.max, f));
     fFocal.value = String(state.focal); fFocal._sync();
   }
-  if (HOLD === 'framing') {
-    /* it is answering, not broken (IG-02 P4) */
-    fFocal.closest('.ctl').classList.add('answering');
+
+  /* THE TWO MODES, IN THE LENS CELL, where his own module put them. The cell
+     keeps its size in both states (S18): the slider is always drawn, and
+     holding the framing takes the hand off it rather than removing it - the
+     number is then the format's answer, not a broken control (IG-02 P4). */
+  const lensCell = fFocal.closest('.ctl');
+  const holdRow = el('div', 'states');
+  const bFrame = el('button', 'st', 'Hold framing');
+  const bLens = el('button', 'st', 'Hold lens');
+  [bFrame, bLens].forEach((b) => { b.type = 'button'; holdRow.append(b); });
+  lensCell.append(holdRow);
+  function setHold(which) {
+    state.hold = which;
+    bFrame.setAttribute('aria-current', String(which === 'framing'));
+    bLens.setAttribute('aria-current', String(which === 'lens'));
+    lensCell.classList.toggle('answering', which === 'framing');
+    fFocal.disabled = which === 'framing';
+    if (which === 'framing') syncFraming();
+    compute(); view.render();
   }
+  bFrame.addEventListener('click', () => setHold('framing'));
+  bLens.addEventListener('click', () => setHold('lens'));
 
   legend(stage, [
     { c: p.marker, label: 'In focus', kind: 'line' },
@@ -137,7 +164,7 @@ function mountDof(fig) {
     state.stop = +fStop.value;
     state.focal = +fFocal.value;
     state.dist = +fDist.value;
-    if (HOLD === 'framing') syncFraming();
+    if (state.hold === 'framing') syncFraming();
     compute();
     view.render();
   }));
@@ -315,13 +342,15 @@ function mountDof(fig) {
     }
 
     label(ctx, 'PLAN VIEW · ' + dfmt().name.toUpperCase() + ' · '
-          + state.focal + ' MM' + (HOLD === 'framing' ? ' (HELD TO FRAME)' : ''),
+          + state.focal + ' MM'
+          + (state.hold === 'framing' ? ' · LENS HELD TO THE FRAME'
+                                      : ' · LENS HELD, FORMAT ONLY CROPS'),
           padL - 26, top + 20, p.muted, 9);
   }
 
   /* the hyperfocal is a distance and the plan draws distances, so it is
      labelled H on the axis (G2) rather than repeated in a readout cell */
-  if (HOLD === 'framing') syncFraming();
+  setHold(state.hold);
   compute();
   return { render: view.render };
 }
