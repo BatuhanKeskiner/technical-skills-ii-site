@@ -83,6 +83,11 @@ h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
 .wall.dark{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 .cell.tool .t{font-size:19px}
 .tutcell{text-decoration:none;color:inherit}
+/* a category inside a section: the same rule, half the voice */
+.subsec{display:flex;align-items:center;gap:12px;margin:22px 0 10px}
+.subsec .nm{font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--grey)}
+.subsec .ln{flex:1;height:1px;background:var(--rule)}
 .cell.tool .d{font-size:13px;line-height:1.45;color:var(--grey);margin-top:-2px}
 .wall{display:grid;grid-template-columns:repeat(4,1fr);
    border-left:1px solid var(--rule);border-top:1px solid var(--rule)}
@@ -434,7 +439,8 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
     </div>
   </div>
   <div class="srail" id="srail" hidden><span class="sgrip" id="sgrip"></span></div>
-  <div class="sec"><span class="no">03</span><span class="nm">Darkroom</span><span class="ln"></span></div>
+  <div class="sec"><span class="no">03</span><span class="nm">Interactive Learning</span><span class="ln"></span></div>
+  <div class="subsec"><span class="nm">Darkroom</span><span class="ln"></span></div>
   <div class="wall dark">
     <div class="cell on tool" data-f="test strip the enlarger s timer and its aperture, and what the paper does with them. darkroom analog exposure print #1 photogram assignment #1"><span class="k">Instrument</span><span class="t">Test Strip</span><span class="d">The enlarger&rsquo;s timer and its aperture, and what the paper does with them.</span><span class="tags">darkroom · analog · exposure · print</span><span class="base"><span class="ag"><a class="chip" href="assignments/01-photogram/index.html">#1 Photogram</a></span><a class="open" href="instruments/teststrip.html">Open</a></span></div>
     <div class="cell on tool" data-f="photogram objects on a sheet of paper, and how long each of them stays there. darkroom analog light print #1 photogram assignment #1"><span class="k">Instrument</span><span class="t">Photogram</span><span class="d">Objects on a sheet of paper, and how long each of them stays there.</span><span class="tags">darkroom · analog · light · print</span><span class="base"><span class="ag"><a class="chip" href="assignments/01-photogram/index.html">#1 Photogram</a></span><a class="open" href="instruments/photogram.html">Open</a></span></div>
@@ -444,7 +450,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 
   <p id="none">Nothing matches that</p>
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 547 · 09.09.2026 23:42</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 549 · 09.09.2026 23:44</span></div>
 
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; Black</span><span>Middle Grey</span><span>Zone X &mdash; White</span></div>
