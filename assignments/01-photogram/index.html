@@ -176,6 +176,14 @@ dl.spec{clear:both}
 .oneref figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
   text-transform:uppercase;color:var(--grey);margin-top:12px;line-height:1.5}
 dl.reflist dt{font-style:italic}
+.reflink{margin:14px 0 0}
+.reflink a{display:inline-flex;align-items:center;gap:9px;text-decoration:none;
+  border:1px solid var(--ink);color:var(--ink);padding:9px 14px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;transition:background .12s,color .12s}
+.reflink a:hover{background:var(--ink);color:var(--paper)}
+.reflink .ar{color:var(--signal)}
+.reflink a:hover .ar{color:var(--marker,#E4FF1A)}
 .sh-stage{position:relative;border:1px solid var(--rule);background:#fff;
   padding:18px;display:flex;align-items:center;justify-content:center;
   min-height:340px}
@@ -240,7 +248,6 @@ dl.reflist dt{font-style:italic}
   <p class="no">Assignment #1</p>
   <h1>Photogram</h1>
   <p class="premise">Five photograms made without a camera, showing a full range of tones rather than two.</p>
-  <p class="link"><a href="https://www.pinterest.com/neuesachlichkeit/week-4-photogram/" target="_blank" rel="noopener">www.pinterest.com/neuesachlichkeit/week-4-photogram/</a></p>
 
   <dl class="spec">
     <div><dt>Given</dt><dd>Week #2</dd></div>
@@ -288,7 +295,8 @@ dl.reflist dt{font-style:italic}
   <p class="body">Bring the prints to class in the week they are due. Nothing is handed in digitally.</p>
   <div class="sec"><span>06</span><span>References</span><span class="ln"></span></div>
   <figure class="oneref"><button type="button" class="zoom" data-full="assets/ref-photogram-board.jpg" data-cap="Week 4 · Photogram — the reference board &middot; 22 pins, collected for this assignment"><img src="assets/ref-photogram-board.jpg" alt="A Pinterest board of twenty-two photograms by Man Ray, Moholy-Nagy, Anna Atkins, Christian Schad and others"></button><figcaption>Week 4 · Photogram — the reference board &middot; 22 pins, collected for this assignment</figcaption></figure>
-  <p class="body quiet">The board is linked at the top of this page. These are the names on it — every one of them made pictures by putting objects on light-sensitive paper, and every one is worth twenty minutes in the library.</p>
+  <p class="body quiet">These are the names on the board — every one of them made pictures by putting objects on light-sensitive paper, and every one is worth twenty minutes in the library.</p>
+  <p class="reflink"><a href="https://www.pinterest.com/neuesachlichkeit/week-4-photogram/" target="_blank" rel="noopener">The board — 22 pins<span class="ar">&nearr;</span></a></p>
   <dl class="limits reflist">
     <div><dt>Anna Atkins</dt><dd>British Algae, 1843 — cyanotypes of seaweed, and the first book illustrated with photographs.</dd></div>
     <div><dt>Man Ray</dt><dd>Rayographs, from 1922 — comb, razor blade, spiral, hand.</dd></div>
@@ -320,7 +328,7 @@ dl.reflist dt{font-style:italic}
   </div>
 
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 528 · 09.09.2026 22:02</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 530 · 09.09.2026 22:17</span></div>
 </div>
 <div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
   <span class="x">Esc</span><img alt=""><p></p>
