@@ -26,6 +26,18 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
 .top a,.top span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--grey);text-decoration:none}
 .top a:hover{color:var(--signal)}
+/* A WAY BACK AND A WAY TO TAKE IT AWAY. The bar used to be a label and a
+   crest: nothing on the page said how to get home, and a student who wanted
+   the brief on paper had to know the browser's own print menu. His note of
+   09-09-2026. */
+.top .back{display:inline-flex;align-items:center;gap:8px;color:var(--ink)}
+.top .back .ar{color:var(--signal)}
+.top .what{margin-right:auto}
+.pdf{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;border:1px solid var(--ink);background:transparent;
+  color:var(--ink);padding:7px 12px;cursor:pointer;
+  transition:background .12s,color .12s}
+.pdf:hover{background:var(--ink);color:var(--paper)}
 .mark{height:44px;width:auto;mix-blend-mode:multiply;flex:0 0 auto}
 .no{font-family:var(--mono);font-size:13px;letter-spacing:.16em;
   color:var(--signal);margin:24px 0 0}
@@ -102,12 +114,60 @@ ul.plain.quiet .m{color:var(--faint)}
   .tools{grid-template-columns:1fr}
 }
 
-/* ---- the assignment's own picture ---- */
-.cover{margin:34px 0 0}
-.cover img{width:100%;height:auto;display:block;background:#fff;
-  border:1px solid var(--rule)}
-.cover figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--grey);margin-top:10px;text-align:right}
+/* ---- the assignment's own picture ----
+   Small, at the top, against the right edge, and it opens when pressed. It
+   used to be a full-width plate under the dates, which put the biggest thing
+   on the page between the reader and the first instruction. His note of
+   09-09-2026. The title and the premise run beside it. */
+.cover{margin:26px 0 18px;float:right;width:clamp(150px,30%,250px);
+  margin-left:28px;shape-margin:20px}
+.cover .zoom{display:block;padding:0;border:1px solid var(--rule);background:#fff;
+  cursor:zoom-in;width:100%}
+.cover .zoom:hover{border-color:var(--ink)}
+.cover img{width:100%;height:auto;display:block}
+.cover figcaption{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--grey);margin-top:8px;text-align:right;
+  line-height:1.5}
+dl.spec{clear:both}
+.sec{clear:both}
+
+/* ---- ON PAPER ----
+   Export PDF is the browser's own print, aimed properly: the page is the
+   document, so the controls go, nothing is cut across a page break, and the
+   addresses behind the links are printed out since a printed link is dead.
+   A library that redraws the page into a canvas would lose the type and the
+   greys; this keeps both. */
+@media print{
+  @page{margin:14mm}
+  html,body{background:#fff}
+  .sheet{max-width:none;padding:0}
+  .top .pdf,#lb{display:none !important}
+  .top{border-bottom:1.5px solid #000}
+  .cover{float:right;width:36mm;margin-left:8mm}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-family:var(--mono);
+    font-size:8.5pt;color:#555;word-break:break-all}
+  .sec,figure,.warn,.tool,.gal figure,li{break-inside:avoid;page-break-inside:avoid}
+  .sec{break-before:auto}
+  .gal{grid-template-columns:repeat(3,1fr);gap:6mm}
+  .tools{grid-template-columns:repeat(2,1fr)}
+  .tool{border:1px solid #000}
+  .oneref img,.sh-plate img{max-height:none}
+  .show .sh-bar{display:none}
+  .sh-plate{display:block !important}
+  .foot{position:static}
+}
+
+/* every picture on the page opens at its own size */
+.zoom{appearance:none;padding:0;border:0;background:none;cursor:zoom-in;display:block}
+#lb{position:fixed;inset:0;z-index:50;background:rgba(11,12,12,.94);display:none;
+  align-items:center;justify-content:center;flex-direction:column;gap:16px;
+  padding:36px;cursor:zoom-out}
+#lb.on{display:flex}
+#lb img{max-width:100%;max-height:82vh;display:block}
+#lb p{margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:#B9BAB6;text-align:center}
+#lb .x{position:absolute;top:18px;right:22px;color:#B9BAB6;font-family:var(--mono);
+  font-size:11px;letter-spacing:.16em}
 
 /* ---- references, one plate at a time ---- */
 .show{margin:6px 0 0}
@@ -143,8 +203,11 @@ dl.reflist dt{font-style:italic}
 .gal figure{margin:0}
 .gal img{width:100%;height:auto;display:block;background:#fff;
   border:1px solid var(--rule)}
+.gal .zoom{width:100%;cursor:zoom-in}
 .gal figcaption{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--grey);margin-top:8px}
+  text-transform:uppercase;color:var(--grey);margin-top:8px;line-height:1.6}
+.gal .yr{display:block;color:var(--signal);letter-spacing:.14em}
+.oneref .zoom,.sh-plate .zoom{cursor:zoom-in;margin:0 auto}
 
 /* ---- the instruments, at the foot ---- */
 .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:6px 0 0}
@@ -163,10 +226,16 @@ dl.reflist dt{font-style:italic}
 <div class="sheet">
 
   <div class="top">
-    <a href="../../index.html">Technical Skills II · Assignment brief</a>
+    <a class="back" href="../../index.html"><span class="ar">&larr;</span>Technical Skills II</a>
+    <span class="what">Assignment brief</span>
+    <button type="button" id="pdf" class="pdf">Export PDF</button>
     <img class="mark" src="../../_shared/assets/kabk-logo.jpg"
          alt="Royal Academy of Art, The Hague">
   </div>
+
+  <figure class="cover"><button type="button" class="zoom"
+      data-full="assets/hof-joelle-adjovi.jpg" data-cap="Joelle Adjovi — a photogram made for this assignment"><img src="assets/hof-joelle-adjovi.jpg" alt="A photogram: crumpled translucent paper and a spray of grasses, white on black"></button>
+    <figcaption>Joelle Adjovi — a photogram made for this assignment</figcaption></figure>
 
   <p class="no">Assignment #1</p>
   <h1>Photogram</h1>
@@ -179,9 +248,6 @@ dl.reflist dt{font-style:italic}
     <div><dt>Due — part-time</dt><dd class="hot">05.10.2026 <span class="g">· Week #5</span></dd></div>
     <div><dt>Hand in</dt><dd>5 prints, in class</dd></div>
   </dl>
-
-  <figure class="cover"><img src="assets/hof-joelle-adjovi.jpg" alt="A photogram: crumpled translucent paper and a spray of grasses, white on black">
-    <figcaption>Joelle Adjovi — a photogram made for this assignment</figcaption></figure>
 
   <div class="sec"><span>01</span><span>The process</span><span class="ln"></span></div>
   <ol class="steps">
@@ -221,7 +287,7 @@ dl.reflist dt{font-style:italic}
   <div class="chips"><span class="chip">5 photograms</span><span class="chip">physical prints</span><span class="chip">in class</span></div>
   <p class="body">Bring the prints to class in the week they are due. Nothing is handed in digitally.</p>
   <div class="sec"><span>06</span><span>References</span><span class="ln"></span></div>
-  <figure class="oneref"><img src="assets/ref-photogram-board.jpg" alt="A Pinterest board of twenty-two photograms by Man Ray, Moholy-Nagy, Anna Atkins, Christian Schad and others"><figcaption>Week 4 · Photogram — the reference board &middot; 22 pins, collected for this assignment</figcaption></figure>
+  <figure class="oneref"><button type="button" class="zoom" data-full="assets/ref-photogram-board.jpg" data-cap="Week 4 · Photogram — the reference board &middot; 22 pins, collected for this assignment"><img src="assets/ref-photogram-board.jpg" alt="A Pinterest board of twenty-two photograms by Man Ray, Moholy-Nagy, Anna Atkins, Christian Schad and others"></button><figcaption>Week 4 · Photogram — the reference board &middot; 22 pins, collected for this assignment</figcaption></figure>
   <p class="body quiet">The board is linked at the top of this page. These are the names on it — every one of them made pictures by putting objects on light-sensitive paper, and every one is worth twenty minutes in the library.</p>
   <dl class="limits reflist">
     <div><dt>Anna Atkins</dt><dd>British Algae, 1843 — cyanotypes of seaweed, and the first book illustrated with photographs.</dd></div>
@@ -237,13 +303,13 @@ dl.reflist dt{font-style:italic}
 
   <div class="sec"><span>07</span><span>Previous years</span><span class="ln"></span></div>
   <div class="gal">
-    <figure><img src="assets/hof-rosa-perez-01.jpg" alt="A photogram: gauze and flower heads on a dark ground"><figcaption>Rosa Perez</figcaption></figure>
-    <figure><img src="assets/hof-rosa-perez-02.jpg" alt="A photogram: fabric and stems, a second sheet"><figcaption>Rosa Perez</figcaption></figure>
-    <figure><img src="assets/hof-jan-ryt.jpg" alt="A photogram: liquid and droplets across the sheet"><figcaption>Jan Ryt</figcaption></figure>
-    <figure><img src="assets/hof-dankaerts-kievits-01.jpg" alt="A photogram made as a pair"><figcaption>Vincent Dankaerts &amp; Jade Kievits</figcaption></figure>
-    <figure><img src="assets/hof-dankaerts-kievits-02.jpg" alt="A photogram made as a pair, second sheet"><figcaption>Vincent Dankaerts &amp; Jade Kievits</figcaption></figure>
-    <figure><img src="assets/hof-anne-marijn-01.jpg" alt="A photogram"><figcaption>Anne Marijn</figcaption></figure>
-    <figure><img src="assets/hof-anne-marijn-02.jpg" alt="A photogram, second sheet"><figcaption>Anne Marijn</figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-rosa-perez-01.jpg" data-cap="Rosa Perez"><img src="assets/hof-rosa-perez-01.jpg" alt="A photogram: gauze and flower heads on a dark ground"></button><figcaption>Rosa Perez</figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-rosa-perez-02.jpg" data-cap="Rosa Perez"><img src="assets/hof-rosa-perez-02.jpg" alt="A photogram: fabric and stems, a second sheet"></button><figcaption>Rosa Perez</figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-jan-ryt.jpg" data-cap="Jan Ryt"><img src="assets/hof-jan-ryt.jpg" alt="A photogram: liquid and droplets across the sheet"></button><figcaption>Jan Ryt</figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-dankaerts-kievits-01.jpg" data-cap="Vincent Dankaerts &amp; Jade Kievits"><img src="assets/hof-dankaerts-kievits-01.jpg" alt="A photogram made as a pair"></button><figcaption>Vincent Dankaerts &amp; Jade Kievits</figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-dankaerts-kievits-02.jpg" data-cap="Vincent Dankaerts &amp; Jade Kievits"><img src="assets/hof-dankaerts-kievits-02.jpg" alt="A photogram made as a pair, second sheet"></button><figcaption>Vincent Dankaerts &amp; Jade Kievits</figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-anne-marijn-01.jpg" data-cap="Anne Marijn"><img src="assets/hof-anne-marijn-01.jpg" alt="A photogram"></button><figcaption>Anne Marijn</figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-anne-marijn-02.jpg" data-cap="Anne Marijn"><img src="assets/hof-anne-marijn-02.jpg" alt="A photogram, second sheet"></button><figcaption>Anne Marijn</figcaption></figure>
   </div>
   <p class="body quiet">Prints handed in for this assignment in earlier years, shown with permission and credited to the people who made them.</p>
 
@@ -254,9 +320,34 @@ dl.reflist dt{font-style:italic}
   </div>
 
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 520 · 09.09.2026 21:42</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 525 · 09.09.2026 21:48</span></div>
+</div>
+<div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
+  <span class="x">Esc</span><img alt=""><p></p>
 </div>
 <script>
+/* PRESS A PICTURE AND IT OPENS AT ITS OWN SIZE. The plates on this page are
+   small on purpose - the brief is read, not looked at - so every one of them
+   is a door. Escape, or a press anywhere, closes it. */
+document.getElementById('pdf').addEventListener('click', function () {
+  window.print();
+});
+(function () {
+  var lb = document.getElementById('lb');
+  var im = lb.querySelector('img'), cap = lb.querySelector('p');
+  document.querySelectorAll('.zoom').forEach(function (z) {
+    z.addEventListener('click', function (e) {
+      e.stopPropagation();
+      im.src = z.dataset.full; im.alt = (z.querySelector('img') || {}).alt || '';
+      cap.innerHTML = z.dataset.cap || '';
+      lb.classList.add('on');
+    });
+  });
+  lb.addEventListener('click', function () { lb.classList.remove('on'); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') lb.classList.remove('on');
+  });
+})();
 /* One plate at a time. Arrows, thumbnails and the arrow keys all say the same
    thing, and the count says where you are. No library: a brief is one file. */
 document.querySelectorAll('[data-show]').forEach(function (sh) {
