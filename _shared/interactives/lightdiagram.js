@@ -748,6 +748,13 @@ function mountLightDiagram(fig) {
     refresh();
   });
   lightBlk.append(roleCh.row, kindCh.row);
+  /* ---- on a stand: who carries whom, and the way apart ---- */
+  const mateBlk = el('div', 'ld-blk');
+  const mateRow = el('div', 'ld-row');
+  const mateK = el('span', 'ld-k', 'ON'), mateName = el('span', 'ld-name', '');
+  const mateBtn = el('button', 'chip', 'Detach'); mateBtn.type = 'button';
+  mateBtn.addEventListener('click', () => { const it = selected(); if (it) detach(it); });
+  mateRow.append(mateK, mateName, mateBtn); mateBlk.append(mateRow);
 
   /* ---- a camera: format, angle of view, the triad ---- */
   const CAM = [
@@ -804,13 +811,16 @@ function mountLightDiagram(fig) {
     return { row: row, sw: sw, set: (c) => sw.forEach((b, i) => b.setAttribute('aria-pressed', String(list[i][1] === (c || null)))) };
   };
   const gelPal = makePal(LD_GELS), paperPal = makePal(LD_PAPERS);
-  focalCtl.append(lightBlk, camBlk, palBlk);
+  focalCtl.append(lightBlk, camBlk, palBlk, mateBlk);
 
   /* what the cell shows, for the thing selected */
   function updateCell(it, selDef, k) {
     const show = (node, on) => { node.style.display = on ? '' : 'none'; };
     show(focalIn, !!k.cam); show(lightTop, !!k.lit);
     show(lightBlk, !!k.lit); show(camBlk, !!k.cam); show(palBlk, !!k.colour);
+    const mate = it && mateOf(it);
+    show(mateBlk, !!mate);
+    if (mate) { mateK.textContent = selDef.group === 'support' ? 'CARRIES' : 'ON'; mateName.textContent = ldDef(gear, mate).name; }
     show(gelPal.row, !!k.lit); show(paperPal.row, !!(k.colour && !k.lit));
     if (k.lit) {
       const u = LD_UNITS[state.unit], has = it[u.k] != null;
@@ -849,7 +859,17 @@ function mountLightDiagram(fig) {
   const bPng = el('button', 'st', 'Export PNG');
   const bTxt = el('button', 'st', 'Export text');
   const bClear = el('button', 'st', 'Clear');
-  [bCopy, bPaste, bPng, bTxt, bClear].forEach((b) => { b.type = 'button'; actRow.append(b); });
+  /* FOUR COMMANDS, WHICH IS THE CEILING (IG-01 06). Clear was the fifth, and
+     it does not belong with the four that put the diagram somewhere else: it
+     empties the grid, which is what Edit room does, so it goes to the bar on
+     the stage where the things that act on the room already are. */
+  [bCopy, bPaste, bPng, bTxt].forEach((b) => { b.type = 'button'; actRow.append(b); });
+  /* Clear stands beside Edit room in the bar on the stage, because both act on
+     the room rather than on where the diagram goes. It is made here with the
+     other four and seated there, after the bar exists. */
+  bClear.type = 'button';
+  bClear.className = 'fs';
+  roomBtn.after(bClear);
   acts.append(actRow);
   controls.append(acts);
 
@@ -1033,12 +1053,61 @@ function mountLightDiagram(fig) {
     if (sh && Math.hypot(pt.x - sh[0], pt.y - sh[1]) <= 9) return { kind: 'sweep' };
     return null;
   }
+  /* WHAT TURNS BY A HANDLE: anything that faces (aim), and a roll, a wall
+     or a curtain too - a backdrop has a front, its paper, and had no handle
+     at all because it was never marked aim. Batu, 08-09: "fon dönmüyor". */
+  const turns = (def) => !!(def.aim || def.sweep || def.stretch);
   /* where the rotation handle sits, in pixels: past the front of the item */
   function handleAt(it, def) {
     const [X, Y] = toPx(it.x, it.y);
     const dir = ldDir(it.r);
     const reach = def.d / 2 * geo.S + 24;
-    return [X + dir[0] * reach, Y + dir[1] * reach];
+    /* A ROLL TURNS FROM ITS BACK. In front of a backdrop lies its paper and
+       the paper's own handle, and the turning handle sat under both - the
+       roll "would not turn" (Batu, 08-09, twice). */
+    const side = def.sweep ? -1 : 1;
+    return [X + dir[0] * reach * side, Y + dir[1] * reach * side];
+  }
+
+  /* A LIGHT ON A STAND. Nothing is stored for it: a light and a stand
+     whose centres coincide are one thing and move as one, a camera and a
+     tripod the same. Dropped within 35 cm of a free stand, a light snaps
+     onto it; Detach in the cell sets it half a metre aside. Batu, 08-09:
+     "ışıkları ayaklara sabitlemenin bir yolu olmalı". */
+  const CARRY = { light: ['light-stand', 'c-stand', 'boom'], camera: ['tripod'] };
+  const carrierFor = (def) => def.group === 'light' ? CARRY.light : def.group === 'camera' ? CARRY.camera : null;
+  const carries = (standDef, def) => { const c = carrierFor(def); return !!(c && c.indexOf(standDef.id) >= 0); };
+  function mateOf(it) {
+    const def = ldDef(gear, it); if (!def) return null;
+    const near = (o) => o !== it && Math.hypot(o.x - it.x, o.y - it.y) < 0.05;
+    return state.items.find((o) => {
+      const d2 = ldDef(gear, o); if (!d2 || !near(o)) return false;
+      return def.group === 'support' ? carries(def, d2) : carries(d2, def);
+    }) || null;
+  }
+  function perch(it) {                 /* at a drop: onto the nearest free partner in reach */
+    const def = ldDef(gear, it); if (!def || mateOf(it)) return false;
+    let best = null, bd = 0.35;
+    state.items.forEach((o) => {
+      const d2 = ldDef(gear, o); if (!d2 || o === it || mateOf(o)) return;
+      const pair = def.group === 'support' ? carries(def, d2) : carries(d2, def);
+      const dd = Math.hypot(o.x - it.x, o.y - it.y);
+      if (pair && dd < bd) { best = o; bd = dd; }
+    });
+    if (!best) return false;
+    it.x = best.x; it.y = best.y;
+    const stand = def.group === 'support' ? def : ldDef(gear, best);
+    const thing = def.group === 'support' ? ldDef(gear, best) : def;
+    say(thing.name + ' on the ' + stand.name.toLowerCase());
+    return true;
+  }
+  function detach(it) {
+    const m = mateOf(it); if (!m) return;
+    const def = ldDef(gear, it);
+    const carried = def.group === 'support' ? m : it;      /* the light steps aside; the stand stays */
+    carried.x += 0.5; clampIn(carried, ldDef(gear, carried));
+    if (mateOf(carried)) { carried.x -= 1; clampIn(carried, ldDef(gear, carried)); }
+    say('detached'); refresh();
   }
 
   /* WHAT LIES ON WHAT. A stand is under its light and the room is under
@@ -1128,8 +1197,10 @@ function mountLightDiagram(fig) {
   function nudge(dx, dy) {
     const it = state.items[state.sel];
     if (!it) return;
+    const m = mateOf(it);
     it.x += dx; it.y += dy;
     clampIn(it, ldDef(gear, it));
+    if (m) { m.x = it.x; m.y = it.y; }
     refresh();
   }
 
@@ -1233,7 +1304,7 @@ function mountLightDiagram(fig) {
     const it = state.items[state.sel];
     if (!it || !geo) return false;
     const def = ldDef(gear, it);
-    if (!def || !def.aim || it.t) return false;
+    if (!def || !turns(def) || it.t) return false;
     const [hx, hy] = handleAt(it, def);
     return Math.hypot(pt.x - hx, pt.y - hy) <= 11;
   }
@@ -1320,7 +1391,8 @@ function mountLightDiagram(fig) {
       const it = state.items[k];
       state.sel = k;
       const m = toM(pt.x, pt.y);
-      state.drag = { kind: 'move', i: k, dx: it.x - m[0], dy: it.y - m[1], moved: false };
+      state.drag = { kind: 'move', i: k, dx: it.x - m[0], dy: it.y - m[1], moved: false,
+                     mate: e.altKey ? null : mateOf(it) };   /* a copy leaves the stand with the original */
       cv.setPointerCapture(e.pointerId);
       cv.style.cursor = 'grabbing';
       refresh();
@@ -1358,6 +1430,7 @@ function mountLightDiagram(fig) {
           it.y = sub.it.y + Math.sin(snapped) * dist;
         }
         clampIn(it, ldDef(gear, it));
+        if (d.mate) { d.mate.x = it.x; d.mate.y = it.y; }
         d.moved = true;
         follow();
         view.render();
@@ -1455,6 +1528,7 @@ function mountLightDiagram(fig) {
     if (!d) return;
     if (d.kind === 'roomW' || d.kind === 'roomD') state.items.forEach((it) => clampIn(it, ldDef(gear, it)));
     if (d.kind === 'pan' && !d.moved) { state.sel = -1; }
+    if (d.kind === 'move' && d.moved && !d.mate) perch(state.items[d.i]);
     if (d.kind === 'move' && !d.moved && d.i === state.sel) {
       const def = ldDef(gear, state.items[d.i]);
       if (def && def.group === 'note') requestAnimationFrame(() => postEdit.focus());
@@ -1533,7 +1607,12 @@ function mountLightDiagram(fig) {
     const stretch = !!(selDef && selDef.stretch);
     const none = !it;
     const plain = !!(it && !cam && !lit && !post && !tint && !stretch);
-    focalIn.disabled = !cam;
+    /* C8 said hide the row rather than grey it, and S18 says a control keeps
+       its place - his rule of 09-09-2026, which is the stronger of the two:
+       hiding this row resized the panel under the hand. It goes off instead,
+       in place. The label stays, because the panel still has to say what is
+       selected. */
+    ctlOff(focalIn, !cam);
     focalCtl.classList.toggle('off', none || plain);
     focalLab.firstChild.textContent = lit ? 'Light ' : (cam ? 'Camera ' : (post ? 'Post-it ' : ((tint || stretch) ? selDef.name + ' ' : (plain ? selDef.name + ' ' : 'Nothing selected '))));
     focalCtl.querySelector('.val').textContent = '';
@@ -1631,7 +1710,14 @@ function mountLightDiagram(fig) {
     }
     /* A TINTED THING IS DRAWN IN ITS COLOUR: every tone of the icon */
     const TT = (def.tint && it.c) ? { ...T, body: '#' + it.c, back: '#' + it.c, face: '#' + it.c } : T;
-    const art = gridArt(def.id, def.tint ? it.c : null);
+    /* A THIN THING KEEPS ITS PLAN DRAWING. The delivered art is a side
+       view; on a softbox or a stand it reads, on a roll of paper it stood
+       a metre tall over a 30 cm footprint, hid the paper on the floor and
+       the handles with it (Batu, 08-09: "fon çalışmıyor ve dönmüyor").
+       Room pieces, solid blades and anything 10 cm deep or less are drawn
+       as the plan draws them; the art stays in the bench. */
+    const planOnly = def.group === 'room' || def.solid || def.d <= 0.1;
+    const art = planOnly ? null : gridArt(def.id, def.tint ? it.c : null);
     if (art) {
       /* fitted to the footprint's width; the drawing's own height */
       const ah = w * art.height / art.width;
@@ -2131,7 +2217,7 @@ function mountLightDiagram(fig) {
           const txt = state.drag.kind === 'sweep' ? (sel.l ? sel.l.toFixed(1) + ' m on the floor' : 'roll only') : def.w.toFixed(1) + ' m';
           plate(ctx, txt, X, Y - e.hy * S - 14, T.signal, 11, 'center');
         }
-        if (def.aim && !sel.t && !stretching) {
+        if (turns(def) && !sel.t && !stretching) {
           /* ONE HANDLE, past the front of the item. Drag it and the item turns
              about its own centre; while it turns, the degrees are written.
              No handle while it follows the subject: the subject holds it. */
@@ -2259,6 +2345,7 @@ function mountLightDiagram(fig) {
       if (it.c) { const gl = LD_ALL_COLOURS.find((q) => q[1] === it.c); bits.push('gel ' + (gl ? gl[0] : '#' + it.c)); }
       if (it.b) bits.push('doors ' + it.b + '°');
       if (it.t) bits.push('follows');
+      const mt = mateOf(it); if (mt) bits.push('on ' + ldDef(gear, mt).name.toLowerCase());
       put(bits.length ? bits.join(' · ') : '—', 11, T.ink, 22);
       ctx.restore();
     });

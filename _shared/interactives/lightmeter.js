@@ -886,11 +886,26 @@ function mountLightMeter(fig) {
   /* ONE SLIDER, AND IT MEANS WHAT THE MODE MEANS. In ambient it is the light
      in the room; in flash it is the flash's own output, because a flash meter
      has no ambient to measure and the studio is a room somebody built. */
-  const sc = el('div', 'ctl span2');
-  sc.append(el('label', null, 'The light <span class="val"></span>'));
-  const scRow = el('input', 'range');
-  scRow.type = 'range'; scRow.step = '0.1';
-  sc.append(scRow); controls.append(sc);
+  /* AND IT IS THE KIT'S SLIDER (T1). It was an input built by hand here,
+     which is how the kit ends up with three different sliders that look
+     almost the same; slider() takes a format, and the format is the only
+     thing that was ever special about this one. */
+  /* the one thing that was ever special about this slider: what its value is
+     called. In ambient it is a day; in flash it is a dial on a head. */
+  function scText() {
+    const r = meter.read();
+    return r.mode === 'flash'
+      ? 'the head at ' + evfToPow(r.evf).toFixed(1)
+        + (evfToPow(r.evf) >= LM_POW.max - 0.05 ? ' — full power' : '')
+        + ' · f/' + lmAperture(Math.sqrt(Math.pow(2, r.evf))).stop + ' at ISO 100'
+      : sceneName(r.ev100) + ' · EV ' + (Math.round(r.ev100 * 10) / 10).toFixed(1);
+  }
+
+  const scRow = slider(controls, {
+    label: 'The light', min: -3, max: 16, step: 0.1, value: 13, cls: 'span2',
+    format: () => scText(),
+  });
+  const sc = scRow.closest('.ctl');
   const scVal = sc.querySelector('.val');
 
   /* THE HEAD IS MARKED THE WAY A HEAD IS MARKED. A studio head has a power
@@ -917,12 +932,18 @@ function mountLightMeter(fig) {
     refresh();
   });
 
+  /* THE THREE GATES (O1 O2 O3), ANSWERED — and IG-01 07 worked this exact
+     readout and gave the verdict, so it is not reopened here.
+     It says — 125 at f/8.0 — FAILED G2: the meter's own LCD says it, on the
+     stage, at tier R. A readout repeating the screen it is looking at is a
+     caption on the picture, and the picture wins. Gone; the LCD is the
+     readout.
+     Which is stays as the one row: nobody sets the equivalents, nothing in
+     the picture states them, and choosing between them is the thing the
+     instrument exists to teach — a meter reading is a choice, not a number.
+     Cut to two, per 07: five ellipsised, three still ran to two lines. */
   const out = readout(fig, [
-    { key: 'It says', cls: 'hi', wide: true },
-    /* IT WRAPS, IT DOES NOT ELLIPSISE. At the projector this cell ran off
-       its own edge and ended '250 at f/…', so the second half of the lesson
-       was a row of dots. Small face, two lines. */
-    { key: 'Which is', cls: 'sm two', wide: true },
+    { key: 'Which is', cls: 'hi', wide: true },
   ]);
 
   fsButton(stage, fig);
@@ -932,34 +953,37 @@ function mountLightMeter(fig) {
     const r = meter.read();
     if (r.mode !== wasMode) { wasMode = r.mode; dial(); }
     const flash = r.mode === 'flash';
-    scVal.textContent = flash
-      ? 'the head at ' + evfToPow(r.evf).toFixed(1)
-        + (evfToPow(r.evf) >= LM_POW.max - 0.05 ? ' — full power' : '')
-        + ' · f/' + lmAperture(Math.sqrt(Math.pow(2, r.evf))).stop + ' at ISO 100'
-      : sceneName(r.ev100) + ' · EV ' + (Math.round(r.ev100 * 10) / 10).toFixed(1);
-    out['It says'].textContent = r.over
-      ? 'out of range — ' + (r.aperture < 1 ? 'not enough light for this film and '
-          + 'shutter, open the shutter or use a faster film'
-          : 'too much light, shorten the shutter')
-      : lmShutterText(r.shutter) + ' at f/' + r.stop
-        + (r.tenth ? ' and ' + r.tenth + '/10' : '');
+    scVal.textContent = scText();
+    /* THE TWO THINGS THE LCD CANNOT SAY come here, because the row that used
+       to carry them has gone. A screen that is out of range shows nothing
+       useful, and a flash meter that has not been fired shows the last
+       reading; in both cases the sentence is the only thing on screen that
+       tells the room what is happening. */
+    if (r.over) {
+      out['Which is'].textContent =
+        'out of range — ' + (r.aperture < 1
+          ? 'not enough light for this film and shutter, open the shutter or '
+            + 'use a faster film'
+          : 'too much light, shorten the shutter');
+      meter.render(); paintScene();
+      return;
+    }
     if (flash) {
       if (r.waiting) {
-        out['It says'].textContent =
+        out['Which is'].textContent =
           'nothing yet — a flash meter has nothing to read until a flash goes '
           + 'off. Press MEASURE on the side of the meter.';
+        meter.render(); paintScene();
+        return;
       }
       /* THE LESSON IS A THING YOU DO, NOT A SENTENCE. Turn the shutter in this
          mode and the aperture does not move: the pulse is over in a
          thousandth of a second, long before any shutter here has closed, so
          nothing the shutter does can change what the flash gave. */
-      out['Which is'].textContent = r.waiting
-        ? 'the meter is held where the subject is, dome pointed back at the '
-          + 'camera — which is what the little one standing on the ball is doing.'
-        :
-        'turn the shutter and the aperture does not move — the flash is over in '
-        + 'a thousandth of a second, so only the aperture and the ISO can change '
-        + 'what it gives. The shutter is for the daylight behind it.';
+      out['Which is'].textContent =
+        'turn the shutter and the aperture does not move — the flash is over '
+        + 'in a thousandth of a second. The shutter is for the daylight '
+        + 'behind it.';
       meter.render(); paintScene();
       return;
     }
@@ -971,7 +995,7 @@ function mountLightMeter(fig) {
        the aperture moves a whole stop each time and the trade is visible. */
     const alt = [];
     [1 / 1000, 1 / 250, 1 / 60, 1 / 15, 1 / 4, 1].forEach((t) => {
-      if (t === r.shutter || alt.length >= 3) return;
+      if (t === r.shutter || alt.length >= 2) return;
       const a = lmSolve(r.ev100, r.iso, t);
       if (a.over) return;                       /* only the ones it can answer */
       alt.push(lmShutterText(t) + ' at f/' + a.stop);

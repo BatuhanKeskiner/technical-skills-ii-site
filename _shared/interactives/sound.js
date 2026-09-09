@@ -325,5 +325,8 @@ function soundButton(stage, snd, onChange) {
   say();
   wrap.append(b, down, lv, up);
   stage.append(wrap);
+  /* S18: "Sound on" and "Sound off" are not the same width, and the bar this
+     button sits in is on the stage - so switching the sound moved the bar. */
+  if (typeof pinWidth === 'function') pinWidth(b, ['Sound on', 'Sound off']);
   return b;
 }

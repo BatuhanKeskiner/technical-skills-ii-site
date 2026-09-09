@@ -5,7 +5,7 @@
    than as a picture. The camera stands in front of it, cut off
    at the bottom edge, and on its screen is the only thing that
    will survive: one rectilinear frame.
-     Pan · tilt on the round pad, or by dragging the picture.
+     Pan · tilt with the arrow keys, or by dragging the picture.
      Zoom on the slider — 14 to 200 mm on a 36 mm frame.
    Full screen keeps the stage's proportions, so the
    composition on the wall is the composition on the laptop.
@@ -244,20 +244,20 @@ function mountTransform(fig) {
         state.space = i ? 'model' : 'photo';
         const lim = tiltLim();
         state.tilt = Math.max(-lim, Math.min(lim, state.tilt));
-        walkPad.ctl.hidden = state.space !== 'model';
+        /* S18: it keeps its place and goes off - hiding it moved the
+           two cells to its right every time the space was switched */
+        ctlOff(walkPad.ctl, state.space !== 'model');
         view.render();
       },
     });
   }
 
-  const pad = padControl(controls, {
-    label: 'Pan · tilt',
-    onChange: (x, y) => {
-      state.pan = Math.round(x * 180);
-      state.tilt = Math.round(-y * tiltLim());
-      view.render();
-    },
-  });
+  /* PAN AND TILT ARE A READING, NOT A SECOND HAND. The arrow keys turn the
+     camera and the keys are printed on the stage; dragging the picture turns
+     it too. A pad on top of both was a third way to do one thing, and it cost
+     the strip forty pixels it does not have - IG-01 11's verdict drawing for
+     this instrument shows PAN · TILT as a value, and that is what it is. */
+  const pad = valueCell(controls, { label: 'Pan · tilt' });
 
   /* WHERE IT STANDS, on a plan of the room. The first pad is where the camera
      LOOKS; this one is where it IS, and the two are the only things a
@@ -273,7 +273,7 @@ function mountTransform(fig) {
       view.render();
     },
   });
-  walkPad.ctl.hidden = state.space !== 'model';
+  ctlOff(walkPad.ctl, state.space !== 'model');
 
   const fZoom = slider(controls, {
     /* NOT `wide`, which is what slider() defaults to. A wide control takes the
@@ -315,8 +315,7 @@ function mountTransform(fig) {
   const hfov = () => 2 * Math.atan(18 / state.f);
 
   function sync() {
-    pad.out.textContent = state.pan + '° · ' + state.tilt + '°';
-    pad.place(state.pan / 180, -state.tilt / tiltLim());
+    pad.textContent = state.pan + '° · ' + state.tilt + '°';
     walkPad.out.textContent = state.x.toFixed(1) + ' · ' + state.z.toFixed(1) + ' m';
     walkPad.place(state.x / X_LIM,
       -((state.z - (Z_FWD + Z_BACK) / 2) / ((Z_FWD - Z_BACK) / 2)));

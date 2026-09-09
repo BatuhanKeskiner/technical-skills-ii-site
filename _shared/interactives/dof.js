@@ -26,7 +26,54 @@ function mountDof(fig) {
   const caption = fig.querySelector('figcaption');
   fig.insertBefore(controls, caption);
 
-  const state = { stop: 2, focal: 85, dist: 3.0, mode: 0 };
+  /* THE FORMAT IS THE FOURTH VARIABLE, and the one the old page left out.
+     Fig. 6 of last year's brief: "plan view; hold framing / hold lens". To
+     frame the same picture a larger format needs a longer lens, and a longer
+     lens at the same f-number gives a shallower zone - the whole "medium
+     format look" is that sentence. Hold the lens instead and the format only
+     crops; the depth does not move.
+
+     WHICH ONE IS HELD IS THE PAGE'S DECISION, not the student's (IG-01 06,
+     rule 01): a page about the look holds the framing, a page about cropping
+     holds the lens. `data-hold` pins it, `data-view` pins Frame / Plan / Both,
+     and pinning both keeps the strip at four cells. */
+  const HOLD = fig.dataset.hold === 'lens' ? 'lens' : 'framing';
+  const VIEWS = ['frame', 'plan', 'both'];
+  const state = {
+    stop: 2, focal: 85, dist: 3.0,
+    mode: Math.max(0, VIEWS.indexOf(fig.dataset.view || 'both')),
+    fmt: 'ff',
+  };
+  /* the formats a photograph is actually made on, with the diagonal that sets
+     both the crop factor and what a normal lens is */
+  const DFMT = [
+    { id: 'mft',  name: 'MFT',         w: 17.3, h: 13 },
+    { id: 'apsc', name: 'APS-C',       w: 23.6, h: 15.7 },
+    { id: 'ff',   name: 'Full frame',  w: 36,   h: 24 },
+    { id: 'gfx',  name: 'MF digital',  w: 43.8, h: 32.9 },
+    { id: '67',   name: '6×7',         w: 70,   h: 56 },
+    { id: '45',   name: '4×5',         w: 127,  h: 102 },
+  ];
+  const dfmt = () => DFMT.find((f) => f.id === state.fmt) || DFMT[2];
+  const dDiag = (f) => Math.sqrt(f.w * f.w + f.h * f.h);
+  const FF_DIAG = 43.27;
+  const crop = () => FF_DIAG / dDiag(dfmt());
+  /* THE CIRCLE OF CONFUSION DEPENDS ON WHICH THING IS BEING HELD, and this is
+     the part my version had wrong. Holding the FRAMING, every format is
+     enlarged to the same print, so the acceptable blur is the format's own
+     diagonal over 1500 — a bigger negative is enlarged less and forgives
+     more. Holding the LENS, the blur is judged on the sensor itself, so one
+     fixed full-frame figure applies to all of them — and that is exactly what
+     makes the format drop out of the equation and become a crop and nothing
+     else. His own module, ported (Fig. 6 of the 26-08 page). */
+  const FF_DIAG_MM = Math.hypot(36, 24);
+  const coc = () => (HOLD === 'framing' ? dDiag(dfmt()) : FF_DIAG_MM) / 1500;
+
+  /* Holding the framing means the lens IS the format: one metre of scene at
+     the subject, on every format, is f = width × distance / field. Not a
+     ratio nudge — the equation. */
+  const FIELD_MM = 1000;
+  const lensForFraming = () => dfmt().w * (state.dist * 1000) / FIELD_MM;
 
   const view = canvas(stage, draw);
 
@@ -37,11 +84,27 @@ function mountDof(fig) {
   const fFocal = slider(controls, { label: 'Focal length', min: 24, max: 200, step: 1, value: state.focal, unit: ' mm' });
   const fDist = slider(controls, { label: 'Subject distance', min: 0.6, max: 12, step: 0.1, value: state.dist, unit: ' m', decimals: 1 });
 
-  states(controls, {
-    label: 'View', cls: 'span1', items: ['Frame', 'Plan', 'Both'],
-    onChange: (i) => { state.mode = i; view.render(); },
+  const fFormat = stepper(controls, {
+    label: 'Format', ladder: DFMT.map((f) => f.id), value: state.fmt,
+    format: (id) => (DFMT.find((f) => f.id === id) || DFMT[2]).name,
+    onChange: (id) => {
+      state.fmt = id;
+      /* HOLDING THE FRAMING MEANS THE LENS ANSWERS. Change the format and the
+         focal length moves with it, so the subject stays the same size in the
+         frame - which is the only way two formats can be compared at all. */
+      if (HOLD === 'framing') syncFraming();
+      compute(); view.render();
+    },
   });
-  const stateGroup = controls.querySelector('.states');
+  function syncFraming() {
+    const f = Math.round(lensForFraming());
+    state.focal = Math.max(+fFocal.min, Math.min(+fFocal.max, f));
+    fFocal.value = String(state.focal); fFocal._sync();
+  }
+  if (HOLD === 'framing') {
+    /* it is answering, not broken (IG-02 P4) */
+    fFocal.closest('.ctl').classList.add('answering');
+  }
 
   legend(stage, [
     { c: p.marker, label: 'In focus', kind: 'line' },
@@ -49,12 +112,24 @@ function mountDof(fig) {
     { c: p.muted, label: 'Subject plane' },
   ]);
 
+  /* THE THREE GATES (O1 O2 O3), ANSWERED — four cells went to two.
+     Near limit and Far limit are DRAWN: the two dashed lines in the picture
+     are those limits, and the legend names them. A number for each is a
+     caption on a mark the picture already makes, so G2 removes both.
+     Total depth stays: nobody sets it, nothing in the picture states the
+     distance BETWEEN the two lines as a quantity, and it is the thing a
+     photographer acts on — whether the whole face is in.
+     Hyperfocal stays: it is derived, it is nowhere in the drawing, and it is
+     acted on directly — focus there and everything past half of it is sharp. */
   const out = readout(fig, [
-    { id: 'near', key: 'Near limit' },
-    { id: 'far', key: 'Far limit' },
     { id: 'depth', key: 'Total depth', cls: 'hi' },
-    { id: 'hyper', key: 'Hyperfocal' },
-  ], 'four');
+    /* THE NUMBER THAT MAKES TWO FORMATS COMPARABLE, and the one nobody is
+       taught: multiply the f-number by the crop factor and you have the
+       full-frame aperture that blurs the same. f/2.8 on APS-C is f/4.3 on full
+       frame; f/4 on 6×7 is f/2. Nobody sets it, nothing in the drawing states
+       it, and it is what a student acts on when choosing a body. */
+    { id: 'equiv', key: 'Blurs like, on full frame' },
+  ]);
 
   fsButton(stage, fig);
 
@@ -62,6 +137,7 @@ function mountDof(fig) {
     state.stop = +fStop.value;
     state.focal = +fFocal.value;
     state.dist = +fDist.value;
+    if (HOLD === 'framing') syncFraming();
     compute();
     view.render();
   }));
@@ -71,7 +147,7 @@ function mountDof(fig) {
     const N = STOPS[state.stop];
     const f = state.focal;                 /* mm */
     const s = state.dist * 1000;           /* mm */
-    const H = (f * f) / (N * COC) + f;     /* hyperfocal, mm */
+    const H = (f * f) / (N * coc()) + f;   /* hyperfocal, mm — the format's own circle of confusion */
     const near = (s * (H - f)) / (H + s - 2 * f);
     const farDen = H - s;
     const far = farDen <= 0 ? Infinity : (s * (H - f)) / farDen;
@@ -84,13 +160,15 @@ function mountDof(fig) {
   }
 
   function compute() {
-    const { H, near, far } = limits();
-    out.near.textContent = fmt(near);
-    out.far.textContent = fmt(far);
+    const { near, far } = limits();
     out.depth.innerHTML = isFinite(far)
       ? ((far - near) / 1000).toFixed(2) + '<span class="u">m</span>'
       : '∞';
-    out.hyper.textContent = fmt(H);
+    const eq = STOPS[state.stop] * crop();
+    out.equiv.textContent = state.fmt === 'ff'
+      ? 'f/' + STOPS[state.stop] + ' — it is full frame'
+      : 'f/' + (eq < 10 ? eq.toFixed(1) : Math.round(eq))
+        + '  (×' + crop().toFixed(2) + ')';
   }
 
   /* ---- drawing ---- */
@@ -232,13 +310,18 @@ function mountDof(fig) {
     if (hm <= maxM) {
       const hx = x(hm);
       line(ctx, hx, axisY - h * 0.2, hx, axisY, p.muted, [2, 4]);
-      label(ctx, 'H', hx, axisY - h * 0.2 - 6, p.muted, 9, 'center');
+      label(ctx, 'HYPERFOCAL ' + fmt(hm * 1000), hx, axisY - h * 0.2 - 6,
+            p.muted, 9, 'center');
     }
 
-    label(ctx, 'PLAN VIEW', padL - 26, top + 20, p.muted, 9);
+    label(ctx, 'PLAN VIEW · ' + dfmt().name.toUpperCase() + ' · '
+          + state.focal + ' MM' + (HOLD === 'framing' ? ' (HELD TO FRAME)' : ''),
+          padL - 26, top + 20, p.muted, 9);
   }
 
-  [...stateGroup.children][2].click();
+  /* the hyperfocal is a distance and the plan draws distances, so it is
+     labelled H on the axis (G2) rather than repeated in a readout cell */
+  if (HOLD === 'framing') syncFraming();
   compute();
   return { render: view.render };
 }

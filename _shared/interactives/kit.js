@@ -18,6 +18,89 @@ function css(name, fallback) {
 }
 
 /* A control-bar slider. Returns the input. */
+/* S18 · A VALUE NEVER CHANGES THE SIZE OF THE THING THAT HOLDS IT.
+   "3.0 m" and "10.0 m" are not the same width, so a slider whose value was
+   read out beside its name made its own cell grow as it was dragged, and the
+   cells beside it slid along the strip. His rule, 09-09-2026, in capitals:
+   the size is settled once, for the longest thing the box will ever hold, and
+   the values move inside it. Both readouts are mono, so a character is a
+   character: the widest string in the whole range, in ch, pinned. */
+function pinWidth(node, strings) {
+  let widest = '';
+  for (const t of strings) {
+    const u = t == null ? '' : String(t);
+    if (u.length > widest.length) widest = u;
+  }
+  node.style.display = 'inline-block';
+  /* the floor, which needs no layout: these boxes are mono, so a character is
+     a character. It is a floor and not the answer because letter-spacing is
+     not in a `ch`, and four hundredths of an em times seven characters is the
+     three pixels that were still moving the cell. */
+  node.style.minWidth = widest.length + 'ch';
+  const measure = () => {
+    if (!node.isConnected) return;
+    const was = node.textContent;
+    const floor = node.style.minWidth;
+    node.style.minWidth = '0';
+    node.textContent = widest;
+    const w = Math.ceil(node.getBoundingClientRect().width);
+    node.textContent = was;
+    node.style.minWidth = w > 0 ? w + 'px' : floor;
+  };
+  measure();
+  /* and again when the mono face has actually arrived, because a fallback
+     face measures differently */
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  return widest.length;
+}
+
+/* S18 · A CELL THAT HAS TWO FACES IS AS WIDE AS ITS WIDER FACE.
+   `answering` (IG-02 P4) draws the value at 22px instead of 12, so the cell
+   that held "2.4 m" small held it large a moment later and everything to its
+   right slid along. The cell is measured in both states, once, and pinned to
+   the wider. */
+function pinCell(ctl, classes) {
+  const measure = () => {
+    if (!ctl.isConnected) return;
+    ctl.style.minWidth = '0';
+    const had = classes.map((c) => ctl.classList.contains(c));
+    let w = Math.ceil(ctl.getBoundingClientRect().width);
+    classes.forEach((c) => ctl.classList.add(c));
+    w = Math.max(w, Math.ceil(ctl.getBoundingClientRect().width));
+    classes.forEach((c, i) => { if (!had[i]) ctl.classList.remove(c); });
+    ctl.style.minWidth = w + 'px';
+    ctl.style.flexGrow = '0';
+  };
+  measure();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+}
+
+/* S18 · A CONTROL THAT DOES NOT APPLY STAYS WHERE IT IS.
+   It used to be hidden - "hide the row, do not grey it" - and hiding a cell
+   moves every cell after it, which is the one thing that may not happen. So
+   it keeps its place and goes off: the hand comes off it, the name greys, and
+   the strip does not move under the hand that is reaching for the next cell. */
+function ctlOff(node, off) {
+  const ctl = node && node.closest ? node.closest('.ctl') : node;
+  if (!ctl) return;
+  ctl.classList.toggle('off', !!off);
+  ctl.setAttribute('aria-disabled', String(!!off));
+  ctl.querySelectorAll('input, button, select, textarea')
+     .forEach((e) => { e.disabled = !!off; });
+}
+
+/* every value a slider can show, without walking ten thousand of them */
+function everyValue(min, max, step, fmt) {
+  const lo = +min, hi = +max, st = Math.abs(+step) || 1;
+  const n = Math.floor((hi - lo) / st);
+  const many = n > 600;
+  const out = [];
+  const take = many ? Math.ceil(n / 600) : 1;
+  for (let k = 0; k <= n; k += take) out.push(fmt(lo + k * st));
+  out.push(fmt(hi), fmt(lo));
+  return out;
+}
+
 function slider(controls, { label, min, max, step, value, unit, cls, decimals, format }) {
   const ctl = el('div', 'ctl' + (cls ? ' ' + cls : ''));
   const lab = el('label', null, label + ' <span class="val"></span>');
@@ -33,6 +116,10 @@ function slider(controls, { label, min, max, step, value, unit, cls, decimals, f
   input._sync();
   ctl.append(lab, input);
   controls.append(ctl);
+  /* S18: the box is as wide as the widest reading, before the first drag */
+  const show = (v) => (format ? format(+v)
+    : (decimals != null ? (+v).toFixed(decimals) : String(v)) + (unit || ''));
+  pinWidth(out, everyValue(min, max, step, show));
   return input;
 }
 
@@ -84,6 +171,126 @@ function states(controls, { label, items, onChange, cls, disabled }) {
 }
 
 /* A readout row. cells: [{key, cls}] → returns {key: valueEl}. */
+/* A CELL THAT SHOWS RATHER THAN TAKES. A strip cell with a label and a value
+   and no hand on it - what IG-01 11 draws for transform's Pan / tilt and
+   Position. It is here rather than in an instrument because the moment two
+   instruments need one, they build two that look almost alike (T1).
+     valueCell(controls, { label, cls })  ->  the element to write into */
+/* THE TRIAD'S STEPPER, ONCE (IG-02 03 · FINDING 1). Test Strip, Photogram and
+   the light meter each built minus-value-plus by hand and the meter's came out
+   a different size - which is what happens every time a control is not in the
+   kit. It walks a ladder rather than a number line, because that is what an
+   aperture, a shutter and a film speed do: whole stops, halves or thirds, set
+   for the page and shared by every stepper on it.
+
+     stepper(controls, {
+       label, ladder,          // array of values, coarse to fine
+       value,                  // the one to open on
+       format,                 // v -> what the room reads: f/8, 1/125, 400
+       answering,              // true: the instrument is answering with it
+       onChange, cls,
+     })
+   Returns { set, get, node, answering } - `answering` takes a boolean and
+   swaps the hand for a value in signal (IG-02 P4). Keys: the caller wires
+   them, and prints them, because the key belongs to the instrument's map. */
+function stepper(controls, opts) {
+  const o = opts || {};
+  const lad = o.ladder || [];
+  let i = Math.max(0, lad.indexOf(o.value));
+  if (i < 0) i = 0;
+  const fmt = o.format || ((v) => String(v));
+
+  const ctl = el('div', 'ctl stp' + (o.cls ? ' ' + o.cls : ''));
+  ctl.append(el('label', null, o.label));
+  const row = el('div', 'stp-row');
+  const dn = el('button', 'st', '−');
+  const val = el('span', 'stp-v');
+  const up = el('button', 'st', '+');
+  [dn, up].forEach((b) => { b.type = 'button'; });
+  row.append(dn, val, up);
+  ctl.append(row);
+  controls.append(ctl);
+  /* S18: f/1.4 and f/22 are not the same width and the ladder is short */
+  val.style.textAlign = 'center';
+  pinWidth(val, lad.map(fmt));
+
+  function paint() {
+    val.textContent = fmt(lad[i]);
+    dn.disabled = i <= 0;
+    up.disabled = i >= lad.length - 1;
+  }
+  function step(d) {
+    const j = Math.max(0, Math.min(lad.length - 1, i + d));
+    if (j === i) return;
+    i = j; paint();
+    if (o.onChange) o.onChange(lad[i], i);
+  }
+  dn.addEventListener('click', () => step(-1));
+  up.addEventListener('click', () => step(1));
+
+  const api = {
+    node: ctl,
+    get: () => lad[i],
+    set: (v) => { const j = lad.indexOf(v); if (j >= 0) { i = j; paint(); } },
+    /* IG-02 P4: the one the instrument is answering with keeps its value,
+       large and in signal, and loses its hand. Never greyed - greyed reads as
+       a fault in the instrument rather than as the answer it is giving. */
+    answering: (on) => {
+      ctl.classList.toggle('answering', !!on);
+      dn.hidden = !!on; up.hidden = !!on;
+    },
+    step,
+  };
+  if (o.answering) api.answering(true);
+  paint();
+  return api;
+}
+
+/* The three ladders every camera setting walks, at whole stops, halves and
+   thirds. A page pins the interval; the student never sees the choice. */
+const LADDER = {
+  aperture: {
+    1: [1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22],
+    2: [1.4, 1.7, 2, 2.4, 2.8, 3.4, 4, 4.8, 5.6, 6.7, 8, 9.5, 11, 13, 16, 19, 22],
+    3: [1.4, 1.6, 1.8, 2, 2.2, 2.5, 2.8, 3.2, 3.5, 4, 4.5, 5, 5.6, 6.3, 7.1, 8,
+        9, 10, 11, 13, 14, 16, 18, 20, 22],
+  },
+  shutter: {
+    1: [30, 15, 8, 4, 2, 1, 1 / 2, 1 / 4, 1 / 8, 1 / 15, 1 / 30, 1 / 60, 1 / 125,
+        1 / 250, 1 / 500, 1 / 1000, 1 / 2000, 1 / 4000].reverse(),
+    3: [30, 20, 15, 10, 8, 6, 4, 3, 2, 1.5, 1, 1 / 1.5, 1 / 2, 1 / 3, 1 / 4, 1 / 6,
+        1 / 8, 1 / 10, 1 / 13, 1 / 15, 1 / 20, 1 / 25, 1 / 30, 1 / 40, 1 / 50,
+        1 / 60, 1 / 80, 1 / 100, 1 / 125, 1 / 160, 1 / 200, 1 / 250, 1 / 320,
+        1 / 400, 1 / 500, 1 / 640, 1 / 800, 1 / 1000, 1 / 1250, 1 / 1600,
+        1 / 2000, 1 / 2500, 1 / 3200, 1 / 4000].reverse(),
+  },
+  iso: {
+    1: [100, 200, 400, 800, 1600, 3200, 6400],
+    3: [100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000, 1250, 1600,
+        2000, 2500, 3200, 4000, 5000, 6400],
+  },
+};
+
+/* How a camera writes them (IG-02 03) - f/8 never F8, 1/125 below a second
+   and 2 s above it, ISO the number alone. */
+function fStop(v) {
+  return 'f/' + (v < 10 ? String(Math.round(v * 10) / 10).replace(/\.0$/, '') : String(Math.round(v)));
+}
+function shutterText(t) {
+  if (t >= 1) return (Math.round(t * 10) / 10).toString().replace(/\.0$/, '') + ' s';
+  return '1/' + Math.round(1 / t);
+}
+
+function valueCell(controls, opts) {
+  const o = opts || {};
+  const ctl = el('div', 'ctl vcell' + (o.cls ? ' ' + o.cls : ''));
+  ctl.append(el('label', null, o.label + ' <span class="val"></span>'));
+  controls.append(ctl);
+  const v = ctl.querySelector('.val');
+  v.ctl = ctl;
+  return v;
+}
+
 function readout(fig, cells, extraCls) {
   const box = el('div', 'readout' + (extraCls ? ' ' + extraCls : ''));
   const map = {};

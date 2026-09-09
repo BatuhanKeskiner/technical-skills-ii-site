@@ -341,7 +341,7 @@ function mountPhotogram(fig) {
 
   /* ---- controls -------------------------------------------------------- */
 
-  const ap = el('div', 'ctl span1 ts-ap');
+  const ap = el('div', 'ctl ts-ap');
   ap.append(el('label', null, 'Aperture'));
   const apRow = el('div', 'ts-step');
   const apDown = el('button', 'st', '−');
@@ -349,7 +349,7 @@ function mountPhotogram(fig) {
   const apUp = el('button', 'st', '+');
   apRow.append(apDown, apVal, apUp); ap.append(apRow); controls.append(ap);
 
-  const ex = el('div', 'ctl span1 ts-ap');
+  const ex = el('div', 'ctl ts-ap');
   ex.append(el('label', null, 'Exposure'));
   const exRow = el('div', 'ts-step');
   const exDown = el('button', 'st', '−');
@@ -369,6 +369,13 @@ function mountPhotogram(fig) {
   [bExpose, bDevelop, bLift, bReset].forEach((b) => { b.type = 'button'; acts.append(b); });
   controls.append(acts);
 
+  /* THE THREE GATES (O1 O2 O3), ANSWERED — one cell, and it earns it.
+     Nobody sets it: it is worked out from where the objects are and how
+     opaque each one is. Nothing in the picture states it: the paper shows a
+     tone, not a name for the tone, and the whole difficulty of a photogram is
+     that you cannot see what is under an object until the object is lifted.
+     And it is acted on — it is the reason to move a thing before exposing.
+     The aperture and the seconds are on the controls and are not read twice. */
   const out = readout(fig, [
     { key: 'Under it', cls: 'hi', wide: true },
   ]);

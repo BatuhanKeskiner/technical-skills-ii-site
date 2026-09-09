@@ -29,15 +29,18 @@ function mountFocal(fig) {
   const state = { focal: 50, mode: 1, dist: 2.4, bg: 8 };
   const view = canvas(stage, draw);
 
-  const fFocal = slider(controls, { label: 'Focal length', min: 20, max: 200, step: 1, value: state.focal, unit: ' mm', cls: 'span1' });
+  const fFocal = slider(controls, { label: 'Focal length', min: 20, max: 200, step: 1, value: state.focal, unit: ' mm' });
   const fDist = slider(controls, { label: 'Camera distance', min: 0.8, max: 14, step: 0.1, value: state.dist, unit: ' m', decimals: 1 });
   const fBg = slider(controls, { label: 'Background distance', min: 3, max: 40, step: 0.5, value: state.bg, unit: ' m', decimals: 1 });
 
   states(controls, {
-    label: 'Mode', cls: 'span1', items: ['Fixed position', 'Fixed framing'],
+    label: 'Mode', cls: 'one', items: ['Fixed position', 'Fixed framing'],
     onChange: (i) => { state.mode = i; sync(); },
   });
   const group = controls.querySelector('.states');
+  /* S18: Camera distance is answering in Fixed framing, and an answering
+     value is drawn large - so the cell is sized for the large one now. */
+  pinCell(fDist.closest('.ctl'), ['answering']);
 
   legend(stage, [
     { c: p.marker, label: 'Subject', val: '0.62 m' },
@@ -45,11 +48,20 @@ function mountFocal(fig) {
     { c: p.muted, label: 'Frame edge', kind: 'dash' },
   ]);
 
+  /* THE THREE GATES (O1 O2 O3), ANSWERED — four cells went to two.
+     Angle of view is DRAWN: the cone in the plan IS the angle of view, and
+     IG-01 11 settles this exact case for transform — "no readout: angle of
+     view is the cut". G2 removes it.
+     Distance is SET, by the Camera distance slider two cells to the left. A
+     number written over the control that sets it is not read twice. G1
+     removes it.
+     Subject height stays: derived, not stated in the drawing, and it is what
+     tells you the subject has not changed size while the background has.
+     Background / subject stays and is the one in signal — it is the whole
+     lesson of focal length, and nothing else on the screen says it. */
   const out = readout(fig, [
-    { id: 'aov', key: 'Angle of view' },
-    { id: 'dist', key: 'Distance', cls: 'hi' },
     { id: 'subj', key: 'Subject height' },
-    { id: 'ratio', key: 'Background / subject', bar: true },
+    { id: 'ratio', key: 'Background / subject', cls: 'hi', bar: true },
   ], 'four');
 
   fsButton(stage, fig);
@@ -71,11 +83,12 @@ function mountFocal(fig) {
       state.dist = (state.focal * SUBJECT_H) / (frameH * target);
       fDist.value = Math.max(+fDist.min, Math.min(+fDist.max, state.dist)).toFixed(1);
       fDist._sync();
-      fDist.disabled = true;
-      fDist.closest('.ctl').classList.add('off');
+      /* it is ANSWERING, not broken (IG-02 P4): in Fixed framing the
+         distance is what the instrument works out so the subject stays the
+         same size, so the value stays and the hand comes off it */
+      fDist.closest('.ctl').classList.add('answering');
     } else {
-      fDist.disabled = false;
-      fDist.closest('.ctl').classList.remove('off');
+      fDist.closest('.ctl').classList.remove('answering');
       state.dist = +fDist.value;
     }
     compute();
@@ -95,8 +108,6 @@ function mountFocal(fig) {
     const frameH = FRAME_W / 1.5;
     const sh = proj(SUBJECT_H, state.dist) / frameH;
     const bh = proj(2.0, state.bg) / frameH;
-    out.aov.innerHTML = aov().toFixed(0) + '<span class="u">deg</span>';
-    out.dist.innerHTML = state.dist.toFixed(1) + '<span class="u">m</span>';
     out.subj.innerHTML = (sh * 100).toFixed(0) + '<span class="u">% frame</span>';
     const ratio = bh / Math.max(0.001, sh);
     out.ratio.innerHTML = ratio.toFixed(2) + '<span class="u">×</span>';

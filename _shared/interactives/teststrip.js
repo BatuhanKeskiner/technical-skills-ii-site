@@ -166,7 +166,7 @@ function mountTestStrip(fig) {
   /* ---- controls -------------------------------------------------------
      The aperture is four steps, so it is a pair of buttons and the number
      between them. A slider for four values is a slider pretending. */
-  const ap = el('div', 'ctl span1 ts-ap');
+  const ap = el('div', 'ctl ts-ap');
   ap.append(el('label', null, 'Aperture'));
   const apRow = el('div', 'ts-step');
   const apDown = el('button', 'st', '−');
@@ -192,7 +192,7 @@ function mountTestStrip(fig) {
      'DEVELO', Keep strip broke over two lines and Discard and Reset ran into
      each other. Aperture takes a column, the card takes a column, and the
      actions take the two that are left. */
-  const bn = el('div', 'ctl span1 ts-ap');
+  const bn = el('div', 'ctl ts-ap');
   bn.append(el('label', null, 'Bands'));
   const bnRow = el('div', 'ts-step');
   const bnDown = el('button', 'st', '\u2212');

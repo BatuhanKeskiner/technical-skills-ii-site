@@ -207,7 +207,8 @@ figure.demo .ld-swatch{display:inline-block;width:9px;height:9px;margin-left:5px
 @media print{ .chips{display:none} }
 
 /* ---------- joystick pad ---------- */
-.pad{position:relative;width:96px;height:96px;margin:2px auto 0;border-radius:50%;background:var(--stage);border:1px solid var(--stage-rule-2);cursor:crosshair;touch-action:none;user-select:none}
+/* 78, not 96: under S18 the Position pad is always in the strip - it used to be hidden on a photograph - and at 96 the strip ran to 145px against a ceiling of 128 (S2). */
+.pad{position:relative;width:78px;height:78px;margin:2px auto 0;border-radius:50%;background:var(--stage);border:1px solid var(--stage-rule-2);cursor:crosshair;touch-action:none;user-select:none}
 .pad .cross{position:absolute;inset:0;border-radius:50%;background:linear-gradient(var(--stage-rule-2),var(--stage-rule-2)) center/1px 100% no-repeat,linear-gradient(var(--stage-rule-2),var(--stage-rule-2)) center/100% 1px no-repeat}
 .pad .arr{position:absolute;font-family:var(--font-mono);font-size:8px;color:var(--stage-faint);line-height:1;pointer-events:none}
 .pad .arr.u{top:4px;left:50%;transform:translateX(-50%)} .pad .arr.d{bottom:4px;left:50%;transform:translateX(-50%)} .pad .arr.l{left:5px;top:50%;transform:translateY(-50%)} .pad .arr.r{right:5px;top:50%;transform:translateY(-50%)}
@@ -223,7 +224,13 @@ figcaption b{color:var(--ink);font-weight:600}
 figure.demo:fullscreen,figure.demo.fs-on{width:100vw;height:100vh;margin:0;background:var(--stage);display:flex;flex-direction:column;overflow:hidden;border:0}
 figure.demo:fullscreen .stage,figure.demo.fs-on .stage{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
 figure.demo:fullscreen .stage canvas,figure.demo.fs-on .stage canvas{width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;margin:0}
-figure.demo:fullscreen .controls,figure.demo.fs-on .controls{flex:0 0 auto;width:min(1100px,100%);margin:0 auto;border-top:0}
+/* FULL SCREEN IS THE SAME INSTRUMENT, NOT A NARROWER ONE. The strip used to
+   be capped at 1100px and centred while the stage and the readout ran the
+   whole width, so on the wall the three bands had three different left edges
+   and the design read as cut. His rule of 09-09-2026: "FS ve on page olan
+   yerde tasarim bu sekilde kesilmesin. Bu hep tarafindan kontrol edilsin."
+   Measured now, in both modes, by S19. */
+figure.demo:fullscreen .controls,figure.demo.fs-on .controls{flex:0 0 auto;width:100%;margin:0;border-top:0}
 figure.demo:fullscreen figcaption,figure.demo.fs-on figcaption{display:none}
 
 /* ---------- video slot ---------- */
@@ -751,6 +758,27 @@ figure.demo .states button.off .n{color:var(--ink-400)}
    is off as a whole: label, value and thumb. The thumb keeps a grey, not a
    blank, because where it stands is still information. */
 figure.demo .ctl.off label,figure.demo .ctl.off label .val{color:var(--ink-400)}
+/* AND THE CONTROL ITSELF LOOKS OFF, not only its name. Under S18 a control
+   that does not apply keeps its place instead of being hidden - and a control
+   that keeps its place while still looking live is the lens slider he threw
+   out: it invites a hand and does nothing (C16). The before/after sheet caught
+   this on Transformation, where the Position pad sat on a photograph looking
+   perfectly usable. */
+figure.demo .ctl.off input[type=range]{opacity:.3;pointer-events:none}
+figure.demo .ctl.off .pad{opacity:.26;pointer-events:none;border-color:var(--stage-rule)}
+figure.demo .ctl.off .pad .knob{background:var(--stage-rule-2)}
+figure.demo .ctl.off .stp-row,figure.demo .ctl.off .states,
+figure.demo .ctl.off .chips{opacity:.34;pointer-events:none}
+/* ANSWERING, NOT DISABLED (IG-02 P4). A control the instrument is answering
+   with rather than taking from you keeps its value - large, in signal - and
+   loses its hand. Focal length's camera distance in Fixed framing was greyed
+   instead, which reads as a fault in the instrument rather than as the answer
+   the instrument is giving. */
+figure.demo .ctl.answering input[type=range]{display:none}
+figure.demo .ctl.answering label .val{color:var(--signal-500);font-size:22px;
+  display:block;margin-top:4px;letter-spacing:-.01em}
+figure.demo .ctl.answering label::after{content:' — answering';
+  font-size:9px;letter-spacing:.16em;color:var(--stage-muted)}
 figure.demo input[type=range]:disabled{cursor:default;pointer-events:none}
 figure.demo input[type=range]:disabled::-webkit-slider-thumb{background:var(--ink-400)}
 figure.demo input[type=range]:disabled::-moz-range-thumb{background:var(--ink-400)}
@@ -1235,6 +1263,14 @@ body.pages .step.active{
 body.pages .step.active > *{max-width:none;width:100%;flex:0 0 auto}
 
 /* the page's own head: chapter, index, running head */
+/* A RUNNING HEAD WITH NOTHING TO SAY IS NOT DRAWN. `content:attr()` returns
+   an empty string when the attribute is missing, so on an instrument's own
+   page — which has no chapter and no page number — the chip was still painted:
+   a small black box between the standfirst and the instrument, on all fifteen
+   of them. Batu found it on the Light Diagram, 09-09-2026. */
+body.pages .step.active:not([data-page-head])::before,
+body.pages .step.active[data-page-head=""]::before{content:none;display:none}
+
 body.pages .step.active::before{
   content:attr(data-page-head);
   display:block;
@@ -4715,6 +4751,17 @@ body.pages .step.active.arranged .pg-rows > .pg-row:not(:has(~ .pg-row)):not([da
    going to fall out of the page". */
 body.pages .step.active{--pg-head:3.2vh;--pg-foot:9.5vh}
 body.pages .step.active.arranged .pg-rows{padding-bottom:var(--pg-foot)}
+/* EXCEPT WHEN THE PAGE IS ONE INSTRUMENT. The 1:2 head-to-foot above is for a
+   type area: a block of text set to the true centre reads as falling out of
+   the page, so it is lifted by about one head-margin. An instrument is not a
+   block of text - it is closed on four sides by its own border, it is the
+   whole of the page, and lifting it leaves a hand's width of nothing under a
+   drawn object while the picture inside it goes short. His note of
+   09-09-2026: "Sunu tam sayfa enstrumanlar icin uzat. Ustte cizgiden ne kadar
+   bosluk varsa altta da o kadar bosluk kalana kadar uzat." The page's own
+   bottom margin is then the air, and it is the air the title rule has above. */
+body.pages .step.active.arranged .pg-rows:has(> .pg-row:only-child figure.demo){
+  padding-bottom:0}
 
 /* 3 — THE MEASURE BELONGS TO THE COLUMN, not to the block. Four roles each
    carrying their own max-width gave a column four different right-hand edges and
@@ -8166,13 +8213,111 @@ body.pages .step.active.arranged:has(figure.demo[data-size=page]) .pg-rows{
 figure.demo .controls{display:flex;flex-wrap:wrap;align-items:flex-start;
   justify-content:flex-start;column-gap:clamp(22px,4vw,54px);row-gap:1vh}
 figure.demo .controls > .ctl{flex:0 1 auto;min-width:150px}
+/* ONE CELL, CONTENT WIDTH - the class `span1` was reaching for and never had.
+   span1 was written in five instruments and the stylesheet defined nothing by
+   that name, so five controls carried a class that did nothing while their
+   authors believed it did something. It is `one` now, and it exists. */
+figure.demo .controls > .ctl.one{flex:0 1 auto;min-width:150px}
+/* a cell that shows rather than takes: the value at tier R, no hand on it */
+figure.demo .controls > .ctl.vcell{flex:0 1 auto;min-width:170px}
+/* ---------- Formats: the bench is the classified list ----------------------
+   Digital · Film · Cinema, each camera with the bodies that take it. Picked
+   from, not stepped through: a format has no order. Up to four at once, each
+   in the colour it is drawn in — his module's own four. */
+/* THE STAGE'S OWN EDGE. `figure.demo .fm-stage` is one class and one element
+   and `figure.demo .stage.wide` is two, so the wide stage's 40px of side
+   padding won every time and the classified list floated 40px in from the
+   edge of the black. His note of 09-09-2026: "Bunun sola yanasik olmasi
+   lazim." A list that is a column of the instrument is flush with the
+   instrument. */
+figure.demo .stage.fm-stage{padding:0}
+/* THE ROW IS THE WHOLE STAGE. Without width:100% the row was as wide as its
+   canvas wanted to be and the stage centred it, so the bench sat 190px in from
+   the black edge - and worse, it MOVED: change the ratio, the readout wrapped
+   to a second line, the stage lost height, the canvas took a different width
+   and the whole list slid sideways. A column of the instrument is fixed to the
+   instrument. (S18) */
+figure.demo .fm-row{display:flex;width:100%;height:100%;align-items:stretch;gap:0}
+figure.demo .fm-bench{flex:0 0 244px;overflow-y:auto;padding:8px 0 12px;
+  border-right:1px solid var(--stage-rule);background:var(--stage-2)}
+figure.demo .fm-pic{flex:1 1 auto;min-width:0;display:flex;position:relative}
+figure.demo .fm-pic canvas{width:100%;height:100%;display:block}
+figure.demo .fm-h{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--stage-muted);padding:11px 14px 4px}
+figure.demo .fm-i{display:flex;align-items:center;gap:7px;width:100%;
+  background:none;border:0;padding:4px 14px;cursor:pointer;text-align:left;
+  font:inherit;color:var(--stage-fg)}
+figure.demo .fm-i:hover{background:var(--stage-rule)}
+figure.demo .fm-i:focus-visible{outline:1px solid var(--signal-500);outline-offset:-1px}
+figure.demo .fm-dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;
+  background:var(--c,transparent);border:1px solid var(--stage-rule-2)}
+figure.demo .fm-i[aria-pressed=true] .fm-dot{border-color:var(--c)}
+figure.demo .fm-n{font-family:var(--font-body);font-size:12.5px;white-space:nowrap}
+/* THE PHOTOGRAPH OPENS UNDER THE HAND. Hover a body in the bench and its
+   picture opens in a window beside the list; leave and it closes. It is
+   absolutely positioned, so it displaces nothing (S18). */
+figure.demo .fm-shot{position:absolute;left:12px;top:12px;z-index:3;width:min(300px,42%);
+  display:none;background:#EDEBE6;border:1px solid var(--stage-rule-2);padding:8px}
+figure.demo .fm-shot img{display:block;width:100%;height:auto}
+figure.demo .fm-shot-c{font-family:var(--font-mono);font-size:8px;line-height:1.35;
+  letter-spacing:.06em;color:#4A4A46;margin-top:6px}
+/* THE PHOTOGRAPH IS NOT IN THE LIST. It was, at 36 x 26, and at that size a
+   camera is a grey smudge doing the work of a bullet point. The bodies are
+   drawn on the stage instead, lower right, one square each — his note of
+   09-09: "thumbnail olarak degil ... sag altta bir kare olarak". */
+figure.demo .fm-s{font-family:var(--font-mono);font-size:9.5px;color:var(--stage-muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+figure.demo .fm-i[aria-pressed=true] .fm-n{color:var(--c)}
+/* four colours are four: with all of them held, the rest are not pressable */
+figure.demo .fm-i.off{opacity:.42;cursor:default}
+figure.demo .fm-i.off:hover{background:none}
+/* Aspect Ratio's bench holds "24:65  2.7:1", not "Medium Format Digital 645",
+   so it is paid for what it holds - "ve daha kisa olabilir". */
+figure.demo .fm-bench.rt-bench{flex:0 0 172px}
+@media (max-width:900px){ figure.demo .fm-bench{flex-basis:190px}
+  figure.demo .fm-bench.rt-bench{flex-basis:150px} }
+/* WHERE A SHAPE LIVES IS A LIST OF NAMES, not a number: the value is a
+   sentence and it wraps, at reading size, up to three lines. */
+figure.demo .readout .v.list,
+body.pages .step.active figure.demo .readout .v.list,
+body.present .step.active figure.demo .readout .v.list,
+figure.demo:fullscreen .readout .v.list,
+figure.demo.fs-on .readout .v.list{white-space:normal;
+  font-size:clamp(11px,1.3vh,12.5px);line-height:1.38;letter-spacing:0;
+  height:4.14em;overflow:hidden;overflow-wrap:anywhere;
+  color:var(--stage-fg)}
+figure.demo .readout:has(.v.list) > div,
+body.pages .step.active figure.demo .readout:has(.v.list) > div{
+  padding:7px 16px 7px;min-height:0}
+figure.demo .readout:has(.v.list) .k,
+body.pages .step.active figure.demo .readout:has(.v.list) .k{margin-bottom:3px}
+/* the long answer gets the long cell: the cameras that take a shape are a
+   dozen names, the screens that show it are two */
+figure.demo .readout > div.span2{flex:2 1 40%}
+/* THE TRIAD'S STEPPER (IG-02 03). One shape for aperture, shutter and ISO, in
+   the kit rather than rebuilt per instrument - three of them had been, and the
+   light meter's came out a different size. The value is tier R: the room reads
+   f/8 from six metres, the label from the laptop. */
+figure.demo .controls > .ctl.stp{flex:0 1 auto;min-width:168px}
+figure.demo .stp-row{display:flex;align-items:center;gap:8px;margin-top:5px}
+figure.demo .stp-v{font-family:var(--font-mono);font-size:clamp(20px,2.4vh,26px);
+  color:var(--stage-fg);letter-spacing:-.01em;min-width:4.2em;text-align:center;
+  font-variant-numeric:tabular-nums}
+figure.demo .ctl.stp.answering .stp-v{color:var(--signal-500)}
+figure.demo .ctl.stp.answering label::after{content:' — answering';
+  font-size:9px;letter-spacing:.16em;color:var(--stage-muted)}
+figure.demo .ctl.vcell label .val{display:block;margin-top:4px;font-size:22px;
+  color:var(--stage-fg);letter-spacing:-.01em}
 figure.demo .controls > .ctl.wide{flex:1 1 100%}
 figure.demo .controls > .ctl.span2,figure.demo .controls > .ctl.span3{flex:1 1 320px}
 /* AND SO DOES THE PAD. At 11vh it is 119 pixels on the projector, which made
    transform's strip 166 - forty over the ceiling IG-01 06 sets, and enough to
    take the stage under its 70%. A pad is a diagram of four keys; it is legible
    at a hundred pixels and it does not need to grow with the room. */
-figure.demo .controls .pad{width:clamp(76px,9vh,112px);height:clamp(76px,9vh,112px)}
+/* smaller since S18: the Position pad is in the strip in every state now,
+   not only in the 3D model, and at 9vh it put the strip 17px over its
+   ceiling on the projector. */
+figure.demo .controls .pad{width:clamp(66px,6.6vh,86px);height:clamp(66px,6.6vh,86px)}
 
 /* An instrument that opens out of the page says so where the room can see it,
    not only in the panel. */
@@ -8262,7 +8407,11 @@ figure.demo.light:fullscreen::backdrop{background:var(--k-stage,#FFFFFF)}
 /* the light diagram's selection cell: one block per kind of thing, chips
    for choices, steppers for ladders, the palette in a row; two columns
    wide and one height in every state */
-figure.demo .ld-cell{min-height:150px}
+/* ONE HEIGHT IN EVERY STATE (C9), BUT UNDER THE CEILING (S2). 150 px was
+   measured off the tallest state - a camera selected, with several rows - and
+   the strip is 96-128 px whatever is in it. 104 holds every state the panel
+   actually has and leaves the stage its 70%. */
+figure.demo .ld-cell{min-height:104px}
 figure.demo .ld-slot{min-height:32px;display:flex;align-items:center}
 figure.demo .ld-slot input[type=range]{flex:1 1 auto;max-width:360px}
 figure.demo .ld-line{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
@@ -8271,6 +8420,8 @@ figure.demo .ld-k{font-family:var(--font-mono);font-size:8px;letter-spacing:.14e
 figure.demo.light .ld-k{color:var(--text-muted)}
 figure.demo .ld-row .chips{gap:4px}
 figure.demo .ld-row .chip{padding:4px 8px;font-size:8px;letter-spacing:.12em}
+figure.demo .ld-name{font-family:var(--font-mono);font-size:11px;color:var(--stage-fg);margin-right:6px}
+figure.demo.light .ld-name{color:var(--text-primary)}
 figure.demo .ld-stepper{margin-top:0}
 figure.demo .ld-stepper .st{min-width:22px;width:22px;font-size:9px;padding:0;line-height:2}
 figure.demo .ld-stepper.big .st{min-width:30px;width:30px;font-size:12px;line-height:2.1}

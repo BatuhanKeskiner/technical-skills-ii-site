@@ -17,6 +17,12 @@ const DEMOS = {
   lightmeter: { url: './interactives/lightmeter.js', fn: 'mountLightMeter' },
   meterguide: { url: './interactives/meterguide.js', fn: 'mountMeterGuide' },
   lightdiagram: { url: './interactives/lightdiagram.js', fn: 'mountLightDiagram' },
+  formats: { url: './interactives/formats.js', fn: 'mountFormats' },
+  ratio: { url: './interactives/ratio.js', fn: 'mountRatio' },
+  resolution: { url: './interactives/resolution.js', fn: 'mountResolution' },
+  delivery: { url: './interactives/delivery.js', fn: 'mountDelivery' },
+  crop: { url: './interactives/crop.js', fn: 'mountCrop' },
+  aseries: { url: './interactives/aseries.js', fn: 'mountASeries' },
 };
 
 /* A bare file name is the week's own assets/ folder. A name with a slash is
@@ -1000,6 +1006,11 @@ const BLOCK = {
     /* an instrument that has more than one thing to show can be pinned to one
        of them by the page, so the same code serves two pages saying two things */
     if (b.space) f.setAttribute('data-space', b.space);
+    /* AND ANY OTHER PIN THE INSTRUMENT READS. `pin: { big: '45', hold: 'lens' }`
+       arrives as data-big and data-hold, so a mode that is really two pages'
+       worth of teaching is the page's decision and not a control in the strip
+       (IG-01 06, rule 01). One place, rather than a named field per setting. */
+    if (b.pin) Object.keys(b.pin).forEach((k) => f.setAttribute('data-' + k, b.pin[k]));
     f.setAttribute('data-size', b.size || 'column');
     if (b.shape) f.setAttribute('data-shape', b.shape);
     if (b.pos && (b.size || 'column') !== 'column') f.setAttribute('data-pos', b.pos);
