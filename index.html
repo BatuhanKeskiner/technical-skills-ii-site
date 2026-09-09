@@ -32,14 +32,15 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
 .top{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;
      padding-bottom:12px;border-bottom:2px solid var(--ink);flex-wrap:wrap}
 .ident{display:flex;align-items:center;gap:22px;min-width:0}
-/* THE COURSE'S OWN MARK, AT THE TOP OF ITS OWN SITE. His drawing: the cone of
-   light either side of the picture plane, which is what the whole year is
-   about. It stands above the academy's crest and the title rather than beside
-   them - it is the sign for this course, not a second institutional logo. */
-.tsmark{padding:6px 0 22px}
-.tsmark img{display:block;height:clamp(72px,9vw,124px);width:auto;
-  max-width:100%}
-@media print{.tsmark img{height:22mm}}
+/* THE COURSE'S OWN MARK, AT THE OTHER END OF THE MASTHEAD. His drawing: the
+   cone of light either side of the picture plane, which is what the whole year
+   is about. It sat in a band of its own above the header first and read as a
+   stray graphic - "logonun yeri cok kel alaka", 09-09-2026. A masthead has two
+   ends: whose school this is on the left, which course it is on the right. */
+.right{display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.tsmark{display:block;height:clamp(40px,5.2vw,64px);width:auto;max-width:100%;
+  opacity:.9}
+@media print{.tsmark{height:14mm}}
 .names{min-width:0}
 h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
    letter-spacing:-.03em;line-height:1;margin:0;color:var(--ink)}
@@ -358,11 +359,6 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 <body>
 <div class="sheet">
 
-  <div class="tsmark">
-    <img src="_shared/assets/ts-logo.png" alt="Technical Skills II"
-         width="1600" height="949">
-  </div>
-
   <div class="top">
     <div class="ident">
       <img class="mark" src="_shared/assets/kabk-logo.jpg"
@@ -373,6 +369,8 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
       </div>
     </div>
     <div class="right">
+      <img class="tsmark" src="_shared/assets/ts-logo.png"
+           alt="Technical Skills II" width="1600" height="949">
       <label class="find">
         <svg width="12" height="12" viewBox="0 0 13 13" fill="none" aria-hidden="true">
           <circle cx="5.4" cy="5.4" r="4.1" stroke="#5C605E" stroke-width="1.3"/>
@@ -431,7 +429,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
   <div class="srail" id="srail" hidden><span class="sgrip" id="sgrip"></span></div>
   <p id="none">Nothing matches that</p>
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 530 · 09.09.2026 22:17</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 532 · 09.09.2026 22:19</span></div>
 
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; Black</span><span>Middle Grey</span><span>Zone X &mdash; White</span></div>
