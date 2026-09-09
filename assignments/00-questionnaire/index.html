@@ -139,9 +139,15 @@ ul.plain.quiet .m{color:var(--faint)}
 /* AND IT IS NOT PRINTED. A PDF is read on a day nobody can know, so a
    countdown in it is a lie with a number on it. The dates stay. */
 @media print{.left{display:none !important}}
-.opt{font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+/* A CHIP IS A BOX AROUND ITS WORDS. Inline, the border wrapped only the
+   fragment that fitted the line - "OPTIONAL" showed a box around its O and
+   the rest ran out of it. inline-block keeps the box and the words together;
+   it drops to its own line under the item rather than breaking across two. */
+.opt{display:inline-block;font-family:var(--mono);font-size:9px;
+  letter-spacing:.14em;line-height:1.5;
   text-transform:uppercase;color:var(--grey);border:1px solid var(--rule);
-  padding:2px 6px;margin-left:9px;white-space:nowrap}
+  padding:3px 8px 4px;margin-left:9px;white-space:nowrap;vertical-align:middle}
+ul.plain .opt{margin:6px 0 0 0;display:table}
 .sub-h{font-family:var(--mono);font-size:10px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--grey);margin:26px 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
@@ -272,7 +278,13 @@ dl.reflist dt{font-style:italic}
 
 /* ---- the instruments, at the foot ---- */
 .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:6px 0 0}
-.tools.one{grid-template-columns:1fr;margin:18px 0 0}
+.tools.one{grid-template-columns:1fr;margin:6px 0 0}
+.tools.one + p.lbl,.gal + p.lbl{margin-top:26px}
+.tool-n .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey);border:1px solid var(--rule);
+  padding:3px 8px 4px;margin-left:11px;vertical-align:middle;
+  display:inline-block;line-height:1.5}
+.tool:hover .tool-n .kind{color:var(--paper);border-color:var(--paper)}
 .tool{display:flex;flex-direction:column;gap:7px;text-decoration:none;color:inherit;
   border:1px solid var(--ink);padding:16px 18px;transition:background .12s,color .12s}
 .tool:hover{background:var(--ink);color:var(--paper)}
@@ -321,7 +333,7 @@ dl.reflist dt{font-style:italic}
   <p class="body">Submit the form before class time. It is not graded, and it is read.</p>
 
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 573 · 10.09.2026 01:22</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 575 · 10.09.2026 01:43</span></div>
 </div>
 <div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
   <span class="x">Esc</span><img alt=""><p></p>
