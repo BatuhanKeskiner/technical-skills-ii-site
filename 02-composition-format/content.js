@@ -829,7 +829,7 @@ window.TS2_WEEK = {
               ['8 × 10 in', '194 × 245 mm · 4:5'],
             ] },
             { type: 'rows', title: 'Digital', place: { row: 2, col: 2, w: '1/2', fillH: true }, items: [
-              ['Phone (1/1.3″)', '9.8 × 7.3 mm · 3:4'],
+              ['Phone (1/1.28″)', '9.8 × 7.3 mm · 3:4'],
               ['Micro Four Thirds', '17.3 × 13 mm · 3:4'],
               ['APS-C', '23.5 × 15.6 mm · 2:3'],
               ['Full frame', '36 × 24 mm · 2:3'],
@@ -938,7 +938,7 @@ window.TS2_WEEK = {
               etym: 'the ratio of the format’s diagonal to full frame’s 43 mm',
               short: 'How much narrower this format sees, with the same lens.',
               mid: 'The number you multiply a focal length by to find the full-frame lens that frames the same picture. Nothing is magnified: the smaller rectangle is simply shown at the same size afterwards.',
-              long: 'A lens projects a circle of image and the format cuts a rectangle out of that circle. A small sensor cuts a small rectangle and sees a narrow slice; a large negative sees more of the same circle. The crop factor is the ratio of diagonals against full frame — multiply the focal length by it and you have the full-frame lens that frames the same picture.',
+              long: 'A small sensor cuts a small rectangle out of the circle and sees a narrow slice; a large negative sees more of the same circle. The crop factor is the ratio of diagonals against full frame — multiply the focal length by it and you have the full-frame lens that frames the same picture.',
               show: 'mid' },
             { type: 'note', kind: 'tip', place: { row: 2, col: 1, w: '1/2' }, html: 'A normal lens is the diagonal of the format — whatever the format. That is the whole rule, and it is why 50 mm is normal on full frame and 150 mm is normal on 6×7.' },
             { type: 'sheet', title: 'Crop factor', kicker: 'Against full frame', place: { row: 2, col: 2, w: '1/2', fillH: true }, items: [
@@ -1015,9 +1015,10 @@ window.TS2_WEEK = {
           layout: 'argument',
           title: 'Depth of Field',
           blocks: [
-            { type: 'line', place: { row: 1, col: 1, w: 'full' }, html: 'Depth of Field = Focal length, aperture, distance. The format doesn’t affect the depth.' },
+            { type: 'line', place: { row: 1, col: 1, w: 'full' }, html: 'Depth of Field = focal length, aperture, distance. Keep the lens and the format changes nothing; keep the framing and it changes everything.' },
             { type: 'text', place: { row: 2, col: 1, w: '1/2', ruled: true, rgrow: true }, paras: [
-              'Depth of field cares about the focal length, the aperture and the distance — not about the format. To frame the same picture a larger format needs a longer lens, and a longer lens at the same f-number gives a shallower zone of sharpness. That, and nothing more mysterious, is the “medium-format look”.',
+              'Depth of field cares about the focal length, the aperture and the distance — not about the format itself. Put the same lens on a bigger format and nothing about the blur moves: the format only cuts a wider rectangle out of the same circle.',
+              'But you rarely keep the lens; you keep the picture. To frame the same thing a larger format needs a longer lens, and a longer lens at the same f-number gives a shallower zone of sharpness. That, and nothing more mysterious, is the “medium-format look” — and it is why the table beside this says <em>same framing</em>.',
               'Multiply the f-number by the crop factor and you have the equivalent aperture: the full-frame f-number that would blur the same.',
             ] },
             /* HIS NOTE OF 09-09-2026 asked for a diagram from shotkit.com.
@@ -1044,7 +1045,7 @@ window.TS2_WEEK = {
           title: 'Depth of Field',
           blocks: [
             { type: 'demo', id: 'dof', fig: 12, pin: { hold: 'framing', view: 'both' },
-              caption: 'Step the format and the focal length answers, so the framing does not change. The readout carries the equivalent aperture — the full-frame f-number that would blur the same.' },
+              caption: 'Step the format and the focal length answers, so the framing does not change. Hold the lens instead and watch the depth stand still.' },
           ],
         },
       ],

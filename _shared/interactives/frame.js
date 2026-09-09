@@ -237,11 +237,17 @@ function mountFrame(fig) {
     const r = w / h;
     /* the names a photographer already has for these shapes, and only when it
        really is one - 1.49 is not 3:2 and saying so would teach the wrong thing */
-    const known = [[1, '1:1'], [5 / 4, '5:4'], [4 / 3, '4:3'], [1.5, '3:2'],
-                   [16 / 9, '16:9'], [1.85, '1.85:1'], [2.39, '2.39:1'],
-                   [0.8, '4:5'], [0.75, '3:4'], [2 / 3, '2:3'], [9 / 16, '9:16']];
-    for (const [v, name] of known) if (Math.abs(r - v) < 0.012) return name;
-    return r.toFixed(2) + (r >= 1 ? ' : 1' : '');
+    /* SHORT SIDE FIRST, THE WAY THE COURSE WRITES THEM. Part B states the
+       convention two pages after this instrument and this instrument was
+       breaking it - 3:2 here, 2:3 there, for the same rectangle. The shape is
+       the same whichever way you hold the camera (B1 says so), so the name is
+       taken from the long side over the short and written short side first. */
+    const q = r >= 1 ? r : 1 / r;
+    const known = [[1, '1:1'], [7 / 6, '6:7'], [5 / 4, '4:5'], [4 / 3, '3:4'],
+                   [1.5, '2:3'], [16 / 9, '9:16'], [1.85, '1:1.85'],
+                   [2.39, '1:2.39']];
+    for (const [v, name] of known) if (Math.abs(q - v) < 0.012) return name;
+    return '1 : ' + q.toFixed(2);
   }
 
   function sync(F) {
