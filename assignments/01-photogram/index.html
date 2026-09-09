@@ -97,6 +97,30 @@ ul.plain li{display:grid;grid-template-columns:16px 1fr;gap:9px;font-size:15px;
 ul.plain .m{font-family:var(--mono);color:var(--signal)}
 ul.plain.quiet .m{color:var(--faint)}
 
+/* ---- the deadline, where the work is handed over ---- */
+.dline{display:flex;align-items:center;justify-content:space-between;gap:24px;
+  flex-wrap:wrap;border:1px solid var(--ink);padding:16px 20px;margin:6px 0 22px}
+.dl-dates{display:flex;gap:34px;margin:0;flex-wrap:wrap}
+.dl-dates > div{display:flex;flex-direction:column;gap:5px}
+.dl-dates dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey)}
+.dl-dates dd{margin:0}
+.dl-dates .when{font-family:var(--mono);font-size:16px;letter-spacing:.02em;
+  color:var(--signal);display:flex;align-items:baseline;gap:10px}
+.dl-dates .wk{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey)}
+.left{margin:0;display:flex;align-items:baseline;gap:8px}
+.left .cd{font-family:var(--mono);font-size:20px;color:var(--ink)}
+.left .cd.soon{color:var(--signal)}
+.left .lb{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey)}
+.left:empty,.left .cd:empty + .lb{display:none}
+/* AND IT IS NOT PRINTED. A PDF is read on a day nobody can know, so a
+   countdown in it is a lie with a number on it. The dates stay. */
+@media print{.left{display:none !important}}
+.opt{font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--grey);border:1px solid var(--rule);
+  padding:2px 6px;margin-left:9px;white-space:nowrap}
 .sub-h{font-family:var(--mono);font-size:10px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--grey);margin:26px 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
@@ -299,13 +323,20 @@ dl.reflist dt{font-style:italic}
     <li><span class="m">·</span>Note your exposure time and placement as you go, so you can repeat what worked.</li>
   </ul>
   <div class="sec"><span>05</span><span>What to hand in</span><span class="ln"></span></div>
+  <div class="dline">
+    <dl class="dl-dates">
+    <div><dt>Full-time</dt><dd class="when">01.10.2026<span class="wk">Week #5</span></dd></div>
+    <div><dt>Part-time</dt><dd class="when">05.10.2026<span class="wk">Week #5</span></dd></div>
+    </dl>
+    <p class="left"><span class="cd" data-due="2026-10-01"></span><span class="lb">left</span></p>
+  </div>
   <div class="chips"><span class="chip">5 photograms</span><span class="chip">physical prints, in class</span><span class="chip">a PDF on Teams</span></div>
   <p class="body">The prints are handed in on paper, in class, on the date above. They are also scanned into one PDF and uploaded to Teams, with the writing that goes around them.</p>
   <dl class="limits">
     <div><dt>In class</dt><dd>The five prints themselves, dried and ready to show.</dd></div>
     <div><dt>File format</dt><dd>PDF. One document, not five files.</dd></div>
     <div><dt>File size</dt><dd>No larger than 20 MB.</dd></div>
-    <div><dt>Naming</dt><dd>NameSurnameAssignment1.pdf — e.g. BatuhanKeskinerAssignment1.pdf</dd></div>
+    <div><dt>Naming</dt><dd>NameSurnameAssignment1.pdf — e.g. BatuhanKeskinerAssignment1.pdf. Optional.</dd></div>
     <div><dt>Where</dt><dd>The class Teams channel: Files / Assignments / #1 / NameSurname</dd></div>
   </dl>
   <p class="sub-h">What goes in the PDF</p>
@@ -313,9 +344,9 @@ dl.reflist dt{font-style:italic}
     <li><span class="m">+</span>The five photograms, scanned.</li>
     <li><span class="m">+</span>The theme — what the work is about, its subject and its topic, in your own words.</li>
     <li><span class="m">+</span>References and inspirations — what you looked at, and who made it.</li>
-    <li><span class="m">+</span>Reflections and notes — what you tried, what failed, and what you would do next.</li>
-    <li><span class="m">+</span>Backstage images, if they say something: the darkroom, the objects, the setup.</li>
-    <li><span class="m">+</span>Process images, if they say something: the test strips and the sheets that did not work.</li>
+    <li><span class="m">·</span>Reflections — what you tried, what failed, and what you would do next.<span class="opt">Optional · recommended for the Logbook</span></li>
+    <li><span class="m">·</span>Backstage images — the darkroom, the objects, the setup.<span class="opt">Optional · recommended for the Logbook</span></li>
+    <li><span class="m">·</span>Process images — the test strips and the sheets that did not work.<span class="opt">Optional · recommended for the Logbook</span></li>
   </ul>
   <div class="sec"><span>06</span><span>References</span><span class="ln"></span></div>
   <figure class="oneref"><a class="out" href="https://www.pinterest.com/neuesachlichkeit/week-4-photogram/" target="_blank" rel="noopener"><img src="assets/ref-photogram-board.jpg" alt="A Pinterest board of twenty-two photograms by Man Ray, Moholy-Nagy, Anna Atkins, Christian Schad and others"><span class="go">Open the board <span class="ar">&nearr;</span></span></a><figcaption>Week 4 · Photogram — the reference board &middot; 22 pins, collected for this assignment</figcaption></figure>
@@ -353,7 +384,7 @@ dl.reflist dt{font-style:italic}
   </div>
 
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 553 · 09.09.2026 23:59</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 555 · 10.09.2026 00:06</span></div>
 </div>
 <div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
   <span class="x">Esc</span><img alt=""><p></p>
@@ -365,6 +396,22 @@ dl.reflist dt{font-style:italic}
 document.getElementById('pdf').addEventListener('click', function () {
   window.print();
 });
+/* HOW LONG IS LEFT, worked out in the browser. A number written into the page
+   at build time is wrong by the next morning. */
+(function () {
+  var el = document.querySelector('.cd[data-due]');
+  if (!el || !el.dataset.due) return;
+  var t = new Date(); t.setHours(0, 0, 0, 0);
+  var due = new Date(el.dataset.due + 'T00:00:00');
+  var n = Math.round((due - t) / 86400000);
+  if (n > 1) el.textContent = n + ' days';
+  else if (n === 1) el.textContent = 'tomorrow';
+  else if (n === 0) el.textContent = 'today';
+  else if (n === -1) el.textContent = 'yesterday';
+  else el.textContent = (-n) + ' days ago';
+  if (n >= 0 && n <= 7) el.classList.add('soon');
+  if (n < 0) el.parentNode.querySelector('.lb').textContent = '';
+})();
 (function () {
   var lb = document.getElementById('lb');
   var im = lb.querySelector('img'), cap = lb.querySelector('p');

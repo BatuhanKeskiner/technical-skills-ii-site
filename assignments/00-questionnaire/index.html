@@ -97,6 +97,30 @@ ul.plain li{display:grid;grid-template-columns:16px 1fr;gap:9px;font-size:15px;
 ul.plain .m{font-family:var(--mono);color:var(--signal)}
 ul.plain.quiet .m{color:var(--faint)}
 
+/* ---- the deadline, where the work is handed over ---- */
+.dline{display:flex;align-items:center;justify-content:space-between;gap:24px;
+  flex-wrap:wrap;border:1px solid var(--ink);padding:16px 20px;margin:6px 0 22px}
+.dl-dates{display:flex;gap:34px;margin:0;flex-wrap:wrap}
+.dl-dates > div{display:flex;flex-direction:column;gap:5px}
+.dl-dates dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey)}
+.dl-dates dd{margin:0}
+.dl-dates .when{font-family:var(--mono);font-size:16px;letter-spacing:.02em;
+  color:var(--signal);display:flex;align-items:baseline;gap:10px}
+.dl-dates .wk{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey)}
+.left{margin:0;display:flex;align-items:baseline;gap:8px}
+.left .cd{font-family:var(--mono);font-size:20px;color:var(--ink)}
+.left .cd.soon{color:var(--signal)}
+.left .lb{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey)}
+.left:empty,.left .cd:empty + .lb{display:none}
+/* AND IT IS NOT PRINTED. A PDF is read on a day nobody can know, so a
+   countdown in it is a lie with a number on it. The dates stay. */
+@media print{.left{display:none !important}}
+.opt{font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--grey);border:1px solid var(--rule);
+  padding:2px 6px;margin-left:9px;white-space:nowrap}
 .sub-h{font-family:var(--mono);font-size:10px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--grey);margin:26px 0 10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
@@ -264,11 +288,18 @@ dl.reflist dt{font-style:italic}
   </dl>
 
   <div class="sec"><span>01</span><span>What to hand in</span><span class="ln"></span></div>
+  <div class="dline">
+    <dl class="dl-dates">
+    <div><dt>Full-time</dt><dd class="when">10.09.2026<span class="wk">Week #2</span></dd></div>
+    <div><dt>Part-time</dt><dd class="when">14.09.2026<span class="wk">Week #2</span></dd></div>
+    </dl>
+    <p class="left"><span class="cd" data-due="2026-09-10"></span><span class="lb">left</span></p>
+  </div>
   <div class="chips"><span class="chip">online form</span></div>
   <p class="body">Submit the form before class time. It is not graded, and it is read.</p>
 
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 553 · 09.09.2026 23:59</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 555 · 10.09.2026 00:06</span></div>
 </div>
 <div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
   <span class="x">Esc</span><img alt=""><p></p>
@@ -280,6 +311,22 @@ dl.reflist dt{font-style:italic}
 document.getElementById('pdf').addEventListener('click', function () {
   window.print();
 });
+/* HOW LONG IS LEFT, worked out in the browser. A number written into the page
+   at build time is wrong by the next morning. */
+(function () {
+  var el = document.querySelector('.cd[data-due]');
+  if (!el || !el.dataset.due) return;
+  var t = new Date(); t.setHours(0, 0, 0, 0);
+  var due = new Date(el.dataset.due + 'T00:00:00');
+  var n = Math.round((due - t) / 86400000);
+  if (n > 1) el.textContent = n + ' days';
+  else if (n === 1) el.textContent = 'tomorrow';
+  else if (n === 0) el.textContent = 'today';
+  else if (n === -1) el.textContent = 'yesterday';
+  else el.textContent = (-n) + ' days ago';
+  if (n >= 0 && n <= 7) el.classList.add('soon');
+  if (n < 0) el.parentNode.querySelector('.lb').textContent = '';
+})();
 (function () {
   var lb = document.getElementById('lb');
   var im = lb.querySelector('img'), cap = lb.querySelector('p');
