@@ -32,7 +32,7 @@ window.TS2_WEEKS = [
     slug: '02-composition-format',
     title: 'Composition & Format',
     desc: 'Aspect ratio, sensor and film size, crop factor, and what a crop costs. Gaze, composition, and the form exercise.',
-    status: 'open',
+    status: 'done',
   },
 ];
 

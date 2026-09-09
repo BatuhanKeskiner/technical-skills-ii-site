@@ -37,6 +37,11 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
    is about. It sat in a band of its own above the header first and read as a
    stray graphic - "logonun yeri cok kel alaka", 09-09-2026. A masthead has two
    ends: whose school this is on the left, which course it is on the right. */
+/* HIS SPHERE, BESIDE THE NAME. The wireframe globe is the mark for the course
+   itself, so it stands where the course is named rather than off in a corner:
+   a lockup, sphere then title, reading as one thing. Sized to the title, not
+   to the crest - it belongs to the words, not to the institution. */
+.tssphere{height:clamp(38px,5.6vw,58px);width:auto;flex:0 0 auto;display:block}
 .right{display:flex;flex-direction:column;align-items:flex-end;gap:12px}
 .tsmark{display:block;height:clamp(40px,5.2vw,64px);width:auto;max-width:100%;
   opacity:.9}
@@ -370,6 +375,8 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
     <div class="ident">
       <img class="mark" src="_shared/assets/kabk-logo.jpg"
            alt="Royal Academy of Art, The Hague" width="89" height="84">
+      <img class="tssphere" src="_shared/assets/ts-sphere.png" alt=""
+           width="900" height="900">
       <div class="names">
         <h1>Technical Skills II</h1>
         <p class="sub"><span class="p">Royal Academy of Art</span> · <span class="p">Bachelor Photography</span> · <span class="p">2026–2027</span></p>
@@ -392,7 +399,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
   <div class="sec"><span class="no">01</span><span class="nm">Lectures</span><span class="ln"></span></div>
   <div class="wall">
     <div class="cell on" data-f="week #1 introduction assignment #0 questionnaire"><span class="k">Week #1</span><span class="t">Introduction</span><span class="base"><a class="open" href="01-introduction/index.html">Open</a></span></div>
-    <div class="cell on" data-f="week #2 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week #2</span><span class="t">Composition & Format</span><span class="base"><a class="open" href="02-composition-format/index.html">Open</a><span class="state">In progress</span></span></div>
+    <div class="cell on" data-f="week #2 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week #2</span><span class="t">Composition & Format</span><span class="base"><a class="open" href="02-composition-format/index.html">Open</a></span></div>
     <div class="cell" data-f="week #3 camera i assignment #2 pinhole"><span class="k">Week #3</span><span class="t">Camera I</span></div>
     <div class="cell" data-f="week #4 camera ii assignment #3 anti-self portrait"><span class="k">Week #4</span><span class="t">Camera II</span></div>
     <div class="cell" data-f="week #5 light i hand in #1 photogram assignment #4 remake"><span class="k">Week #5</span><span class="t">Light I</span></div>
@@ -437,7 +444,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 
   <p id="none">Nothing matches that</p>
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 542 · 09.09.2026 23:01</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 547 · 09.09.2026 23:42</span></div>
 
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; Black</span><span>Middle Grey</span><span>Zone X &mdash; White</span></div>
