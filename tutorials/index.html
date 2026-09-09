@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../_shared/favicon.svg" type="image/svg+xml">
+<title>Tutorials &mdash; Technical Skills II</title>
+<link rel="stylesheet" href="../_shared/tokens/fonts.css">
+<style>
+:root{
+  --paper:#F7F5F0; --paper2:#EEECE6; --ink:#0B0C0C; --body:#1A1C1B; --grey:#5C605E;
+  --rule:#C9CAC4; --signal:#C42D00; --marker:#E4FF1A;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --sans:'Archivo','Helvetica Neue',Helvetica,sans-serif;
+  --title:'Instrument Sans','Archivo',sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased}
+.sheet{max-width:1080px;margin:0 auto;padding:4vh 40px 8vh}
+.top{display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  padding-bottom:11px;border-bottom:2px solid var(--ink)}
+.top a,.top span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey);text-decoration:none}
+.top .back{display:inline-flex;align-items:center;gap:8px;color:var(--ink)}
+.top .back .ar{color:var(--signal)}
+.top .what{margin-right:auto}
+.mark{height:44px;width:auto;mix-blend-mode:multiply;flex:0 0 auto}
+h1{font-family:var(--title);font-size:clamp(30px,5.4vw,46px);font-weight:500;
+  letter-spacing:-.03em;line-height:1.02;margin:26px 0 0}
+.lede{font-size:17px;line-height:1.55;color:var(--body);margin:12px 0 0;max-width:62ch}
+
+/* ---- the two ways in ---- */
+.find{display:flex;align-items:center;gap:10px;margin:26px 0 0;
+  border:1px solid var(--ink);padding:0 14px;height:46px;background:#fff}
+.find input{flex:1;min-width:0;border:0;outline:0;background:transparent;
+  font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--ink)}
+.find input::placeholder{color:var(--grey);letter-spacing:.14em;text-transform:uppercase;font-size:11px}
+.find .clr{border:0;background:none;cursor:pointer;color:var(--grey);
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.find .clr:hover{color:var(--signal)}
+.labs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.lab{appearance:none;background:transparent;border:1px solid var(--rule);
+  color:var(--body);font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;
+  text-transform:uppercase;padding:7px 10px;cursor:pointer;display:inline-flex;
+  align-items:center;gap:8px;transition:background .12s,color .12s,border-color .12s}
+.lab:hover{border-color:var(--ink)}
+.lab .n{color:var(--grey);font-size:9.5px}
+.lab.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.lab.on .n{color:var(--marker)}
+.tally{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--grey);margin:18px 0 0}
+.tally b{color:var(--signal);font-weight:400}
+
+/* ---- one row per tutorial ---- */
+.list{margin:8px 0 0;border-top:1px solid var(--rule)}
+.tut{display:grid;grid-template-columns:236px 1fr;gap:22px;padding:22px 0;
+  border-bottom:1px solid var(--rule)}
+.tut[hidden]{display:none}
+/* WATCHING IS NOT SCANNING. A row is a row while you are choosing; the moment
+   you press play it becomes a screen and takes the whole width, because a
+   236px video is a thumbnail with sound. */
+.tut.playing{grid-template-columns:1fr}
+.tut.playing .meta{order:2}
+.shot{position:relative}
+.play{display:block;position:relative;width:100%;padding:0;border:1px solid var(--rule);
+  background:#111;cursor:pointer;aspect-ratio:16/9;overflow:hidden}
+.play img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:opacity .15s,filter .15s;filter:grayscale(.35)}
+.play:hover img{filter:none}
+.play .tri{position:absolute;inset:0;margin:auto;width:0;height:0;
+  border-left:20px solid var(--paper);border-top:13px solid transparent;
+  border-bottom:13px solid transparent;filter:drop-shadow(0 0 8px rgba(0,0,0,.6))}
+.play:hover .tri{border-left-color:var(--marker)}
+.play .lenb{position:absolute;right:6px;bottom:6px;background:rgba(11,12,12,.86);
+  color:var(--paper);font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  padding:3px 6px}
+.shot iframe{width:100%;aspect-ratio:16/9;border:1px solid var(--ink);display:block}
+.meta{min-width:0}
+.tut h3{font-family:var(--title);font-size:20px;font-weight:500;letter-spacing:-.01em;
+  line-height:1.25;margin:0}
+.tut h3 a{color:var(--ink);text-decoration:none;border-bottom:1px solid transparent}
+.tut h3 a:hover{border-bottom-color:var(--signal)}
+.by{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--grey);margin:8px 0 0}
+.by .dot{margin:0 8px}
+.by .len{color:var(--ink)}
+.what{font-size:15px;line-height:1.55;color:var(--body);margin:10px 0 0;max-width:62ch}
+.tags{margin:12px 0 0;display:flex;flex-wrap:wrap;gap:6px}
+.tg,.fr{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;padding:4px 7px;border:1px solid var(--rule);color:var(--grey)}
+.fr{border-color:var(--signal);color:var(--signal)}
+#none{display:none;font-family:var(--mono);font-size:12px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--grey);padding:40px 0}
+#none.on{display:block}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  margin:44px 0 0;padding-top:12px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--grey)}
+@media (max-width:720px){
+  .sheet{padding:3vh 20px 8vh}
+  .tut{grid-template-columns:1fr;gap:14px}
+}
+@media print{
+  .find,.labs,.tally,.play .tri{display:none}
+  .tut{break-inside:avoid;page-break-inside:avoid}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-family:var(--mono);
+    font-size:8.5pt;color:#555;word-break:break-all}
+}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="top">
+    <a class="back" href="../index.html"><span class="ar">&larr;</span>Technical Skills II</a>
+    <span class="what">Tutorials</span>
+    <img class="mark" src="../_shared/assets/kabk-logo.jpg"
+         alt="Royal Academy of Art, The Hague">
+  </div>
+
+  <h1>Tutorials</h1>
+  <p class="lede">Films worth the time, kept in one place. Search them, or press a
+  label. Every one says who made it and how long it is before you commit to it.</p>
+
+  <label class="find">
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+      <circle cx="5.4" cy="5.4" r="4.1" stroke="#5C605E" stroke-width="1.3"/>
+      <path d="M8.6 8.6 L12 12" stroke="#5C605E" stroke-width="1.3"/></svg>
+    <input id="q" type="search" placeholder="Search a title, a channel, a label"
+           autocomplete="off" spellcheck="false" aria-label="Search the tutorials">
+    <button type="button" class="clr" id="clr">Clear</button>
+  </label>
+
+  <div class="labs" id="labs">
+    <button type="button" class="lab" data-lab="start here">start here<span class="n">2</span></button>
+    <button type="button" class="lab" data-lab="photogram">photogram<span class="n">4</span></button>
+    <button type="button" class="lab" data-lab="darkroom">darkroom<span class="n">5</span></button>
+    <button type="button" class="lab" data-lab="exposure">exposure<span class="n">2</span></button>
+    <button type="button" class="lab" data-lab="test strip">test strip<span class="n">2</span></button>
+    <button type="button" class="lab" data-lab="tones">tones<span class="n">3</span></button>
+    <button type="button" class="lab" data-lab="contrast">contrast<span class="n">1</span></button>
+    <button type="button" class="lab" data-lab="dodge &amp; burn">dodge &amp; burn<span class="n">3</span></button>
+    <button type="button" class="lab" data-lab="printing">printing<span class="n">4</span></button>
+    <button type="button" class="lab" data-lab="enlarger">enlarger<span class="n">2</span></button>
+    <button type="button" class="lab" data-lab="chemistry">chemistry<span class="n">1</span></button>
+    <button type="button" class="lab" data-lab="tools">tools<span class="n">1</span></button>
+    <button type="button" class="lab" data-lab="artists">artists<span class="n">1</span></button>
+    <button type="button" class="lab" data-lab="camera-less">camera-less<span class="n">1</span></button>
+  </div>
+
+  <p class="tally"><b id="n">10</b> of 10 shown</p>
+
+  <div class="list" id="list">
+  <article class="tut" id="t-o1pdXI9mXz0" data-tags="photogram|darkroom|start here" data-find="making art in the darkroom without a camera | photogram tutorial the photography toolkit: dave caleb the whole thing in two minutes: paper down, objects on it, one exposure, four trays. watch this before you walk into the darkroom. photogram darkroom start here assignment #1">
+    <div class="shot"><button type="button" class="play" data-v="o1pdXI9mXz0" aria-label="Play"><img src="../tutorials/assets/o1pdXI9mXz0.jpg" alt="" loading="lazy"><span class="tri"></span><span class="lenb">2:05</span></button></div>
+    <div class="meta">
+      <h3><a href="https://www.youtube.com/watch?v=o1pdXI9mXz0" target="_blank" rel="noopener">Making Art in the Darkroom Without a Camera | Photogram Tutorial</a></h3>
+      <p class="by">The Photography Toolkit: Dave Caleb<span class="dot">&middot;</span><span class="len">2:05</span></p>
+      <p class="what">The whole thing in two minutes: paper down, objects on it, one exposure, four trays. Watch this before you walk into the darkroom.</p>
+      <p class="tags"><span class="tg">photogram</span><span class="tg">darkroom</span><span class="tg">start here</span><span class="fr">Assignment #1</span></p>
+    </div>
+  </article>
+  <article class="tut" id="t-G8ZvhLuU-iY" data-tags="photogram|darkroom|tones" data-find="darkroom basics - photograms the art of photography a photogram made from start to finish, with the exposure changed between sheets so you can see what it does to the greys. photogram darkroom tones assignment #1">
+    <div class="shot"><button type="button" class="play" data-v="G8ZvhLuU-iY" aria-label="Play"><img src="../tutorials/assets/G8ZvhLuU-iY.jpg" alt="" loading="lazy"><span class="tri"></span><span class="lenb">11:45</span></button></div>
+    <div class="meta">
+      <h3><a href="https://www.youtube.com/watch?v=G8ZvhLuU-iY" target="_blank" rel="noopener">Darkroom Basics - Photograms</a></h3>
+      <p class="by">The Art of Photography<span class="dot">&middot;</span><span class="len">11:45</span></p>
+      <p class="what">A photogram made from start to finish, with the exposure changed between sheets so you can see what it does to the greys.</p>
+      <p class="tags"><span class="tg">photogram</span><span class="tg">darkroom</span><span class="tg">tones</span><span class="fr">Assignment #1</span></p>
+    </div>
+  </article>
+  <article class="tut" id="t-VGCiR3jzKIE" data-tags="photogram|darkroom|chemistry|enlarger" data-find="darkroom setup and making a photogram j o&#x27;brien thirty-five minutes, unhurried: the room set up, the trays mixed and laid out in order, then the photogram. the long one to watch if you have never been in a darkroom. photogram darkroom chemistry enlarger assignment #1">
+    <div class="shot"><button type="button" class="play" data-v="VGCiR3jzKIE" aria-label="Play"><img src="../tutorials/assets/VGCiR3jzKIE.jpg" alt="" loading="lazy"><span class="tri"></span><span class="lenb">34:47</span></button></div>
+    <div class="meta">
+      <h3><a href="https://www.youtube.com/watch?v=VGCiR3jzKIE" target="_blank" rel="noopener">Darkroom setup and making a photogram</a></h3>
+      <p class="by">J O&#x27;Brien<span class="dot">&middot;</span><span class="len">34:47</span></p>
+      <p class="what">Thirty-five minutes, unhurried: the room set up, the trays mixed and laid out in order, then the photogram. The long one to watch if you have never been in a darkroom.</p>
+      <p class="tags"><span class="tg">photogram</span><span class="tg">darkroom</span><span class="tg">chemistry</span><span class="tg">enlarger</span><span class="fr">Assignment #1</span></p>
+    </div>
+  </article>
+  <article class="tut" id="t-vC29j9MCnTU" data-tags="darkroom|printing|enlarger|start here" data-find="darkroom printing - step-by-step guide to your first print distphoto the darkroom print, step by step. not a photogram, but the same room, the same trays and the same order of operations. darkroom printing enlarger start here assignment #1">
+    <div class="shot"><button type="button" class="play" data-v="vC29j9MCnTU" aria-label="Play"><img src="../tutorials/assets/vC29j9MCnTU.jpg" alt="" loading="lazy"><span class="tri"></span><span class="lenb">18:16</span></button></div>
+    <div class="meta">
+      <h3><a href="https://www.youtube.com/watch?v=vC29j9MCnTU" target="_blank" rel="noopener">Darkroom Printing - Step-by-Step Guide to Your First Print</a></h3>
+      <p class="by">DistPhoto<span class="dot">&middot;</span><span class="len">18:16</span></p>
+      <p class="what">The darkroom print, step by step. Not a photogram, but the same room, the same trays and the same order of operations.</p>
+      <p class="tags"><span class="tg">darkroom</span><span class="tg">printing</span><span class="tg">enlarger</span><span class="tg">start here</span><span class="fr">Assignment #1</span></p>
+    </div>
+  </article>
+  <article class="tut" id="t-IGs2sYaLFgI" data-tags="exposure|test strip|printing" data-find="darkroom printing - how to make a test strip still shooting in black and white how to make a test strip and read an exposure time off it. this is how you stop guessing between sheets. exposure test strip printing assignment #1">
+    <div class="shot"><button type="button" class="play" data-v="IGs2sYaLFgI" aria-label="Play"><img src="../tutorials/assets/IGs2sYaLFgI.jpg" alt="" loading="lazy"><span class="tri"></span><span class="lenb">11:03</span></button></div>
+    <div class="meta">
+      <h3><a href="https://www.youtube.com/watch?v=IGs2sYaLFgI" target="_blank" rel="noopener">Darkroom Printing - How To Make A Test Strip</a></h3>
+      <p class="by">Still Shooting In Black And White<span class="dot">&middot;</span><span class="len">11:03</span></p>
+      <p class="what">How to make a test strip and read an exposure time off it. This is how you stop guessing between sheets.</p>
+      <p class="tags"><span class="tg">exposure</span><span class="tg">test strip</span><span class="tg">printing</span><span class="fr">Assignment #1</span></p>
+    </div>
+  </article>
+  <article class="tut" id="t-woXZb8gjG4o" data-tags="exposure|test strip|tones|contrast" data-find="how to chose contrast and exposure from the test strip acromatica school of photography what to do with the test strip once you have it: choosing the exposure and the contrast that give a full range of greys rather than black and white. exposure test strip tones contrast assignment #1">
+    <div class="shot"><button type="button" class="play" data-v="woXZb8gjG4o" aria-label="Play"><img src="../tutorials/assets/woXZb8gjG4o.jpg" alt="" loading="lazy"><span class="tri"></span><span class="lenb">16:08</span></button></div>
+    <div class="meta">
+      <h3><a href="https://www.youtube.com/watch?v=woXZb8gjG4o" target="_blank" rel="noopener">How to Chose Contrast and Exposure from the Test Strip</a></h3>
+      <p class="by">Acromatica School of Photography<span class="dot">&middot;</span><span class="len">16:08</span></p>
+      <p class="what">What to do with the test strip once you have it: choosing the exposure and the contrast that give a full range of greys rather than black and white.</p>
+      <p class="tags"><span class="tg">exposure</span><span class="tg">test strip</span><span class="tg">tones</span><span class="tg">contrast</span><span class="fr">Assignment #1</span></p>
+    </div>
+  </article>
+  <article class="tut" id="t-b-keDPtVnGA" data-tags="dodge &amp; burn|printing|tones" data-find="dodge &amp; burn - ilford photo darkroom guides ilford photo ilford’s own guide to holding light back and adding it. nine minutes, and it is the shortest route to the two words in the brief. dodge &amp; burn printing tones assignment #1">
+    <div class="shot"><button type="button" class="play" data-v="b-keDPtVnGA" aria-label="Play"><img src="../tutorials/assets/b-keDPtVnGA.jpg" alt="" loading="lazy"><span class="tri"></span><span class="lenb">9:34</span></button></div>
+    <div class="meta">
+      <h3><a href="https://www.youtube.com/watch?v=b-keDPtVnGA" target="_blank" rel="noopener">Dodge &amp; Burn - ILFORD PHOTO Darkroom Guides</a></h3>
+      <p class="by">ILFORD Photo<span class="dot">&middot;</span><span class="len">9:34</span></p>
+      <p class="what">Ilford’s own guide to holding light back and adding it. Nine minutes, and it is the shortest route to the two words in the brief.</p>
+      <p class="tags"><span class="tg">dodge &amp; burn</span><span class="tg">printing</span><span class="tg">tones</span><span class="fr">Assignment #1</span></p>
+    </div>
+  </article>
+  <article class="tut" id="t-aNx66le363g" data-tags="dodge &amp; burn|printing" data-find="dodging &amp; burning darkroom tutorial lina bessonova dodging and burning explained with the tools in hand — what to cut, how long to hold it, and how much the print actually moves. dodge &amp; burn printing assignment #1">
+    <div class="shot"><button type="button" class="play" data-v="aNx66le363g" aria-label="Play"><img src="../tutorials/assets/aNx66le363g.jpg" alt="" loading="lazy"><span class="tri"></span><span class="lenb">6:18</span></button></div>
+    <div class="meta">
+      <h3><a href="https://www.youtube.com/watch?v=aNx66le363g" target="_blank" rel="noopener">Dodging &amp; Burning Darkroom Tutorial</a></h3>
+      <p class="by">Lina Bessonova<span class="dot">&middot;</span><span class="len">6:18</span></p>
+      <p class="what">Dodging and burning explained with the tools in hand — what to cut, how long to hold it, and how much the print actually moves.</p>
+      <p class="tags"><span class="tg">dodge &amp; burn</span><span class="tg">printing</span><span class="fr">Assignment #1</span></p>
+    </div>
+  </article>
+  <article class="tut" id="t-8A6N5rftRp4" data-tags="dodge &amp; burn|darkroom|tools" data-find="making dodging and burning tools for your darkroom the naked photographer making the dodging and burning tools yourself out of card and wire, which is what everybody in a teaching darkroom ends up doing. dodge &amp; burn darkroom tools assignment #1">
+    <div class="shot"><button type="button" class="play" data-v="8A6N5rftRp4" aria-label="Play"><img src="../tutorials/assets/8A6N5rftRp4.jpg" alt="" loading="lazy"><span class="tri"></span><span class="lenb">11:35</span></button></div>
+    <div class="meta">
+      <h3><a href="https://www.youtube.com/watch?v=8A6N5rftRp4" target="_blank" rel="noopener">Making Dodging and Burning Tools For Your Darkroom</a></h3>
+      <p class="by">The Naked Photographer<span class="dot">&middot;</span><span class="len">11:35</span></p>
+      <p class="what">Making the dodging and burning tools yourself out of card and wire, which is what everybody in a teaching darkroom ends up doing.</p>
+      <p class="tags"><span class="tg">dodge &amp; burn</span><span class="tg">darkroom</span><span class="tg">tools</span><span class="fr">Assignment #1</span></p>
+    </div>
+  </article>
+  <article class="tut" id="t-ApPEG7Q_jME" data-tags="artists|camera-less|photogram" data-find="liz deschenes on her camera-less photography san francisco museum of modern art liz deschenes on working without a camera, filmed at sfmoma. three minutes on why anyone would still do this, rather than how. artists camera-less photogram assignment #1">
+    <div class="shot"><button type="button" class="play" data-v="ApPEG7Q_jME" aria-label="Play"><img src="../tutorials/assets/ApPEG7Q_jME.jpg" alt="" loading="lazy"><span class="tri"></span><span class="lenb">2:49</span></button></div>
+    <div class="meta">
+      <h3><a href="https://www.youtube.com/watch?v=ApPEG7Q_jME" target="_blank" rel="noopener">Liz Deschenes on her camera-less photography</a></h3>
+      <p class="by">San Francisco Museum of Modern Art<span class="dot">&middot;</span><span class="len">2:49</span></p>
+      <p class="what">Liz Deschenes on working without a camera, filmed at SFMOMA. Three minutes on why anyone would still do this, rather than how.</p>
+      <p class="tags"><span class="tg">artists</span><span class="tg">camera-less</span><span class="tg">photogram</span><span class="fr">Assignment #1</span></p>
+    </div>
+  </article>
+  </div>
+  <p id="none">Nothing matches that. Clear the search, or press a label off.</p>
+
+  <div class="foot">
+    <span>Batuhan Keskiner &middot; Royal Academy of Art &middot; Bachelor Photography &middot; 2026&ndash;2027</span>
+    <span>build 542 &middot; 09.09.2026 23:01</span>
+  </div>
+</div>
+<script>
+(function () {
+  var rows = [].slice.call(document.querySelectorAll('.tut'));
+  var q = document.getElementById('q'), labs = document.getElementById('labs');
+  var none = document.getElementById('none'), n = document.getElementById('n');
+  var on = new Set();
+
+  function paint() {
+    var text = q.value.trim().toLowerCase();
+    var shown = 0;
+    rows.forEach(function (r) {
+      var tags = r.dataset.tags.split('|');
+      var byLab = !on.size || tags.some(function (t) { return on.has(t); });
+      var byText = !text || r.dataset.find.indexOf(text) !== -1;
+      var show = byLab && byText;
+      r.hidden = !show;
+      if (show) shown++;
+    });
+    n.textContent = shown;
+    none.classList.toggle('on', shown === 0);
+    var p = [];
+    if (text) p.push('q=' + encodeURIComponent(text));
+    if (on.size) p.push('l=' + encodeURIComponent(Array.from(on).join(',')));
+    history.replaceState(null, '', p.length ? '?' + p.join('&') : location.pathname);
+  }
+
+  labs.addEventListener('click', function (e) {
+    var b = e.target.closest('.lab');
+    if (!b) return;
+    var l = b.dataset.lab;
+    if (on.has(l)) { on.delete(l); } else { on.add(l); }
+    b.classList.toggle('on', on.has(l));
+    paint();
+  });
+  q.addEventListener('input', paint);
+  document.getElementById('clr').addEventListener('click', function () {
+    q.value = ''; on.clear();
+    labs.querySelectorAll('.lab').forEach(function (b) { b.classList.remove('on'); });
+    paint(); q.focus();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+  });
+
+  /* the still is a picture until it is pressed, and then it is the player */
+  document.getElementById('list').addEventListener('click', function (e) {
+    var b = e.target.closest('.play');
+    if (!b) return;
+    document.querySelectorAll('.shot iframe').forEach(function (f) {
+      var sh = f.parentElement;
+      sh.innerHTML = sh.dataset.was;
+      sh.closest('.tut').classList.remove('playing');
+    });
+    var shot = b.parentElement;
+    shot.dataset.was = shot.innerHTML;
+    var f = document.createElement('iframe');
+    f.dataset.v = b.dataset.v;
+    f.src = 'https://www.youtube-nocookie.com/embed/' + b.dataset.v
+          + '?autoplay=1&rel=0&modestbranding=1';
+    f.title = 'Tutorial';
+    f.allow = 'accelerometer; autoplay; encrypted-media; picture-in-picture';
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    f.allowFullscreen = true;
+    shot.innerHTML = '';
+    shot.appendChild(f);
+    shot.closest('.tut').classList.add('playing');
+  });
+
+  /* a filtered list is an address somebody can be sent */
+  var u = new URLSearchParams(location.search);
+  if (u.get('q')) q.value = u.get('q');
+  (u.get('l') || '').split(',').filter(Boolean).forEach(function (l) {
+    on.add(l);
+    var b = labs.querySelector('[data-lab="' + l + '"]');
+    if (b) b.classList.add('on');
+  });
+  paint();
+  if (location.hash) {
+    var el = document.querySelector(location.hash);
+    if (el) el.scrollIntoView({ block: 'center' });
+  }
+})();
+</script>
+</body>
+</html>
