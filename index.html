@@ -29,9 +29,14 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
    it stands where identity stands - left of the name, at a size you can see -
    and the name gains the line that says which school, which course, which
    year, because a masthead that does not say those is a title. */
-.top{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;
+/* ONE ROW, TWO ENDS. Sphere and name at the left as a lockup, the search
+   where the hand looks for it, then a hairline and the school's crest at the
+   far right - mark and crest on one cap line, 58px each, so the row reads as
+   a masthead rather than a shelf of logos. Claude Design's drawing, his call
+   10-09-2026. The cone left the masthead in the same move; it is behind the
+   lecture grid now, where it is a ground and not a badge. */
+.top{display:flex;align-items:center;gap:0;
      padding-bottom:12px;border-bottom:2px solid var(--ink);flex-wrap:wrap}
-.ident{display:flex;align-items:center;gap:22px;min-width:0}
 /* THE COURSE'S OWN MARK, AT THE OTHER END OF THE MASTHEAD. His drawing: the
    cone of light either side of the picture plane, which is what the whole year
    is about. It sat in a band of its own above the header first and read as a
@@ -41,23 +46,24 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
    itself, so it stands where the course is named rather than off in a corner:
    a lockup, sphere then title, reading as one thing. Sized to the title, not
    to the crest - it belongs to the words, not to the institution. */
-.tssphere{height:clamp(38px,5.6vw,58px);width:auto;flex:0 0 auto;display:block}
-.right{display:flex;flex-direction:column;align-items:flex-end;gap:12px}
-.tsmark{display:block;height:clamp(40px,5.2vw,64px);width:auto;max-width:100%;
-  opacity:.9}
-@media print{.tsmark{height:14mm}}
-.names{min-width:0}
-h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
-   letter-spacing:-.03em;line-height:1;margin:0;color:var(--ink)}
+/* Ink on transparent: the drawing takes its weight from stroke-width and its
+   colour from `color`, so it follows the page rather than carrying its own. */
+.tssphere{height:58px;width:58px;flex:0 0 auto;display:block;color:var(--ink)}
+.names{min-width:0;margin-left:12px}
+h1{font-family:var(--title);font-size:26px;font-weight:600;
+   letter-spacing:-.02em;line-height:1;margin:0;color:var(--ink)}
 /* IT BREAKS AT THE DOTS OR NOT AT ALL. Three phrases separated by middots is
    a line that reads as one thing; broken mid-phrase it reads as two. */
-.sub{margin:8px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
-   text-transform:uppercase;color:var(--grey);line-height:1.5}
+.sub{margin:6px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.12em;
+   text-transform:uppercase;color:#5C605E;line-height:1.4}
 .sub .p{white-space:nowrap}
-.right{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.mark{display:block;height:84px;width:auto;mix-blend-mode:multiply;
+/* The rule between the furniture and the institution. 1px, one cap high. */
+.hair{flex:0 0 auto;width:1px;height:58px;background:var(--rule);margin:0 16px}
+.mark{display:block;height:58px;width:auto;mix-blend-mode:multiply;
    flex:0 0 auto}
-.find{display:flex;align-items:center;gap:9px;border:1px solid var(--ink);
+@media print{.mark{height:14mm}}
+.find{margin-left:auto;display:flex;align-items:center;gap:9px;
+   border:1px solid var(--ink);
    padding:0 11px;height:36px;width:290px;background:var(--paper)}
 .find input{flex:1;min-width:0;border:0;outline:0;background:transparent;height:34px;
    font-family:var(--mono);font-size:13px;letter-spacing:.11em;color:var(--ink);
@@ -91,6 +97,19 @@ h1{font-family:var(--title);font-size:clamp(28px,6.8vw,44px);font-weight:500;
 .cell.tool .d{font-size:13px;line-height:1.45;color:var(--grey);margin-top:-2px}
 .wall{display:grid;grid-template-columns:repeat(4,1fr);
    border-left:1px solid var(--rule);border-top:1px solid var(--rule)}
+/* THE CONE, BEHIND THE WEEKS. It was a badge in the masthead and read as one;
+   here it is a ground, and the grid's hairlines cut across the drawing, which
+   is what a section ground is for. Only the lecture grid gets it - the
+   instrument and tutorial walls stay plain, or the page has two backgrounds
+   fighting. Claude Design's drawing, his call 10-09-2026. */
+.ground{position:relative;overflow:hidden;background:var(--paper)}
+.conebg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+   pointer-events:none;user-select:none}
+.wall.lect{position:relative}
+.wall.lect .cell{background:transparent}
+.wall.lect .cell.on,.wall.lect .cell.wip{background:rgba(247,245,240,.55)}
+.wall.lect a.cell:hover{background:rgba(233,230,222,.72)}
+@media print{.conebg{display:none}}
 /* An unnamed week is quiet, not invisible. --rule is the hairline the grid is
    drawn with: against the cell it measured 1.40:1, which is not faint, it is
    absent. #6B6B6B clears 4.5 on the cell AND on the paper, so one grey does
@@ -174,21 +193,37 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
    Both are stuck to their edge; only the middle moves. */
 .track{position:relative;overflow-x:auto;overscroll-behavior-x:contain}
 .track-in{position:relative;padding-top:17px;min-width:max-content}
-.hdr > span:first-child,.bar .nm{position:sticky;left:0;z-index:4;
+.hdr > span:first-child,.bar .nm{position:sticky;left:0;z-index:6;
    background:var(--paper);padding-right:10px}
 /* The two right-hand columns sit ABOVE the week labels, and the name column
    below them: a week's name may pass over empty paper on the left, but the
    date and the countdown are what the board is read for and nothing crosses
    them. Left 4 · labels 5 · right 6. */
 .hdr > span:nth-last-child(2),.hdr > span:last-child,
-.bar .dt,.bar .cd{position:sticky;z-index:6;background:var(--paper)}
-.hdr > span:nth-last-child(2),.bar .dt{right:112px;padding-left:12px}
-.hdr > span:last-child,.bar .cd{right:0}
+.bar .dt,.bar .cd{position:sticky;z-index:7;background:var(--paper)}
+.hdr > span:nth-last-child(2),.bar .dt{right:112px;padding-left:16px}
+.hdr > span:last-child,.bar .cd{right:0;padding-left:16px}
 /* a hairline that says the middle is what moves */
+.hdr > span:first-child,.bar .nm{position:sticky}
 .hdr > span:first-child::after,.bar .nm::after{content:'';position:absolute;
-   top:-6px;bottom:-6px;right:0;width:1px;background:var(--rule)}
-.bar .dt::before{content:'';position:absolute;top:-6px;bottom:-6px;left:0;
+   top:8px;bottom:8px;right:0;width:1px;background:var(--rule)}
+.hdr > span:first-child::after{top:0;bottom:0}
+/* THE BOARD STOPS AT THIS LINE. Right of it is the deadline and the countdown,
+   and they sit on flat paper: no week rules through them, no bar ends poking
+   past, nothing from the chart at all. It was leaking both - "surayi da duz
+   bir zemine oturt", 10-09-2026, with the drawing of what it should be. The
+   line is a tick inside the row rather than a rule across it, so the block
+   reads as a panel the chart runs into and not as one more column. */
+.bar .dt::before{content:'';position:absolute;top:8px;bottom:8px;left:0;
    width:1px;background:var(--rule)}
+.bar .dt::after,.hdr > span:nth-last-child(2)::after{content:'';
+   position:absolute;top:0;bottom:0;left:1px;right:-112px;
+   background:var(--paper);z-index:-1}
+/* the header carries the same left tick, so the panel starts on a line in
+   both rows - "baslik da ayni sekilde", 10-09-2026 */
+.hdr > span:nth-last-child(2)::before{content:'';position:absolute;
+   top:0;bottom:-4px;left:0;width:1px;background:var(--rule)}
+.hdr > span:nth-last-child(2){position:sticky}
 /* A SCROLLBAR WE DRAW OURSELVES.
    The native one was styled first and could not be trusted: macOS hides overlay
    scrollbars until something moves, Firefox takes two colours and no shape, and
@@ -230,7 +265,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 .ticks i.w{border-left:1px solid var(--rule)}
 .ticks i.w.end{border-right:1px solid var(--rule)}
 .bar{position:relative;z-index:1;background:transparent}
-.hdr{border-bottom:1px solid var(--ink);padding-bottom:6px}
+.hdr{border-bottom:1px solid var(--ink);padding-bottom:10px}
 .hdr span{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
    text-transform:uppercase;color:var(--faint);text-align:center}
 .hdr span:first-child{text-align:left}
@@ -250,6 +285,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
    position:relative;z-index:5}
 .hdr .wk i,.hdr .brk i{display:inline-block;font-style:normal;
    transform:translateX(-50%);white-space:nowrap}
+.hdr .wk:nth-of-type(1) i{transform:none;padding-left:3px}
 /* the last two headings are right-aligned because their columns are: the
    heading sat centred over the date alone while the row under it carried the
    date AND the week, so the two never lined up */
@@ -262,7 +298,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 /* ONE LINE, ALWAYS. "Anti-Self Portrait" wrapped to two and pushed its own
    row out of line with the grid behind it — the row looked shifted, and it
    was. A name column is as wide as the longest name. */
-.bar .nm{font-size:16px;display:flex;align-items:baseline;gap:9px;
+.bar .nm{font-size:16px;display:flex;align-items:center;gap:9px;align-self:stretch;
    white-space:nowrap}
 .bar .nm em{font-family:var(--mono);font-size:11px;font-style:normal;
    letter-spacing:.1em;color:var(--faint)}
@@ -279,16 +315,23 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 /* THE DATE HAS ITS OWN GROUND. It was read across the week rules, which run
    the width of the board — "yazi gridin ustunde okunmuyor". The rules belong
    to the weeks; past the last week there is nothing for them to divide. */
+/* FULL HEIGHT, OR IT IS NOT A PANEL. Both cells were align-self:center, so
+   each covered only the line box of its own text - 15px of a 36px row - and a
+   row with no countdown collapsed to nothing at all. A bar running under the
+   block put its deadline cap straight through the hole. "bunlar hicbir
+   sekilde olmasin", 10-09-2026. Stretched, and the text centred inside. */
 .dt{grid-column:17 / 18;font-family:var(--mono);font-size:11px;letter-spacing:.08em;
-   color:var(--signal);text-align:right;align-self:center;white-space:nowrap;
-   position:relative;z-index:2;background:var(--paper);padding-left:10px}
+   color:var(--signal);align-self:stretch;white-space:nowrap;
+   display:flex;align-items:center;justify-content:flex-end;gap:5px;
+   position:relative;z-index:2;background:var(--paper);padding-left:16px}
 .dt .g{color:var(--faint)}
 /* How long is left, worked out in the browser and only once the assignment has
    been handed out. A countdown on work nobody has been given is noise: it makes
    a row look urgent months early, and there is nothing to start. */
 .cd{grid-column:18 / 19;font-family:var(--mono);font-size:11px;letter-spacing:.08em;
-   color:var(--faint);text-align:right;align-self:center;white-space:nowrap;
-   position:relative;z-index:2;background:var(--paper);padding-left:10px}
+   color:var(--faint);align-self:stretch;white-space:nowrap;
+   display:flex;align-items:center;justify-content:flex-end;
+   position:relative;z-index:2;background:var(--paper);padding-left:16px}
 .cd.soon{color:var(--signal)}
 .dt .x{font-style:normal;color:var(--faint)}
 /* How long is left, worked out in the browser. A countdown stamped in at build
@@ -364,10 +407,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
   .sheet{padding:4vh 20px 7vh}
   .wall{grid-template-columns:1fr}
   .top{gap:14px}
-  .ident{gap:14px}
-  .mark{height:58px}
   .sub{font-size:10px;letter-spacing:.12em}
-  .right{flex-direction:column;align-items:stretch;gap:11px;width:100%}
   .find{width:auto;flex:none}
   .sec{margin:26px 0 10px;flex-wrap:wrap}
 }
@@ -377,32 +417,29 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 <div class="sheet">
 
   <div class="top">
-    <div class="ident">
-      <img class="mark" src="_shared/assets/kabk-logo.jpg"
-           alt="Royal Academy of Art, The Hague" width="89" height="84">
-      <img class="tssphere" src="_shared/assets/ts-sphere.png" alt=""
-           width="900" height="900">
-      <div class="names">
-        <h1>Technical Skills II</h1>
-        <p class="sub"><span class="p">Royal Academy of Art</span> · <span class="p">Bachelor Photography</span> · <span class="p">2026–2027</span></p>
-      </div>
+    <img class="tssphere" src="_shared/assets/ts-sphere-small.svg" alt=""
+         width="64" height="64">
+    <div class="names">
+      <h1>Technical Skills II</h1>
+      <p class="sub"><span class="p">Royal Academy of Art</span> · <span class="p">Bachelor Photography</span> · <span class="p">2026–2027</span></p>
     </div>
-    <div class="right">
-      <img class="tsmark" src="_shared/assets/ts-logo.png"
-           alt="Technical Skills II" width="1600" height="949">
-      <label class="find">
-        <svg width="12" height="12" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-          <circle cx="5.4" cy="5.4" r="4.1" stroke="#5C605E" stroke-width="1.3"/>
-          <path d="M8.6 8.6 L12 12" stroke="#5C605E" stroke-width="1.3"/></svg>
-        <input id="q" type="text" placeholder="SEARCH"
-               autocomplete="off" spellcheck="false"
-               aria-label="Search a week or an assignment">
-      </label>
-    </div>
+    <label class="find">
+      <svg width="12" height="12" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+        <circle cx="5.4" cy="5.4" r="4.1" stroke="#5C605E" stroke-width="1.3"/>
+        <path d="M8.6 8.6 L12 12" stroke="#5C605E" stroke-width="1.3"/></svg>
+      <input id="q" type="text" placeholder="SEARCH"
+             autocomplete="off" spellcheck="false"
+             aria-label="Search a week or an assignment">
+    </label>
+    <span class="hair" aria-hidden="true"></span>
+    <img class="mark" src="_shared/assets/kabk-logo.jpg"
+         alt="Royal Academy of Art, The Hague" width="89" height="84">
   </div>
 
   <div class="sec"><span class="no">01</span><span class="nm">Lectures</span><span class="ln"></span></div>
-  <div class="wall">
+  <div class="ground">
+    <img class="conebg" src="_shared/assets/ts-cone-bg.svg" alt="" aria-hidden="true">
+    <div class="wall lect">
     <div class="cell on" data-f="week #1 introduction assignment #0 questionnaire"><span class="k">Week #1</span><span class="t">Introduction</span><span class="base"><a class="open" href="01-introduction/index.html">Open</a></span></div>
     <div class="cell on" data-f="week #2 composition  format hand in #0 questionnaire assignment #1 photogram"><span class="k">Week #2</span><span class="t">Composition & Format</span><span class="base"><a class="open" href="02-composition-format/index.html">Open</a></span></div>
     <div class="cell" data-f="week #3 camera i assignment #2 pinhole"><span class="k">Week #3</span><span class="t">Camera I</span></div>
@@ -415,6 +452,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
     <div class="cell blank" data-f="week #10"><span class="k">Week #10</span><span class="t"></span></div>
     <div class="cell blank" data-f="week #11"><span class="k">Week #11</span><span class="t"></span></div>
     <div class="cell blank" data-f="week #12"><span class="k">Week #12</span><span class="t"></span></div>
+    </div>
   </div>
 
   <div class="sec"><span class="no">02</span><span class="nm">Assignments</span><span class="ln"></span>
@@ -450,7 +488,7 @@ a.chip:hover{border-color:var(--signal);color:var(--signal)}
 
   <p id="none">Nothing matches that</p>
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 557 · 10.09.2026 00:08</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 573 · 10.09.2026 01:22</span></div>
 
   <div class="zones"><i style="background:#000000;color:#F7F5F0">0</i><i style="background:#151515;color:#F7F5F0">I</i><i style="background:#2B2B2B;color:#F7F5F0">II</i><i style="background:#454545;color:#F7F5F0">III</i><i style="background:#5E5E5E;color:#F7F5F0">IV</i><i style="background:#777777;color:#0B0C0C">V</i><i style="background:#949494;color:#0B0C0C">VI</i><i style="background:#B0B0B0;color:#0B0C0C">VII</i><i style="background:#CCCCCC;color:#0B0C0C">VIII</i><i style="background:#E7E7E7;color:#0B0C0C">IX</i><i style="background:#FFFFFF;color:#0B0C0C">X</i></div>
   <div class="zlab"><span>Zone 0 &mdash; Black</span><span>Middle Grey</span><span>Zone X &mdash; White</span></div>

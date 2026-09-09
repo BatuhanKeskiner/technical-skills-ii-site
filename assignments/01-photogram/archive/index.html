@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../../../_shared/favicon.svg" type="image/svg+xml">
+<title>Student Archive — Assignment #1</title>
+<link rel="stylesheet" href="../../../_shared/tokens/fonts.css">
+<style>
+:root{
+  --paper:#F7F5F0; --ink:#0B0C0C; --body:#1A1C1B; --grey:#5C605E;
+  --faint:#606060; --rule:#C9CAC4; --signal:#C42D00;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --sans:'Archivo','Helvetica Neue',Helvetica,sans-serif;
+  --title:'Instrument Sans','Archivo',sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased}
+.sheet{max-width:1400px;margin:0 auto;padding:5vh 40px 8vh}
+.top{display:flex;justify-content:space-between;align-items:center;gap:24px;
+  padding-bottom:11px;border-bottom:2px solid var(--ink)}
+.top a,.top span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey);text-decoration:none}
+.top a:hover{color:var(--signal)}
+.top .back{display:inline-flex;align-items:center;gap:8px;color:var(--ink)}
+.top .back .ar{color:var(--signal)}
+.top .what{margin-right:auto}
+.mark{height:44px;width:auto;mix-blend-mode:multiply;flex:0 0 auto}
+
+.no{font-family:var(--mono);font-size:13px;letter-spacing:.16em;
+  color:var(--signal);margin:24px 0 0}
+h1{font-family:var(--title);font-size:46px;font-weight:500;letter-spacing:-.03em;
+  line-height:1.02;margin:8px 0 0}
+.premise{font-size:18px;line-height:1.5;color:var(--body);margin:14px 0 0;max-width:60ch}
+
+/* THE FILTERS. A year, a class, a name typed. Three ways in, because three
+   different questions get asked of an archive: what did my class do, what did
+   this person do, what does a good one look like. */
+.bar{position:sticky;top:0;z-index:5;background:var(--paper);
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  margin:30px 0 0;padding:14px 0 13px;border-top:1px solid var(--ink);
+  border-bottom:1px solid var(--rule)}
+.chip{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;border:1px solid var(--rule);background:transparent;
+  color:var(--grey);padding:7px 12px;cursor:pointer;
+  transition:background .12s,color .12s,border-color .12s}
+.chip:hover{border-color:var(--ink);color:var(--ink)}
+.chip.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.bar .gap{width:8px}
+.bar .rule{width:1px;align-self:stretch;background:var(--rule);margin:0 4px}
+.tally{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);margin-left:auto}
+.tally b{color:var(--ink);font-weight:500}
+
+/* A YEAR, THEN A PERSON, THEN THEIR SHEETS. The heading carries the class,
+   because the class is how he finds a cohort and the name alone does not say
+   which of the three groups it was. */
+h2.yr{font-family:var(--mono);font-size:11px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--signal);margin:44px 0 0;
+  padding-bottom:9px;border-bottom:1px solid var(--ink);
+  display:flex;justify-content:space-between;align-items:baseline}
+h2.yr .c{color:var(--faint)}
+.who{margin:26px 0 0}
+.who h3{font-family:var(--title);font-size:19px;font-weight:500;margin:0;
+  display:flex;align-items:baseline;gap:12px;letter-spacing:-.01em}
+.who h3 .cl{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--signal)}
+.who h3 .n{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  color:var(--faint);margin-left:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:14px;margin:13px 0 0}
+.grid figure{margin:0}
+.grid button{display:block;width:100%;padding:0;border:1px solid var(--rule);
+  background:#EDEAE4;cursor:zoom-in;line-height:0;transition:border-color .12s}
+.grid button:hover{border-color:var(--ink)}
+.grid img{display:block;width:100%;height:190px;object-fit:contain}
+.who[hidden],.grid figure[hidden],.yblock[hidden]{display:none}
+
+.note{margin:56px 0 0;padding-top:16px;border-top:1px solid var(--ink)}
+p.body{font-size:15px;line-height:1.6;color:var(--body);margin:0;max-width:64ch}
+p.body.gen-say{color:var(--signal)}
+/* HIS NOTE, 10-09-2026: mono, and spread onto a second line. A disclaimer is
+   not prose - it is a notice, so it is set like one and given a measure that
+   breaks it rather than running it out as one long sentence. */
+p.body.notice{font-family:var(--mono);font-size:11.5px;line-height:1.75;
+  letter-spacing:.045em;max-width:100ch}
+p.lbl{font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--grey);margin:0 0 7px}
+a.mail{color:inherit;text-decoration:underline;text-decoration-thickness:1px;
+  text-underline-offset:3px;text-decoration-color:var(--rule)}
+a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
+.gen-tick{display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+  padding:2px 8px 3px;border:1px solid var(--signal);background:transparent;
+  color:var(--signal);font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;cursor:pointer;line-height:1.6}
+.gen-tick[hidden]{display:none}
+.foot{display:flex;justify-content:space-between;gap:20px;margin:26px 0 0;
+  font-family:var(--mono);font-size:10px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--faint)}
+
+/* THE PLATE AT ITS OWN SIZE, with the name under it. */
+#lb{position:fixed;inset:0;background:rgba(11,12,12,.94);display:none;
+  align-items:center;justify-content:center;flex-direction:column;gap:16px;
+  padding:5vh 5vw;z-index:50;cursor:zoom-out}
+#lb.on{display:flex}
+#lb img{max-width:100%;max-height:82vh;object-fit:contain}
+#lb p{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:#EDEAE4;margin:0;text-align:center}
+#lb .x{position:absolute;top:20px;right:26px;font-family:var(--mono);
+  font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#9A9A96}
+.empty{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint);margin:40px 0 0}
+.empty[hidden]{display:none}
+@media print{.bar,#lb,.gen-tick{display:none !important}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="top">
+    <a class="back" href="../"><span class="ar">&#8592;</span>Assignment #1</a>
+    <span class="what">Student Archive</span>
+    <img class="mark" src="../../../_shared/assets/kabk-logo.jpg"
+         alt="Royal Academy of Art, The Hague">
+  </div>
+
+  <p class="no">Assignment #1 &middot; Photogram</p>
+  <h1>Student Archive</h1>
+  <p class="premise">274 photograms handed in for this assignment by 46 students, over three years.</p>
+
+  <div class="bar">
+    <button type="button" class="chip" data-v="23-24">23-24</button>
+    <button type="button" class="chip" data-v="24-25">24-25</button>
+    <button type="button" class="chip" data-v="25-26">25-26</button>
+    <span class="tally"><b id="tn">274</b> shown</span>
+  </div>
+
+  <div class="yblock" data-y="23-24" data-n="96">
+  <h2 class="yr"><span>23-24</span><span class="c">96 photograms</span></h2>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Beerend Honing" data-n="2">
+      <h3>Beerend Honing<span class="cl">PHft2D</span><span class="n">2</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-beerend-honing-18.jpg" data-cap="Beerend Honing · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-beerend-honing-18.jpg" alt="Photogram by Beerend Honing"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-beerend-honing-19.jpg" data-cap="Beerend Honing · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-beerend-honing-19.jpg" alt="Photogram by Beerend Honing"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Densley Anastasia" data-n="5">
+      <h3>Densley Anastasia<span class="cl">PHft2D</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-densley-anastasia-01.jpg" data-cap="Densley Anastasia · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-densley-anastasia-01.jpg" alt="Photogram by Densley Anastasia"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-densley-anastasia-02.jpg" data-cap="Densley Anastasia · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-densley-anastasia-02.jpg" alt="Photogram by Densley Anastasia"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-densley-anastasia-03.jpg" data-cap="Densley Anastasia · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-densley-anastasia-03.jpg" alt="Photogram by Densley Anastasia"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-densley-anastasia-04.jpg" data-cap="Densley Anastasia · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-densley-anastasia-04.jpg" alt="Photogram by Densley Anastasia"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-densley-anastasia-05.jpg" data-cap="Densley Anastasia · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-densley-anastasia-05.jpg" alt="Photogram by Densley Anastasia"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Derek Bartholomay" data-n="5">
+      <h3>Derek Bartholomay<span class="cl">PHft2D</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-derek-bartholomay-01.jpg" data-cap="Derek Bartholomay · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-derek-bartholomay-01.jpg" alt="Photogram by Derek Bartholomay"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-derek-bartholomay-02.jpg" data-cap="Derek Bartholomay · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-derek-bartholomay-02.jpg" alt="Photogram by Derek Bartholomay"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-derek-bartholomay-03.jpg" data-cap="Derek Bartholomay · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-derek-bartholomay-03.jpg" alt="Photogram by Derek Bartholomay"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-derek-bartholomay-04.jpg" data-cap="Derek Bartholomay · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-derek-bartholomay-04.jpg" alt="Photogram by Derek Bartholomay"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-derek-bartholomay-05.jpg" data-cap="Derek Bartholomay · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-derek-bartholomay-05.jpg" alt="Photogram by Derek Bartholomay"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Emilie Tizien" data-n="6">
+      <h3>Emilie Tizien<span class="cl">PHft2D</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-emilie-tizien-01.jpg" data-cap="Emilie Tizien · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-emilie-tizien-01.jpg" alt="Photogram by Emilie Tizien"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-emilie-tizien-02.jpg" data-cap="Emilie Tizien · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-emilie-tizien-02.jpg" alt="Photogram by Emilie Tizien"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-emilie-tizien-03.jpg" data-cap="Emilie Tizien · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-emilie-tizien-03.jpg" alt="Photogram by Emilie Tizien"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-emilie-tizien-04.jpg" data-cap="Emilie Tizien · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-emilie-tizien-04.jpg" alt="Photogram by Emilie Tizien"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-emilie-tizien-05.jpg" data-cap="Emilie Tizien · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-emilie-tizien-05.jpg" alt="Photogram by Emilie Tizien"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-emilie-tizien-06.jpg" data-cap="Emilie Tizien · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-emilie-tizien-06.jpg" alt="Photogram by Emilie Tizien"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Finn Koene" data-n="6">
+      <h3>Finn Koene<span class="cl">PHft2D</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-finn-koene-01.jpg" data-cap="Finn Koene · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-finn-koene-01.jpg" alt="Photogram by Finn Koene"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-finn-koene-02.jpg" data-cap="Finn Koene · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-finn-koene-02.jpg" alt="Photogram by Finn Koene"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-finn-koene-03.jpg" data-cap="Finn Koene · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-finn-koene-03.jpg" alt="Photogram by Finn Koene"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-finn-koene-04.jpg" data-cap="Finn Koene · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-finn-koene-04.jpg" alt="Photogram by Finn Koene"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-finn-koene-05.jpg" data-cap="Finn Koene · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-finn-koene-05.jpg" alt="Photogram by Finn Koene"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-finn-koene-06.jpg" data-cap="Finn Koene · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-finn-koene-06.jpg" alt="Photogram by Finn Koene"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Fionn McGinley" data-n="3">
+      <h3>Fionn McGinley<span class="cl">PHft2D</span><span class="n">3</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-fionn-mcginley-01.jpg" data-cap="Fionn McGinley · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-fionn-mcginley-01.jpg" alt="Photogram by Fionn McGinley"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-fionn-mcginley-02.jpg" data-cap="Fionn McGinley · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-fionn-mcginley-02.jpg" alt="Photogram by Fionn McGinley"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-fionn-mcginley-03.jpg" data-cap="Fionn McGinley · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-fionn-mcginley-03.jpg" alt="Photogram by Fionn McGinley"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Joshua Rigo" data-n="5">
+      <h3>Joshua Rigo<span class="cl">PHft2D</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-joshua-rigo-01.jpg" data-cap="Joshua Rigo · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joshua-rigo-01.jpg" alt="Photogram by Joshua Rigo"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-joshua-rigo-02.jpg" data-cap="Joshua Rigo · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joshua-rigo-02.jpg" alt="Photogram by Joshua Rigo"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-joshua-rigo-03.jpg" data-cap="Joshua Rigo · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joshua-rigo-03.jpg" alt="Photogram by Joshua Rigo"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-joshua-rigo-04.jpg" data-cap="Joshua Rigo · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joshua-rigo-04.jpg" alt="Photogram by Joshua Rigo"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-joshua-rigo-05.jpg" data-cap="Joshua Rigo · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joshua-rigo-05.jpg" alt="Photogram by Joshua Rigo"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Joëlle Adjovi" data-n="6">
+      <h3>Joëlle Adjovi<span class="cl">PHft2D</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-joelle-adjovi-01.jpg" data-cap="Joëlle Adjovi · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joelle-adjovi-01.jpg" alt="Photogram by Joëlle Adjovi"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-joelle-adjovi-02.jpg" data-cap="Joëlle Adjovi · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joelle-adjovi-02.jpg" alt="Photogram by Joëlle Adjovi"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-joelle-adjovi-03.jpg" data-cap="Joëlle Adjovi · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joelle-adjovi-03.jpg" alt="Photogram by Joëlle Adjovi"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-joelle-adjovi-04.jpg" data-cap="Joëlle Adjovi · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joelle-adjovi-04.jpg" alt="Photogram by Joëlle Adjovi"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-joelle-adjovi-05.jpg" data-cap="Joëlle Adjovi · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joelle-adjovi-05.jpg" alt="Photogram by Joëlle Adjovi"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-joelle-adjovi-06.jpg" data-cap="Joëlle Adjovi · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-joelle-adjovi-06.jpg" alt="Photogram by Joëlle Adjovi"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Lene Marquardt" data-n="5">
+      <h3>Lene Marquardt<span class="cl">PHft2D</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-lene-marquardt-01.jpg" data-cap="Lene Marquardt · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lene-marquardt-01.jpg" alt="Photogram by Lene Marquardt"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lene-marquardt-02.jpg" data-cap="Lene Marquardt · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lene-marquardt-02.jpg" alt="Photogram by Lene Marquardt"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lene-marquardt-03.jpg" data-cap="Lene Marquardt · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lene-marquardt-03.jpg" alt="Photogram by Lene Marquardt"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lene-marquardt-04.jpg" data-cap="Lene Marquardt · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lene-marquardt-04.jpg" alt="Photogram by Lene Marquardt"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lene-marquardt-05.jpg" data-cap="Lene Marquardt · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lene-marquardt-05.jpg" alt="Photogram by Lene Marquardt"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Lisa van den Berg" data-n="5">
+      <h3>Lisa van den Berg<span class="cl">PHft2D</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-lisa-van-den-berg-01.jpg" data-cap="Lisa van den Berg · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lisa-van-den-berg-01.jpg" alt="Photogram by Lisa van den Berg"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lisa-van-den-berg-02.jpg" data-cap="Lisa van den Berg · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lisa-van-den-berg-02.jpg" alt="Photogram by Lisa van den Berg"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lisa-van-den-berg-03.jpg" data-cap="Lisa van den Berg · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lisa-van-den-berg-03.jpg" alt="Photogram by Lisa van den Berg"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lisa-van-den-berg-04.jpg" data-cap="Lisa van den Berg · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lisa-van-den-berg-04.jpg" alt="Photogram by Lisa van den Berg"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lisa-van-den-berg-05.jpg" data-cap="Lisa van den Berg · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lisa-van-den-berg-05.jpg" alt="Photogram by Lisa van den Berg"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Lotta Böhm" data-n="5">
+      <h3>Lotta Böhm<span class="cl">PHft2D</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-lotta-bohm-01.jpg" data-cap="Lotta Böhm · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lotta-bohm-01.jpg" alt="Photogram by Lotta Böhm"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lotta-bohm-02.jpg" data-cap="Lotta Böhm · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lotta-bohm-02.jpg" alt="Photogram by Lotta Böhm"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lotta-bohm-03.jpg" data-cap="Lotta Böhm · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lotta-bohm-03.jpg" alt="Photogram by Lotta Böhm"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lotta-bohm-04.jpg" data-cap="Lotta Böhm · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lotta-bohm-04.jpg" alt="Photogram by Lotta Böhm"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-lotta-bohm-05.jpg" data-cap="Lotta Böhm · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-lotta-bohm-05.jpg" alt="Photogram by Lotta Böhm"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Luka de Boer" data-n="10">
+      <h3>Luka de Boer<span class="cl">PHft2D</span><span class="n">10</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-luka-de-boer-01.jpg" data-cap="Luka de Boer · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-luka-de-boer-01.jpg" alt="Photogram by Luka de Boer"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-luka-de-boer-02.jpg" data-cap="Luka de Boer · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-luka-de-boer-02.jpg" alt="Photogram by Luka de Boer"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-luka-de-boer-03.jpg" data-cap="Luka de Boer · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-luka-de-boer-03.jpg" alt="Photogram by Luka de Boer"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-luka-de-boer-04.jpg" data-cap="Luka de Boer · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-luka-de-boer-04.jpg" alt="Photogram by Luka de Boer"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-luka-de-boer-05.jpg" data-cap="Luka de Boer · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-luka-de-boer-05.jpg" alt="Photogram by Luka de Boer"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-luka-de-boer-06.jpg" data-cap="Luka de Boer · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-luka-de-boer-06.jpg" alt="Photogram by Luka de Boer"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-luka-de-boer-07.jpg" data-cap="Luka de Boer · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-luka-de-boer-07.jpg" alt="Photogram by Luka de Boer"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-luka-de-boer-08.jpg" data-cap="Luka de Boer · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-luka-de-boer-08.jpg" alt="Photogram by Luka de Boer"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-luka-de-boer-09.jpg" data-cap="Luka de Boer · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-luka-de-boer-09.jpg" alt="Photogram by Luka de Boer"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-luka-de-boer-10.jpg" data-cap="Luka de Boer · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-luka-de-boer-10.jpg" alt="Photogram by Luka de Boer"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Oline Nordengaard" data-n="3">
+      <h3>Oline Nordengaard<span class="cl">PHft2D</span><span class="n">3</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-oline-nordengaard-01.jpg" data-cap="Oline Nordengaard · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-oline-nordengaard-01.jpg" alt="Photogram by Oline Nordengaard"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-oline-nordengaard-02.jpg" data-cap="Oline Nordengaard · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-oline-nordengaard-02.jpg" alt="Photogram by Oline Nordengaard"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-oline-nordengaard-03.jpg" data-cap="Oline Nordengaard · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-oline-nordengaard-03.jpg" alt="Photogram by Oline Nordengaard"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Simaa Al-Saig" data-n="8">
+      <h3>Simaa Al-Saig<span class="cl">PHft2D</span><span class="n">8</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-simaa-al-saig-01.jpg" data-cap="Simaa Al-Saig · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-simaa-al-saig-01.jpg" alt="Photogram by Simaa Al-Saig"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-simaa-al-saig-02.jpg" data-cap="Simaa Al-Saig · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-simaa-al-saig-02.jpg" alt="Photogram by Simaa Al-Saig"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-simaa-al-saig-03.jpg" data-cap="Simaa Al-Saig · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-simaa-al-saig-03.jpg" alt="Photogram by Simaa Al-Saig"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-simaa-al-saig-04.jpg" data-cap="Simaa Al-Saig · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-simaa-al-saig-04.jpg" alt="Photogram by Simaa Al-Saig"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-simaa-al-saig-05.jpg" data-cap="Simaa Al-Saig · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-simaa-al-saig-05.jpg" alt="Photogram by Simaa Al-Saig"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-simaa-al-saig-06.jpg" data-cap="Simaa Al-Saig · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-simaa-al-saig-06.jpg" alt="Photogram by Simaa Al-Saig"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-simaa-al-saig-07.jpg" data-cap="Simaa Al-Saig · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-simaa-al-saig-07.jpg" alt="Photogram by Simaa Al-Saig"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-simaa-al-saig-08.jpg" data-cap="Simaa Al-Saig · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-simaa-al-saig-08.jpg" alt="Photogram by Simaa Al-Saig"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Tori McCrea" data-n="9">
+      <h3>Tori McCrea<span class="cl">PHft2D</span><span class="n">9</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-tori-mccrea-01.jpg" data-cap="Tori McCrea · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-tori-mccrea-01.jpg" alt="Photogram by Tori McCrea"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-tori-mccrea-02.jpg" data-cap="Tori McCrea · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-tori-mccrea-02.jpg" alt="Photogram by Tori McCrea"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-tori-mccrea-03.jpg" data-cap="Tori McCrea · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-tori-mccrea-03.jpg" alt="Photogram by Tori McCrea"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-tori-mccrea-04.jpg" data-cap="Tori McCrea · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-tori-mccrea-04.jpg" alt="Photogram by Tori McCrea"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-tori-mccrea-05.jpg" data-cap="Tori McCrea · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-tori-mccrea-05.jpg" alt="Photogram by Tori McCrea"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-tori-mccrea-06.jpg" data-cap="Tori McCrea · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-tori-mccrea-06.jpg" alt="Photogram by Tori McCrea"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-tori-mccrea-07.jpg" data-cap="Tori McCrea · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-tori-mccrea-07.jpg" alt="Photogram by Tori McCrea"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-tori-mccrea-08.jpg" data-cap="Tori McCrea · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-tori-mccrea-08.jpg" alt="Photogram by Tori McCrea"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-tori-mccrea-09.jpg" data-cap="Tori McCrea · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-tori-mccrea-09.jpg" alt="Photogram by Tori McCrea"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="23-24" data-c="PHft2D" data-by="Vincent Dankaerts" data-n="13">
+      <h3>Vincent Dankaerts<span class="cl">PHft2D</span><span class="n">13</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-01.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-01.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-02.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-02.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-03.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-03.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-04.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-04.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-05.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-05.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-06.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-06.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-07.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-07.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-08.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-08.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-09.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-09.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-10.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-10.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-11.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-11.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-12.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-12.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      <figure><button type="button" data-full="img/23-24-PHft2D-vincent-dankaerts-13.jpg" data-cap="Vincent Dankaerts · 23-24 · PHft2D"><img loading="lazy" src="thumb/23-24-PHft2D-vincent-dankaerts-13.jpg" alt="Photogram by Vincent Dankaerts"></button></figure>
+      </div>
+    </div>
+  </div>
+  <div class="yblock" data-y="24-25" data-n="75">
+  <h2 class="yr"><span>24-25</span><span class="c">75 photograms</span></h2>
+    <div class="who" data-y="24-25" data-c="PHft2A" data-by="Andrea Azzolini" data-n="4">
+      <h3>Andrea Azzolini<span class="cl">PHft2A</span><span class="n">4</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2A-andrea-azzolini-01.jpg" data-cap="Andrea Azzolini · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-andrea-azzolini-01.jpg" alt="Photogram by Andrea Azzolini"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-andrea-azzolini-02.jpg" data-cap="Andrea Azzolini · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-andrea-azzolini-02.jpg" alt="Photogram by Andrea Azzolini"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-andrea-azzolini-03.jpg" data-cap="Andrea Azzolini · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-andrea-azzolini-03.jpg" alt="Photogram by Andrea Azzolini"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-andrea-azzolini-04.jpg" data-cap="Andrea Azzolini · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-andrea-azzolini-04.jpg" alt="Photogram by Andrea Azzolini"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2A" data-by="Ela Romih" data-n="6">
+      <h3>Ela Romih<span class="cl">PHft2A</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2A-ela-romih-01.jpg" data-cap="Ela Romih · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-ela-romih-01.jpg" alt="Photogram by Ela Romih"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-ela-romih-02.jpg" data-cap="Ela Romih · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-ela-romih-02.jpg" alt="Photogram by Ela Romih"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-ela-romih-03.jpg" data-cap="Ela Romih · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-ela-romih-03.jpg" alt="Photogram by Ela Romih"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-ela-romih-04.jpg" data-cap="Ela Romih · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-ela-romih-04.jpg" alt="Photogram by Ela Romih"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-ela-romih-05.jpg" data-cap="Ela Romih · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-ela-romih-05.jpg" alt="Photogram by Ela Romih"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-ela-romih-06.jpg" data-cap="Ela Romih · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-ela-romih-06.jpg" alt="Photogram by Ela Romih"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2A" data-by="Katja Yadrishchenskaya" data-n="10">
+      <h3>Katja Yadrishchenskaya<span class="cl">PHft2A</span><span class="n">10</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2A-katja-yadrishchenskaya-01.jpg" data-cap="Katja Yadrishchenskaya · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-katja-yadrishchenskaya-01.jpg" alt="Photogram by Katja Yadrishchenskaya"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-katja-yadrishchenskaya-02.jpg" data-cap="Katja Yadrishchenskaya · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-katja-yadrishchenskaya-02.jpg" alt="Photogram by Katja Yadrishchenskaya"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-katja-yadrishchenskaya-03.jpg" data-cap="Katja Yadrishchenskaya · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-katja-yadrishchenskaya-03.jpg" alt="Photogram by Katja Yadrishchenskaya"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-katja-yadrishchenskaya-04.jpg" data-cap="Katja Yadrishchenskaya · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-katja-yadrishchenskaya-04.jpg" alt="Photogram by Katja Yadrishchenskaya"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-katja-yadrishchenskaya-05.jpg" data-cap="Katja Yadrishchenskaya · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-katja-yadrishchenskaya-05.jpg" alt="Photogram by Katja Yadrishchenskaya"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-katja-yadrishchenskaya-06.jpg" data-cap="Katja Yadrishchenskaya · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-katja-yadrishchenskaya-06.jpg" alt="Photogram by Katja Yadrishchenskaya"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-katja-yadrishchenskaya-07.jpg" data-cap="Katja Yadrishchenskaya · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-katja-yadrishchenskaya-07.jpg" alt="Photogram by Katja Yadrishchenskaya"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-katja-yadrishchenskaya-08.jpg" data-cap="Katja Yadrishchenskaya · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-katja-yadrishchenskaya-08.jpg" alt="Photogram by Katja Yadrishchenskaya"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-katja-yadrishchenskaya-09.jpg" data-cap="Katja Yadrishchenskaya · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-katja-yadrishchenskaya-09.jpg" alt="Photogram by Katja Yadrishchenskaya"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-katja-yadrishchenskaya-10.jpg" data-cap="Katja Yadrishchenskaya · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-katja-yadrishchenskaya-10.jpg" alt="Photogram by Katja Yadrishchenskaya"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2A" data-by="Sotiris Stamatiou" data-n="5">
+      <h3>Sotiris Stamatiou<span class="cl">PHft2A</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2A-sotiris-stamatiou-05.jpg" data-cap="Sotiris Stamatiou · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-sotiris-stamatiou-05.jpg" alt="Photogram by Sotiris Stamatiou"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-sotiris-stamatiou-06.jpg" data-cap="Sotiris Stamatiou · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-sotiris-stamatiou-06.jpg" alt="Photogram by Sotiris Stamatiou"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-sotiris-stamatiou-07.jpg" data-cap="Sotiris Stamatiou · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-sotiris-stamatiou-07.jpg" alt="Photogram by Sotiris Stamatiou"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-sotiris-stamatiou-08.jpg" data-cap="Sotiris Stamatiou · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-sotiris-stamatiou-08.jpg" alt="Photogram by Sotiris Stamatiou"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-sotiris-stamatiou-09.jpg" data-cap="Sotiris Stamatiou · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-sotiris-stamatiou-09.jpg" alt="Photogram by Sotiris Stamatiou"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2A" data-by="Viktoria Chocholova" data-n="6">
+      <h3>Viktoria Chocholova<span class="cl">PHft2A</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2A-viktoria-chocholova-01.jpg" data-cap="Viktoria Chocholova · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-viktoria-chocholova-01.jpg" alt="Photogram by Viktoria Chocholova"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-viktoria-chocholova-02.jpg" data-cap="Viktoria Chocholova · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-viktoria-chocholova-02.jpg" alt="Photogram by Viktoria Chocholova"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-viktoria-chocholova-03.jpg" data-cap="Viktoria Chocholova · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-viktoria-chocholova-03.jpg" alt="Photogram by Viktoria Chocholova"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-viktoria-chocholova-04.jpg" data-cap="Viktoria Chocholova · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-viktoria-chocholova-04.jpg" alt="Photogram by Viktoria Chocholova"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-viktoria-chocholova-05.jpg" data-cap="Viktoria Chocholova · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-viktoria-chocholova-05.jpg" alt="Photogram by Viktoria Chocholova"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-viktoria-chocholova-06.jpg" data-cap="Viktoria Chocholova · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-viktoria-chocholova-06.jpg" alt="Photogram by Viktoria Chocholova"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2A" data-by="Yasmin Jalilian" data-n="6">
+      <h3>Yasmin Jalilian<span class="cl">PHft2A</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2A-yasmin-jalilian-01.jpg" data-cap="Yasmin Jalilian · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-yasmin-jalilian-01.jpg" alt="Photogram by Yasmin Jalilian"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-yasmin-jalilian-02.jpg" data-cap="Yasmin Jalilian · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-yasmin-jalilian-02.jpg" alt="Photogram by Yasmin Jalilian"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-yasmin-jalilian-03.jpg" data-cap="Yasmin Jalilian · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-yasmin-jalilian-03.jpg" alt="Photogram by Yasmin Jalilian"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-yasmin-jalilian-04.jpg" data-cap="Yasmin Jalilian · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-yasmin-jalilian-04.jpg" alt="Photogram by Yasmin Jalilian"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-yasmin-jalilian-05.jpg" data-cap="Yasmin Jalilian · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-yasmin-jalilian-05.jpg" alt="Photogram by Yasmin Jalilian"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-yasmin-jalilian-06.jpg" data-cap="Yasmin Jalilian · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-yasmin-jalilian-06.jpg" alt="Photogram by Yasmin Jalilian"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2A" data-by="Zep Stoffelen" data-n="5">
+      <h3>Zep Stoffelen<span class="cl">PHft2A</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2A-zep-stoffelen-01.jpg" data-cap="Zep Stoffelen · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zep-stoffelen-01.jpg" alt="Photogram by Zep Stoffelen"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-zep-stoffelen-02.jpg" data-cap="Zep Stoffelen · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zep-stoffelen-02.jpg" alt="Photogram by Zep Stoffelen"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-zep-stoffelen-03.jpg" data-cap="Zep Stoffelen · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zep-stoffelen-03.jpg" alt="Photogram by Zep Stoffelen"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-zep-stoffelen-04.jpg" data-cap="Zep Stoffelen · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zep-stoffelen-04.jpg" alt="Photogram by Zep Stoffelen"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-zep-stoffelen-05.jpg" data-cap="Zep Stoffelen · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zep-stoffelen-05.jpg" alt="Photogram by Zep Stoffelen"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2A" data-by="Zuza Wieczorek" data-n="6">
+      <h3>Zuza Wieczorek<span class="cl">PHft2A</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2A-zuza-wieczorek-01.jpg" data-cap="Zuza Wieczorek · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zuza-wieczorek-01.jpg" alt="Photogram by Zuza Wieczorek"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-zuza-wieczorek-02.jpg" data-cap="Zuza Wieczorek · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zuza-wieczorek-02.jpg" alt="Photogram by Zuza Wieczorek"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-zuza-wieczorek-03.jpg" data-cap="Zuza Wieczorek · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zuza-wieczorek-03.jpg" alt="Photogram by Zuza Wieczorek"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-zuza-wieczorek-04.jpg" data-cap="Zuza Wieczorek · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zuza-wieczorek-04.jpg" alt="Photogram by Zuza Wieczorek"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-zuza-wieczorek-05.jpg" data-cap="Zuza Wieczorek · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zuza-wieczorek-05.jpg" alt="Photogram by Zuza Wieczorek"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2A-zuza-wieczorek-06.jpg" data-cap="Zuza Wieczorek · 24-25 · PHft2A"><img loading="lazy" src="thumb/24-25-PHft2A-zuza-wieczorek-06.jpg" alt="Photogram by Zuza Wieczorek"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2B" data-by="Gigi Kraan" data-n="6">
+      <h3>Gigi Kraan<span class="cl">PHft2B</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2B-gigi-kraan-01.jpg" data-cap="Gigi Kraan · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-gigi-kraan-01.jpg" alt="Photogram by Gigi Kraan"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-gigi-kraan-02.jpg" data-cap="Gigi Kraan · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-gigi-kraan-02.jpg" alt="Photogram by Gigi Kraan"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-gigi-kraan-03.jpg" data-cap="Gigi Kraan · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-gigi-kraan-03.jpg" alt="Photogram by Gigi Kraan"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-gigi-kraan-04.jpg" data-cap="Gigi Kraan · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-gigi-kraan-04.jpg" alt="Photogram by Gigi Kraan"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-gigi-kraan-05.jpg" data-cap="Gigi Kraan · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-gigi-kraan-05.jpg" alt="Photogram by Gigi Kraan"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-gigi-kraan-06.jpg" data-cap="Gigi Kraan · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-gigi-kraan-06.jpg" alt="Photogram by Gigi Kraan"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2B" data-by="Jade Haverkamp" data-n="4">
+      <h3>Jade Haverkamp<span class="cl">PHft2B</span><span class="n">4</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2B-jade-haverkamp-01.jpg" data-cap="Jade Haverkamp · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-jade-haverkamp-01.jpg" alt="Photogram by Jade Haverkamp"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-jade-haverkamp-02.jpg" data-cap="Jade Haverkamp · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-jade-haverkamp-02.jpg" alt="Photogram by Jade Haverkamp"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-jade-haverkamp-03.jpg" data-cap="Jade Haverkamp · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-jade-haverkamp-03.jpg" alt="Photogram by Jade Haverkamp"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-jade-haverkamp-04.jpg" data-cap="Jade Haverkamp · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-jade-haverkamp-04.jpg" alt="Photogram by Jade Haverkamp"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2B" data-by="Mizzi Ireland" data-n="4">
+      <h3>Mizzi Ireland<span class="cl">PHft2B</span><span class="n">4</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2B-mizzi-ireland-01.jpg" data-cap="Mizzi Ireland · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-mizzi-ireland-01.jpg" alt="Photogram by Mizzi Ireland"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-mizzi-ireland-02.jpg" data-cap="Mizzi Ireland · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-mizzi-ireland-02.jpg" alt="Photogram by Mizzi Ireland"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-mizzi-ireland-03.jpg" data-cap="Mizzi Ireland · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-mizzi-ireland-03.jpg" alt="Photogram by Mizzi Ireland"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-mizzi-ireland-04.jpg" data-cap="Mizzi Ireland · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-mizzi-ireland-04.jpg" alt="Photogram by Mizzi Ireland"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2B" data-by="Su Selcen" data-n="7">
+      <h3>Su Selcen<span class="cl">PHft2B</span><span class="n">7</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2B-su-selcen-01.jpg" data-cap="Su Selcen · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-su-selcen-01.jpg" alt="Photogram by Su Selcen"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-su-selcen-02.jpg" data-cap="Su Selcen · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-su-selcen-02.jpg" alt="Photogram by Su Selcen"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-su-selcen-03.jpg" data-cap="Su Selcen · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-su-selcen-03.jpg" alt="Photogram by Su Selcen"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-su-selcen-04.jpg" data-cap="Su Selcen · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-su-selcen-04.jpg" alt="Photogram by Su Selcen"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-su-selcen-05.jpg" data-cap="Su Selcen · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-su-selcen-05.jpg" alt="Photogram by Su Selcen"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-su-selcen-06.jpg" data-cap="Su Selcen · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-su-selcen-06.jpg" alt="Photogram by Su Selcen"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-su-selcen-07.jpg" data-cap="Su Selcen · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-su-selcen-07.jpg" alt="Photogram by Su Selcen"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="24-25" data-c="PHft2B" data-by="Zakarias Wenzel" data-n="6">
+      <h3>Zakarias Wenzel<span class="cl">PHft2B</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/24-25-PHft2B-zakarias-wenzel-01.jpg" data-cap="Zakarias Wenzel · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-zakarias-wenzel-01.jpg" alt="Photogram by Zakarias Wenzel"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-zakarias-wenzel-02.jpg" data-cap="Zakarias Wenzel · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-zakarias-wenzel-02.jpg" alt="Photogram by Zakarias Wenzel"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-zakarias-wenzel-03.jpg" data-cap="Zakarias Wenzel · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-zakarias-wenzel-03.jpg" alt="Photogram by Zakarias Wenzel"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-zakarias-wenzel-04.jpg" data-cap="Zakarias Wenzel · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-zakarias-wenzel-04.jpg" alt="Photogram by Zakarias Wenzel"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-zakarias-wenzel-05.jpg" data-cap="Zakarias Wenzel · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-zakarias-wenzel-05.jpg" alt="Photogram by Zakarias Wenzel"></button></figure>
+      <figure><button type="button" data-full="img/24-25-PHft2B-zakarias-wenzel-06.jpg" data-cap="Zakarias Wenzel · 24-25 · PHft2B"><img loading="lazy" src="thumb/24-25-PHft2B-zakarias-wenzel-06.jpg" alt="Photogram by Zakarias Wenzel"></button></figure>
+      </div>
+    </div>
+  </div>
+  <div class="yblock" data-y="25-26" data-n="103">
+  <h2 class="yr"><span>25-26</span><span class="c">103 photograms</span></h2>
+    <div class="who" data-y="25-26" data-c="PHft2A" data-by="Aila Krone" data-n="3">
+      <h3>Aila Krone<span class="cl">PHft2A</span><span class="n">3</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2A-aila-krone-01.jpg" data-cap="Aila Krone · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-aila-krone-01.jpg" alt="Photogram by Aila Krone"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-aila-krone-02.jpg" data-cap="Aila Krone · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-aila-krone-02.jpg" alt="Photogram by Aila Krone"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-aila-krone-03.jpg" data-cap="Aila Krone · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-aila-krone-03.jpg" alt="Photogram by Aila Krone"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2A" data-by="Andrei Şerban" data-n="5">
+      <h3>Andrei Şerban<span class="cl">PHft2A</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2A-andrei-serban-01.jpg" data-cap="Andrei Şerban · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-andrei-serban-01.jpg" alt="Photogram by Andrei Şerban"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-andrei-serban-02.jpg" data-cap="Andrei Şerban · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-andrei-serban-02.jpg" alt="Photogram by Andrei Şerban"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-andrei-serban-03.jpg" data-cap="Andrei Şerban · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-andrei-serban-03.jpg" alt="Photogram by Andrei Şerban"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-andrei-serban-04.jpg" data-cap="Andrei Şerban · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-andrei-serban-04.jpg" alt="Photogram by Andrei Şerban"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-andrei-serban-05.jpg" data-cap="Andrei Şerban · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-andrei-serban-05.jpg" alt="Photogram by Andrei Şerban"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2A" data-by="Berghmans Zoe" data-n="5">
+      <h3>Berghmans Zoe<span class="cl">PHft2A</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2A-berghmans-zoe-01.jpg" data-cap="Berghmans Zoe · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-berghmans-zoe-01.jpg" alt="Photogram by Berghmans Zoe"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-berghmans-zoe-02.jpg" data-cap="Berghmans Zoe · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-berghmans-zoe-02.jpg" alt="Photogram by Berghmans Zoe"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-berghmans-zoe-03.jpg" data-cap="Berghmans Zoe · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-berghmans-zoe-03.jpg" alt="Photogram by Berghmans Zoe"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-berghmans-zoe-04.jpg" data-cap="Berghmans Zoe · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-berghmans-zoe-04.jpg" alt="Photogram by Berghmans Zoe"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-berghmans-zoe-05.jpg" data-cap="Berghmans Zoe · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-berghmans-zoe-05.jpg" alt="Photogram by Berghmans Zoe"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2A" data-by="Bink van ter Weijde" data-n="7">
+      <h3>Bink van ter Weijde<span class="cl">PHft2A</span><span class="n">7</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2A-bink-van-ter-weijde-01.jpg" data-cap="Bink van ter Weijde · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-bink-van-ter-weijde-01.jpg" alt="Photogram by Bink van ter Weijde"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-bink-van-ter-weijde-02.jpg" data-cap="Bink van ter Weijde · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-bink-van-ter-weijde-02.jpg" alt="Photogram by Bink van ter Weijde"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-bink-van-ter-weijde-03.jpg" data-cap="Bink van ter Weijde · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-bink-van-ter-weijde-03.jpg" alt="Photogram by Bink van ter Weijde"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-bink-van-ter-weijde-04.jpg" data-cap="Bink van ter Weijde · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-bink-van-ter-weijde-04.jpg" alt="Photogram by Bink van ter Weijde"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-bink-van-ter-weijde-05.jpg" data-cap="Bink van ter Weijde · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-bink-van-ter-weijde-05.jpg" alt="Photogram by Bink van ter Weijde"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-bink-van-ter-weijde-06.jpg" data-cap="Bink van ter Weijde · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-bink-van-ter-weijde-06.jpg" alt="Photogram by Bink van ter Weijde"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-bink-van-ter-weijde-07.jpg" data-cap="Bink van ter Weijde · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-bink-van-ter-weijde-07.jpg" alt="Photogram by Bink van ter Weijde"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2A" data-by="Jaden de Best" data-n="12">
+      <h3>Jaden de Best<span class="cl">PHft2A</span><span class="n">12</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-01.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-01.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-02.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-02.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-03.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-03.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-04.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-04.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-05.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-05.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-06.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-06.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-07.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-07.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-08.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-08.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-09.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-09.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-10.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-10.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-11.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-11.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-jaden-de-best-12.jpg" data-cap="Jaden de Best · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-jaden-de-best-12.jpg" alt="Photogram by Jaden de Best"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2A" data-by="Kamilla Hajdu" data-n="5">
+      <h3>Kamilla Hajdu<span class="cl">PHft2A</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2A-kamilla-hajdu-01.jpg" data-cap="Kamilla Hajdu · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-kamilla-hajdu-01.jpg" alt="Photogram by Kamilla Hajdu"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-kamilla-hajdu-02.jpg" data-cap="Kamilla Hajdu · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-kamilla-hajdu-02.jpg" alt="Photogram by Kamilla Hajdu"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-kamilla-hajdu-03.jpg" data-cap="Kamilla Hajdu · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-kamilla-hajdu-03.jpg" alt="Photogram by Kamilla Hajdu"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-kamilla-hajdu-04.jpg" data-cap="Kamilla Hajdu · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-kamilla-hajdu-04.jpg" alt="Photogram by Kamilla Hajdu"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-kamilla-hajdu-05.jpg" data-cap="Kamilla Hajdu · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-kamilla-hajdu-05.jpg" alt="Photogram by Kamilla Hajdu"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2A" data-by="Leon Griessmayr" data-n="6">
+      <h3>Leon Griessmayr<span class="cl">PHft2A</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2A-leon-griessmayr-01.jpg" data-cap="Leon Griessmayr · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-leon-griessmayr-01.jpg" alt="Photogram by Leon Griessmayr"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-leon-griessmayr-02.jpg" data-cap="Leon Griessmayr · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-leon-griessmayr-02.jpg" alt="Photogram by Leon Griessmayr"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-leon-griessmayr-03.jpg" data-cap="Leon Griessmayr · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-leon-griessmayr-03.jpg" alt="Photogram by Leon Griessmayr"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-leon-griessmayr-04.jpg" data-cap="Leon Griessmayr · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-leon-griessmayr-04.jpg" alt="Photogram by Leon Griessmayr"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-leon-griessmayr-05.jpg" data-cap="Leon Griessmayr · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-leon-griessmayr-05.jpg" alt="Photogram by Leon Griessmayr"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-leon-griessmayr-06.jpg" data-cap="Leon Griessmayr · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-leon-griessmayr-06.jpg" alt="Photogram by Leon Griessmayr"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2A" data-by="Manu van Ogtrop" data-n="6">
+      <h3>Manu van Ogtrop<span class="cl">PHft2A</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2A-manu-van-ogtrop-01.jpg" data-cap="Manu van Ogtrop · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-manu-van-ogtrop-01.jpg" alt="Photogram by Manu van Ogtrop"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-manu-van-ogtrop-02.jpg" data-cap="Manu van Ogtrop · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-manu-van-ogtrop-02.jpg" alt="Photogram by Manu van Ogtrop"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-manu-van-ogtrop-03.jpg" data-cap="Manu van Ogtrop · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-manu-van-ogtrop-03.jpg" alt="Photogram by Manu van Ogtrop"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-manu-van-ogtrop-04.jpg" data-cap="Manu van Ogtrop · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-manu-van-ogtrop-04.jpg" alt="Photogram by Manu van Ogtrop"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-manu-van-ogtrop-05.jpg" data-cap="Manu van Ogtrop · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-manu-van-ogtrop-05.jpg" alt="Photogram by Manu van Ogtrop"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-manu-van-ogtrop-06.jpg" data-cap="Manu van Ogtrop · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-manu-van-ogtrop-06.jpg" alt="Photogram by Manu van Ogtrop"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2A" data-by="Sara Gabel" data-n="7">
+      <h3>Sara Gabel<span class="cl">PHft2A</span><span class="n">7</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2A-sara-gabel-01.jpg" data-cap="Sara Gabel · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sara-gabel-01.jpg" alt="Photogram by Sara Gabel"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sara-gabel-02.jpg" data-cap="Sara Gabel · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sara-gabel-02.jpg" alt="Photogram by Sara Gabel"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sara-gabel-03.jpg" data-cap="Sara Gabel · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sara-gabel-03.jpg" alt="Photogram by Sara Gabel"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sara-gabel-04.jpg" data-cap="Sara Gabel · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sara-gabel-04.jpg" alt="Photogram by Sara Gabel"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sara-gabel-05.jpg" data-cap="Sara Gabel · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sara-gabel-05.jpg" alt="Photogram by Sara Gabel"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sara-gabel-06.jpg" data-cap="Sara Gabel · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sara-gabel-06.jpg" alt="Photogram by Sara Gabel"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sara-gabel-07.jpg" data-cap="Sara Gabel · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sara-gabel-07.jpg" alt="Photogram by Sara Gabel"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2A" data-by="Sarah Gatan" data-n="8">
+      <h3>Sarah Gatan<span class="cl">PHft2A</span><span class="n">8</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2A-sarah-gatan-01.jpg" data-cap="Sarah Gatan · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sarah-gatan-01.jpg" alt="Photogram by Sarah Gatan"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sarah-gatan-02.jpg" data-cap="Sarah Gatan · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sarah-gatan-02.jpg" alt="Photogram by Sarah Gatan"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sarah-gatan-03.jpg" data-cap="Sarah Gatan · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sarah-gatan-03.jpg" alt="Photogram by Sarah Gatan"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sarah-gatan-04.jpg" data-cap="Sarah Gatan · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sarah-gatan-04.jpg" alt="Photogram by Sarah Gatan"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sarah-gatan-05.jpg" data-cap="Sarah Gatan · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sarah-gatan-05.jpg" alt="Photogram by Sarah Gatan"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sarah-gatan-06.jpg" data-cap="Sarah Gatan · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sarah-gatan-06.jpg" alt="Photogram by Sarah Gatan"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sarah-gatan-07.jpg" data-cap="Sarah Gatan · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sarah-gatan-07.jpg" alt="Photogram by Sarah Gatan"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2A-sarah-gatan-08.jpg" data-cap="Sarah Gatan · 25-26 · PHft2A"><img loading="lazy" src="thumb/25-26-PHft2A-sarah-gatan-08.jpg" alt="Photogram by Sarah Gatan"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2B" data-by="Alexandra Klimcakova" data-n="5">
+      <h3>Alexandra Klimcakova<span class="cl">PHft2B</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2B-alexandra-klimcakova-01.jpg" data-cap="Alexandra Klimcakova · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-alexandra-klimcakova-01.jpg" alt="Photogram by Alexandra Klimcakova"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-alexandra-klimcakova-02.jpg" data-cap="Alexandra Klimcakova · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-alexandra-klimcakova-02.jpg" alt="Photogram by Alexandra Klimcakova"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-alexandra-klimcakova-03.jpg" data-cap="Alexandra Klimcakova · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-alexandra-klimcakova-03.jpg" alt="Photogram by Alexandra Klimcakova"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-alexandra-klimcakova-04.jpg" data-cap="Alexandra Klimcakova · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-alexandra-klimcakova-04.jpg" alt="Photogram by Alexandra Klimcakova"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-alexandra-klimcakova-05.jpg" data-cap="Alexandra Klimcakova · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-alexandra-klimcakova-05.jpg" alt="Photogram by Alexandra Klimcakova"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2B" data-by="Ema Dabrilkaité" data-n="5">
+      <h3>Ema Dabrilkaité<span class="cl">PHft2B</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2B-ema-dabrilkaite-01.jpg" data-cap="Ema Dabrilkaité · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-ema-dabrilkaite-01.jpg" alt="Photogram by Ema Dabrilkaité"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-ema-dabrilkaite-02.jpg" data-cap="Ema Dabrilkaité · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-ema-dabrilkaite-02.jpg" alt="Photogram by Ema Dabrilkaité"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-ema-dabrilkaite-03.jpg" data-cap="Ema Dabrilkaité · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-ema-dabrilkaite-03.jpg" alt="Photogram by Ema Dabrilkaité"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-ema-dabrilkaite-04.jpg" data-cap="Ema Dabrilkaité · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-ema-dabrilkaite-04.jpg" alt="Photogram by Ema Dabrilkaité"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-ema-dabrilkaite-05.jpg" data-cap="Ema Dabrilkaité · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-ema-dabrilkaite-05.jpg" alt="Photogram by Ema Dabrilkaité"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2B" data-by="Fenna Ziné van de Lest" data-n="6">
+      <h3>Fenna Ziné van de Lest<span class="cl">PHft2B</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2B-fenna-zine-van-de-lest-01.jpg" data-cap="Fenna Ziné van de Lest · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-fenna-zine-van-de-lest-01.jpg" alt="Photogram by Fenna Ziné van de Lest"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-fenna-zine-van-de-lest-02.jpg" data-cap="Fenna Ziné van de Lest · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-fenna-zine-van-de-lest-02.jpg" alt="Photogram by Fenna Ziné van de Lest"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-fenna-zine-van-de-lest-03.jpg" data-cap="Fenna Ziné van de Lest · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-fenna-zine-van-de-lest-03.jpg" alt="Photogram by Fenna Ziné van de Lest"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-fenna-zine-van-de-lest-04.jpg" data-cap="Fenna Ziné van de Lest · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-fenna-zine-van-de-lest-04.jpg" alt="Photogram by Fenna Ziné van de Lest"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-fenna-zine-van-de-lest-05.jpg" data-cap="Fenna Ziné van de Lest · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-fenna-zine-van-de-lest-05.jpg" alt="Photogram by Fenna Ziné van de Lest"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-fenna-zine-van-de-lest-06.jpg" data-cap="Fenna Ziné van de Lest · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-fenna-zine-van-de-lest-06.jpg" alt="Photogram by Fenna Ziné van de Lest"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2B" data-by="Marta Barbara Jesus" data-n="6">
+      <h3>Marta Barbara Jesus<span class="cl">PHft2B</span><span class="n">6</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2B-marta-barbara-jesus-01.jpg" data-cap="Marta Barbara Jesus · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-marta-barbara-jesus-01.jpg" alt="Photogram by Marta Barbara Jesus"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-marta-barbara-jesus-02.jpg" data-cap="Marta Barbara Jesus · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-marta-barbara-jesus-02.jpg" alt="Photogram by Marta Barbara Jesus"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-marta-barbara-jesus-03.jpg" data-cap="Marta Barbara Jesus · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-marta-barbara-jesus-03.jpg" alt="Photogram by Marta Barbara Jesus"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-marta-barbara-jesus-04.jpg" data-cap="Marta Barbara Jesus · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-marta-barbara-jesus-04.jpg" alt="Photogram by Marta Barbara Jesus"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-marta-barbara-jesus-05.jpg" data-cap="Marta Barbara Jesus · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-marta-barbara-jesus-05.jpg" alt="Photogram by Marta Barbara Jesus"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-marta-barbara-jesus-06.jpg" data-cap="Marta Barbara Jesus · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-marta-barbara-jesus-06.jpg" alt="Photogram by Marta Barbara Jesus"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2B" data-by="Matthew" data-n="5">
+      <h3>Matthew<span class="cl">PHft2B</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2B-matthew-01.jpg" data-cap="Matthew · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-matthew-01.jpg" alt="Photogram by Matthew"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-matthew-02.jpg" data-cap="Matthew · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-matthew-02.jpg" alt="Photogram by Matthew"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-matthew-03.jpg" data-cap="Matthew · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-matthew-03.jpg" alt="Photogram by Matthew"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-matthew-04.jpg" data-cap="Matthew · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-matthew-04.jpg" alt="Photogram by Matthew"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-matthew-05.jpg" data-cap="Matthew · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-matthew-05.jpg" alt="Photogram by Matthew"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2B" data-by="Nur ben Rahmouni Youssef" data-n="5">
+      <h3>Nur ben Rahmouni Youssef<span class="cl">PHft2B</span><span class="n">5</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2B-nur-ben-rahmouni-youssef-01.jpg" data-cap="Nur ben Rahmouni Youssef · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-nur-ben-rahmouni-youssef-01.jpg" alt="Photogram by Nur ben Rahmouni Youssef"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-nur-ben-rahmouni-youssef-02.jpg" data-cap="Nur ben Rahmouni Youssef · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-nur-ben-rahmouni-youssef-02.jpg" alt="Photogram by Nur ben Rahmouni Youssef"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-nur-ben-rahmouni-youssef-03.jpg" data-cap="Nur ben Rahmouni Youssef · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-nur-ben-rahmouni-youssef-03.jpg" alt="Photogram by Nur ben Rahmouni Youssef"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-nur-ben-rahmouni-youssef-04.jpg" data-cap="Nur ben Rahmouni Youssef · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-nur-ben-rahmouni-youssef-04.jpg" alt="Photogram by Nur ben Rahmouni Youssef"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-nur-ben-rahmouni-youssef-05.jpg" data-cap="Nur ben Rahmouni Youssef · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-nur-ben-rahmouni-youssef-05.jpg" alt="Photogram by Nur ben Rahmouni Youssef"></button></figure>
+      </div>
+    </div>
+    <div class="who" data-y="25-26" data-c="PHft2B" data-by="Twen van den Hurk" data-n="7">
+      <h3>Twen van den Hurk<span class="cl">PHft2B</span><span class="n">7</span></h3>
+      <div class="grid">
+      <figure><button type="button" data-full="img/25-26-PHft2B-twen-van-den-hurk-01.jpg" data-cap="Twen van den Hurk · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-twen-van-den-hurk-01.jpg" alt="Photogram by Twen van den Hurk"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-twen-van-den-hurk-02.jpg" data-cap="Twen van den Hurk · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-twen-van-den-hurk-02.jpg" alt="Photogram by Twen van den Hurk"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-twen-van-den-hurk-03.jpg" data-cap="Twen van den Hurk · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-twen-van-den-hurk-03.jpg" alt="Photogram by Twen van den Hurk"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-twen-van-den-hurk-04.jpg" data-cap="Twen van den Hurk · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-twen-van-den-hurk-04.jpg" alt="Photogram by Twen van den Hurk"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-twen-van-den-hurk-05.jpg" data-cap="Twen van den Hurk · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-twen-van-den-hurk-05.jpg" alt="Photogram by Twen van den Hurk"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-twen-van-den-hurk-06.jpg" data-cap="Twen van den Hurk · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-twen-van-den-hurk-06.jpg" alt="Photogram by Twen van den Hurk"></button></figure>
+      <figure><button type="button" data-full="img/25-26-PHft2B-twen-van-den-hurk-07.jpg" data-cap="Twen van den Hurk · 25-26 · PHft2B"><img loading="lazy" src="thumb/25-26-PHft2B-twen-van-den-hurk-07.jpg" alt="Photogram by Twen van den Hurk"></button></figure>
+      </div>
+    </div>
+  </div>
+
+  <p class="empty" id="none" hidden>Nothing matches that.</p>
+
+  <div class="note">
+  <p class="lbl">Disclaimer</p>
+  <p class="body notice gen-say" data-gen="brief/01-photogram/archiveNote#a57f">These prints were made by students on this course. If one of them is yours and you would rather it were not shown here, write to <a class="mail" href="mailto:b.keskiner@kabk.nl">b.keskiner@kabk.nl</a> and it comes down.</p>
+  <button type="button" class="gen-tick" data-gen="brief/01-photogram/archiveNote#a57f">Claude wrote this &middot; tick to approve</button>
+
+  </div>
+  <div class="foot"><span>Batuhan Keskiner &middot; Royal Academy of Art &middot; Bachelor Photography</span><span>build 573 &middot; 10.09.2026 01:22</span></div>
+</div>
+
+<div id="lb" role="dialog" aria-modal="true" aria-label="Photogram, full size">
+  <span class="x">Esc</span><img alt=""><p></p>
+</div>
+
+<script>
+/* FILTER BY YEAR, BY CLASS, BY NAME - all three at once, and the tally says
+   how many survived. A student heading that loses every sheet hides itself,
+   and a year that loses every student does the same, so the page never shows
+   an empty band with a name over it. */
+(function () {
+  /* THE YEAR, AND NOTHING ELSE. There was a class filter and a name box; his
+     call, 10-09-2026: "siniflara ve isimlere gore arama olmasin." A page you
+     can type a person's name into is a lookup on that person, and a class chip
+     is the same thing one step out - it pulls up one group of named people.
+     The names stay on the prints, because the work is theirs and credited; the
+     page just will not help anybody go looking for them. */
+  var chips = [].slice.call(document.querySelectorAll('.chip'));
+  var tally = document.getElementById('tn');
+  var none  = document.getElementById('none');
+  var year  = 'all';
+
+  function run() {
+    var shown = 0;
+    [].slice.call(document.querySelectorAll('.yblock')).forEach(function (yb) {
+      var ok = (year === 'all' || yb.dataset.y === year);
+      yb.hidden = !ok;
+      if (ok) shown += +yb.dataset.n;
+    });
+    tally.textContent = shown;
+    none.hidden = shown > 0;
+  }
+
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      year = (year === c.dataset.v) ? 'all' : c.dataset.v;
+      chips.forEach(function (o) { o.classList.toggle('on', year === o.dataset.v); });
+      run();
+    });
+  });
+
+  /* THE PLATE, FULL SIZE. The grid carries the small file; the button knows
+     where the big one is and only then does the browser fetch it. */
+  var lb = document.getElementById('lb');
+  var lbi = lb.querySelector('img');
+  var lbp = lb.querySelector('p');
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.grid button');
+    if (b) { lbi.src = b.dataset.full; lbp.textContent = b.dataset.cap; lb.classList.add('on'); return; }
+    if (lb.classList.contains('on')) { lb.classList.remove('on'); lbi.src = ''; }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && lb.classList.contains('on')) {
+      lb.classList.remove('on'); lbi.src = '';
+    }
+  });
+
+  /* W4, same contract as the brief: orange until he has ticked it, and the
+     same key, so one tick settles the line in both places. */
+  var marks = [].slice.call(document.querySelectorAll('[data-gen]'));
+  function settle(map) {
+    marks.forEach(function (el) {
+      var ok = !map || map[el.dataset.gen] === true;
+      if (el.tagName === 'BUTTON') el.hidden = ok;
+      else el.classList.toggle('gen-say', !ok);
+    });
+  }
+  if (marks.length) {
+    fetch('/REVIEW.json', { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { settle(j && j.approved); })
+      .catch(function () { settle(null); });
+    marks.filter(function (el) { return el.tagName === 'BUTTON'; }).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        fetch('/__approve', { method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: btn.dataset.gen }) })
+          .then(function () {
+            btn.hidden = true;
+            var t = document.querySelector('p[data-gen="' + btn.dataset.gen + '"]');
+            if (t) t.classList.remove('gen-say');
+          }).catch(function () {});
+      });
+    });
+  }
+
+  run();
+})();
+</script>
+</body>
+</html>

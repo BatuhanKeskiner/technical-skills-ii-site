@@ -71,6 +71,27 @@ ul.qs li{padding:10px 0;border-bottom:1px solid var(--rule);font-size:16px;
 .sec .ln{flex:1;border-top:1px solid var(--ink)}
 p.body{font-size:16px;line-height:1.6;color:var(--body);margin:14px 0 0;max-width:64ch}
 
+/* W4 - A LINE CLAUDE WROTE IS ORANGE UNTIL BATU HAS TICKED IT. The lectures
+   had this and the briefs did not, so a paragraph generated into a brief went
+   out looking exactly like one he wrote. Same colour, same tick, same key. */
+p.body.gen-say{color:var(--signal)}
+/* HIS NOTE, 10-09-2026: mono, and spread onto a second line. A disclaimer is
+   not prose - it is a notice, so it is set like one and given a measure that
+   breaks it rather than running it out as one long sentence. */
+p.body.notice{font-family:var(--mono);font-size:11.5px;line-height:1.75;
+  letter-spacing:.045em;max-width:100ch}
+p.lbl{font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--grey);margin:0 0 7px}
+a.mail{color:inherit;text-decoration:underline;text-decoration-thickness:1px;
+  text-underline-offset:3px;text-decoration-color:var(--rule)}
+a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
+.gen-tick{display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+  padding:2px 8px 3px;border:1px solid var(--signal);background:transparent;
+  color:var(--signal);font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;cursor:pointer;line-height:1.6}
+.gen-tick[hidden]{display:none}
+@media print{.gen-tick{display:none !important}p.body.gen-say{color:var(--body)}}
+
 ol.steps{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--rule)}
 ol.steps li{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:13px 0;
   border-bottom:1px solid var(--rule)}
@@ -251,6 +272,7 @@ dl.reflist dt{font-style:italic}
 
 /* ---- the instruments, at the foot ---- */
 .tools{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:6px 0 0}
+.tools.one{grid-template-columns:1fr;margin:18px 0 0}
 .tool{display:flex;flex-direction:column;gap:7px;text-decoration:none;color:inherit;
   border:1px solid var(--ink);padding:16px 18px;transition:background .12s,color .12s}
 .tool:hover{background:var(--ink);color:var(--paper)}
@@ -366,15 +388,20 @@ dl.reflist dt{font-style:italic}
 
   <div class="sec"><span>07</span><span>Previous years</span><span class="ln"></span></div>
   <div class="gal">
-    <figure><button type="button" class="zoom" data-full="assets/hof-rosa-perez-01.jpg" data-cap="Rosa Perez"><img src="assets/hof-rosa-perez-01.jpg" alt="A photogram: gauze and flower heads on a dark ground"></button><figcaption>Rosa Perez</figcaption></figure>
-    <figure><button type="button" class="zoom" data-full="assets/hof-rosa-perez-02.jpg" data-cap="Rosa Perez"><img src="assets/hof-rosa-perez-02.jpg" alt="A photogram: fabric and stems, a second sheet"></button><figcaption>Rosa Perez</figcaption></figure>
-    <figure><button type="button" class="zoom" data-full="assets/hof-jan-ryt.jpg" data-cap="Jan Ryt"><img src="assets/hof-jan-ryt.jpg" alt="A photogram: liquid and droplets across the sheet"></button><figcaption>Jan Ryt</figcaption></figure>
-    <figure><button type="button" class="zoom" data-full="assets/hof-dankaerts-kievits-01.jpg" data-cap="Vincent Dankaerts &amp; Jade Kievits"><img src="assets/hof-dankaerts-kievits-01.jpg" alt="A photogram made as a pair"></button><figcaption>Vincent Dankaerts &amp; Jade Kievits</figcaption></figure>
-    <figure><button type="button" class="zoom" data-full="assets/hof-dankaerts-kievits-02.jpg" data-cap="Vincent Dankaerts &amp; Jade Kievits"><img src="assets/hof-dankaerts-kievits-02.jpg" alt="A photogram made as a pair, second sheet"></button><figcaption>Vincent Dankaerts &amp; Jade Kievits</figcaption></figure>
-    <figure><button type="button" class="zoom" data-full="assets/hof-anne-marijn-01.jpg" data-cap="Anne Marijn"><img src="assets/hof-anne-marijn-01.jpg" alt="A photogram"></button><figcaption>Anne Marijn</figcaption></figure>
-    <figure><button type="button" class="zoom" data-full="assets/hof-anne-marijn-02.jpg" data-cap="Anne Marijn"><img src="assets/hof-anne-marijn-02.jpg" alt="A photogram, second sheet"></button><figcaption>Anne Marijn</figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-rosa-perez-01.jpg" data-cap="Rosa Perez<span class="yr">23-24 &middot; PHft2F</span>"><img src="assets/hof-rosa-perez-01.jpg" alt="A photogram: gauze and flower heads on a dark ground"></button><figcaption>Rosa Perez<span class="yr">23-24 &middot; PHft2F</span></figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-rosa-perez-02.jpg" data-cap="Rosa Perez<span class="yr">23-24 &middot; PHft2F</span>"><img src="assets/hof-rosa-perez-02.jpg" alt="A photogram: fabric and stems, a second sheet"></button><figcaption>Rosa Perez<span class="yr">23-24 &middot; PHft2F</span></figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-jan-ryt.jpg" data-cap="Jan Ryt<span class="yr">23-24 &middot; PHft2F</span>"><img src="assets/hof-jan-ryt.jpg" alt="A photogram: liquid and droplets across the sheet"></button><figcaption>Jan Ryt<span class="yr">23-24 &middot; PHft2F</span></figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-dankaerts-kievits-01.jpg" data-cap="Vincent Dankaerts &amp; Jade Kievits<span class="yr">23-24 &middot; PHft2D</span>"><img src="assets/hof-dankaerts-kievits-01.jpg" alt="A photogram made as a pair"></button><figcaption>Vincent Dankaerts &amp; Jade Kievits<span class="yr">23-24 &middot; PHft2D</span></figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-dankaerts-kievits-02.jpg" data-cap="Vincent Dankaerts &amp; Jade Kievits<span class="yr">23-24 &middot; PHft2D</span>"><img src="assets/hof-dankaerts-kievits-02.jpg" alt="A photogram made as a pair, second sheet"></button><figcaption>Vincent Dankaerts &amp; Jade Kievits<span class="yr">23-24 &middot; PHft2D</span></figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-anne-marijn-01.jpg" data-cap="Anne Marijn<span class="yr">23-24 &middot; PHft2F</span>"><img src="assets/hof-anne-marijn-01.jpg" alt="A photogram"></button><figcaption>Anne Marijn<span class="yr">23-24 &middot; PHft2F</span></figcaption></figure>
+    <figure><button type="button" class="zoom" data-full="assets/hof-anne-marijn-02.jpg" data-cap="Anne Marijn<span class="yr">23-24 &middot; PHft2F</span>"><img src="assets/hof-anne-marijn-02.jpg" alt="A photogram, second sheet"></button><figcaption>Anne Marijn<span class="yr">23-24 &middot; PHft2F</span></figcaption></figure>
   </div>
-  <p class="body quiet">Prints handed in for this assignment in earlier years, shown with permission and credited to the people who made them.</p>
+  <div class="tools one">
+    <a class="tool" href="archive/"><span class="tool-n">Student Archive</span><span class="tool-l">274 photograms &middot; 46 students &middot; 23-24 &middot; 24-25 &middot; 25-26</span><span class="tool-go">Open &rarr;</span></a>
+  </div>
+  <p class="lbl">Disclaimer</p>
+  <p class="body notice gen-say" data-gen="brief/01-photogram/galleryNote#5df1">These prints were made by students on this course and are kept as a teaching archive. If you would prefer your work not to be archived, write to <a class="mail" href="mailto:b.keskiner@kabk.nl">b.keskiner@kabk.nl</a> and it will not be used in the following years.</p>
+  <button type="button" class="gen-tick" data-gen="brief/01-photogram/galleryNote#5df1">Claude wrote this &middot; tick to approve</button>
 
   <div class="sec"><span>08</span><span>The instruments</span><span class="ln"></span></div>
   <div class="tools">
@@ -384,7 +411,7 @@ dl.reflist dt{font-style:italic}
   </div>
 
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 557 · 10.09.2026 00:08</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 573 · 10.09.2026 01:22</span></div>
 </div>
 <div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
   <span class="x">Esc</span><img alt=""><p></p>
@@ -454,6 +481,38 @@ document.querySelectorAll('[data-show]').forEach(function (sh) {
   });
   show(0);
 });
+/* W4 - THE TICK. Same contract as kit.js on the lecture pages: REVIEW.json
+   says which keys are approved, an approved line loses its orange and its
+   button, and pressing the button posts the key to /__approve, which only the
+   working copy answers. On the published site the fetch fails and nothing is
+   marked - by then the gate has already refused to publish it. */
+(function () {
+  var marks = [].slice.call(document.querySelectorAll('[data-gen]'));
+  if (!marks.length) return;
+  function settle(map) {
+    marks.forEach(function (el) {
+      var ok = !map || map[el.dataset.gen] === true;
+      if (el.tagName === 'BUTTON') el.hidden = ok;
+      else el.classList.toggle('gen-say', !ok);
+    });
+  }
+  fetch('/REVIEW.json', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) { settle(j && j.approved); })
+    .catch(function () { settle(null); });
+  marks.filter(function (el) { return el.tagName === 'BUTTON'; }).forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      fetch('/__approve', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: btn.dataset.gen })
+      }).then(function () {
+        btn.hidden = true;
+        var t = document.querySelector('p[data-gen="' + btn.dataset.gen + '"]');
+        if (t) t.classList.remove('gen-say');
+      }).catch(function () {});
+    });
+  });
+})();
 </script>
 </body>
 </html>
