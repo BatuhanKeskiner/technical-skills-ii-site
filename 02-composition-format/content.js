@@ -1053,9 +1053,9 @@ window.TS2_WEEK = {
     /* ================================================== Close */
     {
       id: 'c-close',
-      title: 'Assignment · Next week',
+      title: 'Assignment',
       n: '',
-      head: { standfirst: 'What goes out, and what comes next.' },
+      head: { standfirst: 'What goes out.' },
       steps: [
         {
           id: 's-ass',
