@@ -458,6 +458,24 @@
        sentence used to arrive here looking like a space pressed on the body,
        and turned the page while the sentence was being written. The attribute
        stays on the element after it has been torn out, so ask for that too. */
+    /* ESCAPE HANDS THE KEYS BACK. A slider inside an instrument owns the
+       arrow keys while it has focus - which is right when you are setting a
+       value, and wrong the moment you have finished and want the next page.
+       Live, in front of a room, it reads as the deck having frozen: press
+       right, nothing moves, and there is no sign anywhere saying why.
+       Escape blurs whatever is focused and the deck answers again. Purely
+       additive - Escape did nothing here before - so nothing that worked
+       before works differently now. Found by the usability audit,
+       10-09-2026, hours before he taught week 2. */
+    if (e.key === 'Escape') {
+      const held = document.activeElement;
+      if (held && held !== document.body && held.blur) {
+        held.blur();
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        return;
+      }
+    }
     const typing = e.target.isContentEditable
       || (e.target.closest && e.target.closest('[contenteditable="true"]'));
     if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || typing) return;
