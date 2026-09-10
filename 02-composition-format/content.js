@@ -940,7 +940,7 @@ window.TS2_WEEK = {
               mid: 'The number you multiply a focal length by to find the full-frame lens that frames the same picture. Nothing is magnified: the smaller rectangle is simply shown at the same size afterwards.',
               long: 'A small sensor cuts a small rectangle out of the circle and sees a narrow slice; a large negative sees more of the same circle. The crop factor is the ratio of diagonals against full frame — multiply the focal length by it and you have the full-frame lens that frames the same picture.',
               show: 'mid' },
-            { type: 'note', kind: 'tip', place: { row: 2, col: 1, w: '1/2' }, html: 'A normal lens is the diagonal of the format — whatever the format. That is the whole rule, and it is why 50 mm is normal on full frame and 150 mm is normal on 6×7.' },
+            { type: 'note', kind: 'tip', place: { row: 2, col: 1, w: '1/2' }, html: 'A normal lens is the diagonal of the format — whatever the format. That is the whole rule, and it is why normal is 43 mm on full frame and 90 mm on 6×7. The 50 mm everyone calls normal is the trade rounding up, not the rule.' },
             { type: 'sheet', title: 'Crop factor', kicker: 'Against full frame', place: { row: 2, col: 2, w: '1/2', fillH: true }, items: [
               ['Micro Four Thirds', '×2.0 · normal 22 mm'],
               ['APS-C', '×1.5 · normal 28 mm'],
