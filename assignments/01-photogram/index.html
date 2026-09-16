@@ -2,6 +2,7 @@
 <html lang="en" translate="no">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" href="../../_shared/favicon.svg" type="image/svg+xml">
@@ -149,6 +150,30 @@ ul.plain.quiet .m{color:var(--faint)}
 ul.plain .opt{margin:6px 0 0 0;display:table}
 .sub-h{font-family:var(--mono);font-size:10px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--grey);margin:26px 0 10px}
+/* ---- where to look: an address you can read, not a press you have to trust ---- */
+ul.reads{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+ul.reads li{padding:11px 0;border-bottom:1px solid var(--rule);display:grid;gap:3px}
+ul.reads a{font-size:15px;line-height:1.45;color:var(--ink);text-decoration:underline;
+  text-underline-offset:3px;text-decoration-color:var(--rule)}
+ul.reads a:hover{color:var(--signal);text-decoration-color:var(--signal)}
+ul.reads .who{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+ul.reads .what{font-size:13.5px;line-height:1.5;color:var(--body)}
+@media print{ul.reads a{text-decoration:none}}
+dl.reflist dt a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+dl.reflist dt a:hover{color:var(--signal)}
+dl.reflist .reflist-host{display:block;margin-top:3px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--quiet,#777)}
+.reads-fold .reads-body{display:none}
+.reads-fold.open .reads-body{display:block}
+.reads-open{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  background:none;border:1px solid var(--ink);color:var(--ink);padding:8px 12px;cursor:pointer}
+.reads-open:hover{background:var(--ink);color:var(--paper,#fff)}
+.reads-fold.open .reads-open{margin-bottom:14px}
+@media print{.reads-fold .reads-body{display:block!important}.reads-open{display:none!important}}
+ul.reads-heads{list-style:none;margin:10px 0 14px;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+ul.reads-heads li{font-size:15px;color:var(--ink)}
+ul.reads-heads li span{margin-left:6px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--signal)}
+@media print{ul.reads-heads{display:none}}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
 .chip{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
   text-transform:uppercase;padding:4px 8px;border:1px solid var(--rule);color:var(--grey)}
@@ -418,7 +443,7 @@ dl.reflist dt{font-style:italic}
   </div>
 
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 582 · 10.09.2026 03:38</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 797 · 17.09.2026 00:28</span></div>
 </div>
 <div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
   <span class="x">Esc</span><img alt=""><p></p>

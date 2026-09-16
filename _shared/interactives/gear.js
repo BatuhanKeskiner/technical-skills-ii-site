@@ -41,34 +41,54 @@ const LD_GEAR = {
      "name": "Person, standing",
      "w": 0.5,
      "d": 0.35,
-     "aim": true
+     "aim": true,
+     "about": "A standing figure. Its nose marks which way it faces; the readings on the sheet are taken from it."
     },
     {
      "id": "person-seated",
      "name": "Person, seated",
      "w": 0.55,
      "d": 0.9,
-     "aim": true
+     "aim": true,
+     "about": "A seated figure, knees forward. Lower than a standing one, so a light aimed at it drops."
     },
     {
      "id": "head-shoulders",
      "name": "Head & shoulders",
      "w": 0.45,
      "d": 0.3,
-     "aim": true
+     "aim": true,
+     "about": "Head and shoulders only, for a tight portrait. The smallest subject on the bench."
     },
     {
      "id": "still-life-table",
      "name": "Still-life table",
      "w": 1.2,
-     "d": 0.8
+     "d": 0.8,
+     "about": "A table for objects. It faces no way; the camera decides."
+    },
+    {
+     "id": "desk",
+     "name": "Desk 160 x 80",
+     "w": 1.6,
+     "d": 0.8,
+     "about": "A desk for a product or a still life, larger than the table. It faces no way."
+    },
+    {
+     "id": "laptop",
+     "name": "Laptop",
+     "w": 0.32,
+     "d": 0.22,
+     "aim": true,
+     "about": "A laptop, screen up. A small subject with a bright screen of its own; its lid says which way it faces."
     },
     {
      "id": "mannequin",
      "name": "Mannequin",
      "w": 0.45,
      "d": 0.3,
-     "aim": true
+     "aim": true,
+     "about": "A figure that is not a person, for a set-up planned without a sitter."
     }
    ]
   },
@@ -118,7 +138,8 @@ const LD_GEAR = {
         100
        ]
       }
-     ]
+     ],
+     "about": "A DSLR body. Its format is a setting: full frame, APS-C or Micro Four Thirds."
     },
     {
      "id": "cam-mirrorless",
@@ -162,7 +183,8 @@ const LD_GEAR = {
         100
        ]
       }
-     ]
+     ],
+     "about": "A mirrorless body, a little smaller. Same three formats as a setting."
     },
     {
      "id": "cam-medium",
@@ -215,7 +237,8 @@ const LD_GEAR = {
         250
        ]
       }
-     ]
+     ],
+     "about": "A medium-format body. 6 \u00d7 4.5, 6 \u00d7 6, 6 \u00d7 7 or 6 \u00d7 9 as a setting."
     },
     {
      "id": "cam-view",
@@ -250,7 +273,8 @@ const LD_GEAR = {
         600
        ]
       }
-     ]
+     ],
+     "about": "A large-format view camera. 4 \u00d7 5 or 8 \u00d7 10 inches as a setting."
     },
     {
      "id": "cam-phone",
@@ -265,7 +289,8 @@ const LD_GEAR = {
      "range": [
       13,
       77
-     ]
+     ],
+     "about": "A phone. A wide lens on a small sensor, nothing to set."
     }
    ]
   },
@@ -275,11 +300,13 @@ const LD_GEAR = {
    "items": [
     {
      "id": "strobe-bare",
-     "name": "Strobe head, bare",
+     "name": "Standard reflector dish",
      "w": 0.2,
      "d": 0.3,
      "aim": true,
-     "beam": 80
+     "beam": 65,
+     "about": "A standard reflector dish on a bare head. Hard light, a wide spread; takes a honeycomb grid.",
+     "grids": true
     },
     {
      "id": "softbox-60x90",
@@ -287,7 +314,9 @@ const LD_GEAR = {
      "w": 0.9,
      "d": 0.6,
      "aim": true,
-     "beam": 60
+     "beam": 100,
+     "about": "A 60 \u00d7 90 cm softbox. Soft, directional light; the closer, the softer.",
+     "grids": true
     },
     {
      "id": "softbox-90x120",
@@ -295,7 +324,9 @@ const LD_GEAR = {
      "w": 1.2,
      "d": 0.9,
      "aim": true,
-     "beam": 60
+     "beam": 110,
+     "about": "A 90 \u00d7 120 cm softbox. Larger, so softer from the same distance.",
+     "grids": true
     },
     {
      "id": "octabox-95",
@@ -303,7 +334,9 @@ const LD_GEAR = {
      "w": 0.95,
      "d": 0.95,
      "aim": true,
-     "beam": 60
+     "beam": 110,
+     "about": "A 95 cm octabox. Round soft light, round catchlights.",
+     "grids": true
     },
     {
      "id": "octabox-150",
@@ -311,7 +344,9 @@ const LD_GEAR = {
      "w": 1.5,
      "d": 1.5,
      "aim": true,
-     "beam": 60
+     "beam": 120,
+     "about": "A 150 cm octabox. Big, soft, wrapping light for full lengths.",
+     "grids": true
     },
     {
      "id": "stripbox-30x140",
@@ -319,7 +354,9 @@ const LD_GEAR = {
      "w": 1.4,
      "d": 0.3,
      "aim": true,
-     "beam": 50
+     "beam": 90,
+     "about": "A 30 \u00d7 140 cm strip box. A long narrow source for rims and edges.",
+     "grids": true
     },
     {
      "id": "beauty-dish-55",
@@ -327,7 +364,9 @@ const LD_GEAR = {
      "w": 0.55,
      "d": 0.55,
      "aim": true,
-     "beam": 50
+     "beam": 70,
+     "about": "A 55 cm beauty dish. Between hard and soft; a crisp, contoured light.",
+     "grids": true
     },
     {
      "id": "beauty-dish-70",
@@ -335,7 +374,9 @@ const LD_GEAR = {
      "w": 0.7,
      "d": 0.7,
      "aim": true,
-     "beam": 50
+     "beam": 75,
+     "about": "A 70 cm beauty dish. A little softer than the 55.",
+     "grids": true
     },
     {
      "id": "umbrella-shoot-105",
@@ -343,7 +384,8 @@ const LD_GEAR = {
      "w": 1.05,
      "d": 0.55,
      "aim": true,
-     "beam": 90
+     "beam": 140,
+     "about": "A 105 cm shoot-through umbrella. Light passes through the fabric; soft and wide."
     },
     {
      "id": "umbrella-reflect-105",
@@ -351,7 +393,9 @@ const LD_GEAR = {
      "w": 1.05,
      "d": 0.55,
      "aim": true,
-     "beam": 70
+     "beam": 110,
+     "about": "A 105 cm reflective umbrella. The head fires into the bowl and back out; a touch harder.",
+     "emit": 0.15
     },
     {
      "id": "umbrella-deep-165",
@@ -359,7 +403,9 @@ const LD_GEAR = {
      "w": 1.65,
      "d": 0.85,
      "aim": true,
-     "beam": 60
+     "beam": 90,
+     "about": "A 165 cm deep umbrella. A big bowl that keeps the light more directional.",
+     "emit": 0.2
     },
     {
      "id": "led-panel-30",
@@ -367,8 +413,9 @@ const LD_GEAR = {
      "w": 0.3,
      "d": 0.3,
      "aim": true,
-     "beam": 60,
-     "cont": true
+     "beam": 110,
+     "cont": true,
+     "about": "A 30 \u00d7 30 cm LED panel. Continuous light; what you see is what you get."
     },
     {
      "id": "led-panel-60",
@@ -376,8 +423,9 @@ const LD_GEAR = {
      "w": 0.6,
      "d": 0.6,
      "aim": true,
-     "beam": 60,
-     "cont": true
+     "beam": 110,
+     "cont": true,
+     "about": "A 60 \u00d7 60 cm LED panel. Continuous, and larger, so softer."
     },
     {
      "id": "ring-light-45",
@@ -385,8 +433,9 @@ const LD_GEAR = {
      "w": 0.45,
      "d": 0.45,
      "aim": true,
-     "beam": 70,
-     "cont": true
+     "beam": 110,
+     "cont": true,
+     "about": "A 45 cm ring light. Shadowless from the lens axis; a ring in the eyes."
     },
     {
      "id": "speedlight",
@@ -394,7 +443,8 @@ const LD_GEAR = {
      "w": 0.08,
      "d": 0.12,
      "aim": true,
-     "beam": 60
+     "beam": 70,
+     "about": "A speedlight. Small and hard; the on-camera flash off the camera."
     },
     {
      "id": "tungsten-fresnel",
@@ -402,8 +452,9 @@ const LD_GEAR = {
      "w": 0.3,
      "d": 0.4,
      "aim": true,
-     "beam": 30,
-     "cont": true
+     "beam": 35,
+     "cont": true,
+     "about": "A tungsten fresnel. Continuous, focusable, warm; the cinema lamp."
     }
    ]
   },
@@ -417,7 +468,8 @@ const LD_GEAR = {
      "w": 0.25,
      "d": 0.25,
      "aim": true,
-     "beam": 45
+     "beam": 45,
+     "about": "Barn doors on a head. Two leaves that cut the spread; drag the leaf to open them."
     },
     {
      "id": "grid",
@@ -425,7 +477,8 @@ const LD_GEAR = {
      "w": 0.3,
      "d": 0.1,
      "aim": true,
-     "beam": 20
+     "beam": 20,
+     "about": "A honeycomb grid. Narrows the spread without changing the source."
     },
     {
      "id": "snoot",
@@ -433,7 +486,8 @@ const LD_GEAR = {
      "w": 0.15,
      "d": 0.25,
      "aim": true,
-     "beam": 15
+     "beam": 15,
+     "about": "A snoot. A tube that makes a small hard circle of light."
     },
     {
      "id": "gobo",
@@ -441,7 +495,8 @@ const LD_GEAR = {
      "w": 0.4,
      "d": 0.02,
      "aim": true,
-     "solid": true
+     "solid": true,
+     "about": "A gobo. A cut pattern the light throws as a shadow."
     },
     {
      "id": "flag-45x60",
@@ -449,7 +504,8 @@ const LD_GEAR = {
      "w": 0.6,
      "d": 0.03,
      "aim": true,
-     "solid": true
+     "solid": true,
+     "about": "A 45 \u00d7 60 cm flag. Blocks light; a beam stops at it."
     },
     {
      "id": "flag-60x90",
@@ -457,21 +513,24 @@ const LD_GEAR = {
      "w": 0.9,
      "d": 0.03,
      "aim": true,
-     "solid": true
+     "solid": true,
+     "about": "A 60 \u00d7 90 cm flag. A bigger block for a bigger shadow."
     },
     {
      "id": "scrim-100",
      "name": "Scrim 100 x 100",
      "w": 1.0,
      "d": 0.03,
-     "aim": true
+     "aim": true,
+     "about": "A 1 m scrim. Takes a stop or so off the light that passes through it."
     },
     {
      "id": "diffusion-120x180",
      "name": "Diffusion 120 x 180",
      "w": 1.8,
      "d": 0.05,
-     "aim": true
+     "aim": true,
+     "about": "A 120 \u00d7 180 cm diffusion frame. Turns a hard source into a large soft one."
     }
    ]
   },
@@ -485,7 +544,8 @@ const LD_GEAR = {
      "w": 0.8,
      "d": 0.05,
      "aim": true,
-     "solid": true
+     "solid": true,
+     "about": "An 80 cm white reflector. Throws back soft, neutral fill from a light that reaches it."
     },
     {
      "id": "reflector-110-silver",
@@ -493,7 +553,8 @@ const LD_GEAR = {
      "w": 1.1,
      "d": 0.05,
      "aim": true,
-     "solid": true
+     "solid": true,
+     "about": "A 110 cm silver reflector. Throws back brighter, harder fill."
     },
     {
      "id": "reflector-110-gold",
@@ -501,7 +562,8 @@ const LD_GEAR = {
      "w": 1.1,
      "d": 0.05,
      "aim": true,
-     "solid": true
+     "solid": true,
+     "about": "A 110 cm gold reflector. Throws back warm fill; the bounced light turns yellow."
     },
     {
      "id": "v-flat",
@@ -509,7 +571,8 @@ const LD_GEAR = {
      "w": 2.4,
      "d": 1.2,
      "aim": true,
-     "solid": true
+     "solid": true,
+     "about": "A V-flat. Two panels that stand on their own; white side in for bounce, black out for negative fill."
     },
     {
      "id": "bounce-board",
@@ -517,7 +580,17 @@ const LD_GEAR = {
      "w": 1.5,
      "d": 0.05,
      "aim": true,
-     "solid": true
+     "solid": true,
+     "about": "A 100 \u00d7 150 cm bounce board. A large, flat, white fill."
+    },
+    {
+     "id": "bounce-board-black",
+     "name": "Bounce board 100 x 150, black",
+     "w": 1.5,
+     "d": 0.05,
+     "solid": true,
+     "aim": true,
+     "about": "A black board: negative fill. It takes light away from its side of the subject and throws nothing back."
     }
    ]
   },
@@ -532,7 +605,8 @@ const LD_GEAR = {
      "d": 0.2,
      "tint": true,
      "stretch": true,
-     "solid": true
+     "solid": true,
+     "about": "A wall. Light stops at it; drag its ends to set its length, pick its colour."
     },
     {
      "id": "window",
@@ -541,13 +615,15 @@ const LD_GEAR = {
      "d": 0.2,
      "aim": true,
      "beam": 180,
-     "cont": true
+     "cont": true,
+     "about": "A window. Daylight comes in through it; it has a preview like a light."
     },
     {
      "id": "doorway",
      "name": "Doorway",
      "w": 0.9,
-     "d": 0.2
+     "d": 0.2,
+     "about": "A doorway. A gap in a wall, for the plan."
     },
     {
      "id": "curtain",
@@ -556,7 +632,8 @@ const LD_GEAR = {
      "d": 0.1,
      "tint": true,
      "stretch": true,
-     "solid": true
+     "solid": true,
+     "about": "A curtain. Blocks light like a wall; drag its ends, pick its colour."
     },
     {
      "id": "backdrop-272",
@@ -565,7 +642,8 @@ const LD_GEAR = {
      "d": 0.3,
      "tint": true,
      "sweep": true,
-     "solid": true
+     "solid": true,
+     "about": "A 2.72 m seamless roll. Drag the paper down onto the floor and pick its colour."
     },
     {
      "id": "backdrop-135",
@@ -574,7 +652,8 @@ const LD_GEAR = {
      "d": 0.3,
      "tint": true,
      "sweep": true,
-     "solid": true
+     "solid": true,
+     "about": "A 1.35 m seamless roll. The narrow one, for head and shoulders."
     },
     {
      "id": "cyclorama",
@@ -582,7 +661,8 @@ const LD_GEAR = {
      "w": 4.0,
      "d": 4.0,
      "tint": true,
-     "solid": true
+     "solid": true,
+     "about": "A cyclorama corner. Two walls meeting in a cove; the floor stays open."
     }
    ]
   },
@@ -594,26 +674,45 @@ const LD_GEAR = {
      "id": "light-stand",
      "name": "Light stand",
      "w": 1.0,
-     "d": 1.0
+     "d": 1.0,
+     "about": "A light stand. Drop a light onto it and they move as one."
     },
     {
      "id": "c-stand",
      "name": "C-stand",
      "w": 1.2,
-     "d": 1.2
+     "d": 1.2,
+     "about": "A C-stand. Heavier, with an arm; carries a light or a flag."
     },
     {
      "id": "boom",
      "name": "Boom arm",
      "w": 2.0,
      "d": 0.1,
-     "aim": true
+     "aim": true,
+     "about": "A boom arm. Sits on a stand and carries a light at the tip of its arm, out over the set.",
+     "attach": [
+      0.85,
+      0
+     ]
     },
     {
      "id": "tripod",
      "name": "Tripod",
      "w": 0.8,
-     "d": 0.8
+     "d": 0.8,
+     "about": "A tripod. Drop a camera onto it and they move as one."
+    },
+    {
+     "id": "studio-stand",
+     "name": "Studio stand",
+     "w": 0.9,
+     "d": 0.9,
+     "about": "A studio camera stand: a column on a wheeled base. Drop a camera onto it and they move as one.",
+     "attach": [
+      0.425,
+      -0.12
+     ]
     }
    ]
   }
@@ -622,5 +721,10 @@ const LD_GEAR = {
  "_tint_note": "`tint` items take a colour (RGB, `c` in the string); `sweep` items - the seamless rolls - take a length of paper pulled onto the floor (`l`, metres); the roll's width is the paper's and does not change. Lights take a gel colour the same way. Batu, 08-09.",
  "_stretch_note": "`stretch` items - a wall, a curtain - take a length (`w` in the string, metres); the studio's walls are not one length. Batu, 08-09.",
  "_cont_note": "`cont` marks a light that burns continuously (LED, tungsten, a window); the rest flash. A placed light can be told otherwise (`y` in the string). Batu, 08-09.",
- "_solid_note": "`solid` items stop light: a beam cone ends where it meets them and the shadow falls behind. Scrims and diffusion pass it; a window and a doorway are openings. Batu, 08-09."
+ "_solid_note": "`solid` items stop light: a beam cone ends where it meets them and the shadow falls behind. Scrims and diffusion pass it; a window and a doorway are openings. Batu, 08-09.",
+ "_about_note": "about: one line per thing, shown beside the bench under the hand (11-09-2026). What it is and what it does to light; no copy.",
+ "_grids_note": "grids: the modifier takes a honeycomb or egg-crate grid (11-09-2026). With it on, the spread is halved, at most 40 degrees, and the name reads \"w/ GRID\".",
+ "_emit_note": "emit: where light leaves the drawing, as a fraction of its half-height from the centre - 1 is the front edge (the default), 0 the centre. A reflective umbrella throws from its bowl, which sits behind the head (11-09-2026).",
+ "_attach_note": "attach: where a support carries its thing, metres from its centre in its own frame (x right, y forward negative), turned with it. The studio stand mounts at the tip of its arm; the marker in the art (11-09-2026). Absent = the centre.",
+ "_beam_note": "beam: the spread in degrees as drawn on the plan, from the face. Set 12-09-2026 after Batu: a 150 octa is a wide soft source (120), a shoot-through umbrella spills (140), a fresnel is a spot (35), a standard dish 65. A grid halves it, 40 at most."
 };

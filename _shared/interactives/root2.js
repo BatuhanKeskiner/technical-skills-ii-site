@@ -15,7 +15,7 @@
      7  Which is why A4 is 210 x 297 and why it is a standard.
 
    A4 IS THE ONE RECTANGLE WHOSE HALF IS ITSELF, and that
-   sentence is the whole instrument. `aseries` next door folds
+   sentence is the whole instrument. the A series fold
    the sheet and lets the room watch the shape survive; this one
    answers the question that follows — why THAT number — and it
    answers it with a compass rather than with a claim.

@@ -224,11 +224,6 @@ function mountFrame(fig) {
     arrow(ctx, B.x, hy + gap, hx, hy + gap, p.fg);
     label(ctx, 'Y', (B.x + hx) / 2, hy + gap + 18, p.fg, 12, 'center');
 
-    /* clear of the Y arrow, which runs along the bottom of the frame */
-    keyRow(ctx, F.x + F.w * 0.72, F.y + F.h + 22,
-           [[['◀', '▶'], 'width'], [['▲', '▼'], 'height']],
-           p.fg, p.muted);
-
     sync(F);
   }
 
@@ -301,24 +296,11 @@ function mountFrame(fig) {
     if (state.hot) { state.hot = false; view.render(); }
   });
 
-  /* the arrows, for a hand that wants one pixel rather than a drag */
-  const STEP = 0.02;
-  stage.tabIndex = 0;
-  const mine = () => fig.contains(document.activeElement) || fig.matches(':hover');
-  window.addEventListener('keydown', (e) => {
-    if (!mine() || e.altKey || e.metaKey || e.ctrlKey) return;
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
-    let hit = true;
-    state.set = true;
-    if (e.key === 'ArrowRight') state.w = clamp(state.w + STEP);
-    else if (e.key === 'ArrowLeft') state.w = clamp(state.w - STEP);
-    else if (e.key === 'ArrowDown') state.h = clamp(state.h + STEP);
-    else if (e.key === 'ArrowUp') state.h = clamp(state.h - STEP);
-    else hit = false;
-    if (!hit) return;
-    e.preventDefault(); e.stopImmediatePropagation();
-    view.render();
-  }, true);
+  /* NO KEYS. The arrows nudged the corner a pixel at a time, were printed as
+     ◀ ▶ width · ▲ ▼ height under the frame, and took the deck's page turn
+     whenever the pointer rested on the picture (week 2, page 40). The drag
+     already does the job; the keys and their printed row came out on his
+     call, 11-09-2026 - a shortcut that is gone is gone from the stage too. */
 
   return { render: view.render };
 }

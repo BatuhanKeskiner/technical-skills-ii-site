@@ -7,7 +7,6 @@
 const DEMOS = {
   dof: { url: './interactives/dof.js', fn: 'mountDof' },
   focal: { url: './interactives/focal.js', fn: 'mountFocal' },
-  kelvin: { url: './interactives/kelvin.js', fn: 'mountKelvin' },
   transform: { url: './interactives/transform.js', fn: 'mountTransform' },
   viewfinder: { url: './interactives/viewfinder.js', fn: 'mountViewfinder' },
   fovea: { url: './interactives/fovea.js', fn: 'mountFovea' },
@@ -22,10 +21,46 @@ const DEMOS = {
   resolution: { url: './interactives/resolution.js', fn: 'mountResolution' },
   delivery: { url: './interactives/delivery.js', fn: 'mountDelivery' },
   crop: { url: './interactives/crop.js', fn: 'mountCrop' },
-  aseries: { url: './interactives/aseries.js', fn: 'mountASeries' },
   sizechart: { url: './interactives/sizechart.js', fn: 'mountSizeChart' },
   root2: { url: './interactives/root2.js', fn: 'mountRoot2' },
+  pinholecalc: { url: './interactives/pinholecalc.js', fn: 'mountPinholeCalculator' },
 };
+
+/* ============================================================
+   MODELS — the fourth kind, named by Batu on 13-09-2026:
+
+     Simulation   runs the room: Test Strip, Photogram, Lightmeter
+     Tool         you use it and take the answer away: Light Diagram,
+                  the Pinhole Calculator
+     Instrument   one variable of the camera in your hand
+     Model        one thing, inside a page, with a hand on it
+
+   A model has no address, no card and no readout row. It exists to
+   make one sentence of the page visible, and when the page is read
+   nobody goes looking for it again. They mount through the same
+   path as the rest, so `mountDemos` needs to know nothing new.
+   ============================================================ */
+const MODELS = {
+  obscura: { url: './models/obscura.js', fn: 'modelObscura' },
+  box: { url: './models/box.js', fn: 'modelBox' },
+  discs: { url: './models/discs.js', fn: 'modelDiscs' },
+  holelight: { url: './models/holelight.js', fn: 'modelHoleLight' },
+  fstop: { url: './models/fstop.js', fn: 'modelFstop' },
+  iris: { url: './models/iris.js', fn: 'modelIris' },
+  photons: { url: './models/photons.js', fn: 'modelPhotons' },
+  boxangle: { url: './models/boxangle.js', fn: 'modelBoxAngle' },
+  bokeh: { url: './models/bokeh.js', fn: 'modelBokeh' },
+  laser: { url: './models/laser.js', fn: 'modelLaser' },
+  shutter: { url: './models/shutter.js', fn: 'modelShutter' },
+  lensparts: { url: './models/lensparts.js', fn: 'modelLensParts' },
+  /* his Keynote round of 14-09-2026 */
+  boxstill: { url: './models/box.js', fn: 'modelBoxStill' },
+  exposure: { url: './models/exposure.js', fn: 'modelExposure' },
+  horn: { url: './models/horn.js', fn: 'modelHorn' },
+};
+Object.assign(DEMOS, MODELS);
+/* the editor lists what a page can hold from these, so one registry */
+window.TS2_DEMOS = DEMOS; window.TS2_MODELS = MODELS;
 
 /* A bare file name is the week's own assets/ folder. A name with a slash is
    used as written — '../_shared/assets/kabk-logo.jpg', or another week's folder. */
@@ -126,13 +161,17 @@ function getBar(b, cls, design) {
      measurement stands apart from it, so a design can stroke the first as a
      button and let the second stand back. */
   const face = el('span', 'get-face');
-  face.append(arrowMark());
+  /* A LINK IS NOT A DOWNLOAD. His word, 16-09-2026, on the Donald Lawrence
+     card: "bu bir link, linkte indirme ikonu olmaz, buraya bir link ikonu
+     yapmalısın ki websitesi olduğu anlaşılsın." The downward arrow says the
+     thing lands on your desk; this one takes you somewhere. So the mark on
+     the face is the one that matches what pressing it does. */
+  face.append(away ? awayMark() : arrowMark());
   face.append(tickMark());
   face.append(el('span', 'get-n', b.action || (away ? 'Open' : 'Download')));
   /* Both words are drawn and one is shown, so nothing has to write English
      into a stylesheet to say the file has been taken. */
   face.append(el('span', 'get-got', away ? 'Opened' : 'Downloaded'));
-  if (away) face.append(awayMark());
   a.append(face);
   /* A link says where it goes, since the reader is about to leave the site. */
   const host = away ? hostOf(b.link) : '';
@@ -601,7 +640,12 @@ const BLOCK = {
     if (b.kicker) face.append(el('span', 'golink-k', b.kicker));
     face.append(el('span', 'golink-t', b.text || b.href || 'Open'));
     a.append(face);
-    a.append(arrowMark());
+    /* A LINK OFF THE SITE IS NOT A DOWNLOAD. His word, 16-09-2026, on the
+       Donald Lawrence card: "bu bir link, linkte indirme ikonu olmaz, buraya
+       bir link ikonu yapmalısın ki websitesi olduğu anlaşılsın." A press that
+       goes to another page of this site keeps the plain arrow; one that leaves
+       for somebody else's website carries the arrow leaving the box. */
+    a.append(b.away ? awayMark() : arrowMark());
     if (b.note) a.append(el('span', 'golink-n', b.note));
     return a;
   },
@@ -770,21 +814,72 @@ const BLOCK = {
   },
 
   formula: (b) => {
-    const p = el('p', 'formula', b.html);
+    /* A NAME UNDER EACH LETTER. His Keynote of 16-09-2026, slide 16: "THE
+       EXPOSURE · AMOUNT OF LIGHT · TIME - this is better instead of the whole
+       sentence." `terms: [{ sym, label }, { op }]` sets each symbol in a column
+       with its name under it; `html` and `note` still work as before. */
+    if (b.terms) {
+      const p = el('p', 'formula terms' + (b.cls ? ' ' + b.cls : ''));
+      b.terms.forEach((t) => {
+        if (t.op) { p.append(el('span', 'op', t.op)); return; }
+        const col = el('span', 'term');
+        col.append(el('span', 'sym', t.sym));
+        col.append(el('span', 'tlabel', t.label || ''));
+        p.append(col);
+      });
+      if (b.note) p.append(el('span', 'fnote', b.note));
+      return p;
+    }
+    const p = el('p', 'formula' + (b.cls ? ' ' + b.cls : ''), b.html);
     if (b.note) p.append(el('span', 'fnote', b.note));
     return p;
   },
 
   spec: (b) => {
-    const t = el('table', 'spec');
+    const t = el('table', 'spec' + (b.cls ? ' ' + b.cls : ''));
     if (b.caption) {
       const cap = el('caption', 'figno-table', b.caption);
       t.append(cap);
     }
-    b.rows.forEach(([k, v, cls]) => {
+    /* A VALUE THAT IS A LIST IS A ROW OF CELLS, so rows of ladders line up
+       column by column (Keynote 16-09-2026, slide 24: "align them on their
+       respective column") */
+    /* AND THE STEP BETWEEN THE COLUMNS IS DRAWN, NOT LEFT TO BE WORKED OUT.
+       His second round, slide 25: "Add arrows and +1 on top of the arrow" ·
+       "Utilize the space for better infographic communication." One row of
+       arrows above the table says what moving one column to the right does. */
+    /* AND EVERY ROW HAS ITS OWN DIRECTION. His word, 16-09-2026: "bunun da
+       bilgisi yanlış, ok yönü tersi göstermeli + için ... diyaframda ... iso
+       da ve shutterda doğru." One arrow row over the whole table said the same
+       thing about all three ladders, and it is only true of two of them:
+       1/1000 to 1/500 is a stop MORE light, ISO 100 to 200 is a stop MORE, but
+       f/1.4 to f/2 is a stop LESS. So the aperture's +1 runs the other way, and
+       each row carries the arrow that belongs to it. */
+    /* AND THE STEP GOES BETWEEN THE TWO VALUES IT IS THE STEP BETWEEN.
+       His word, 16-09-2026: "bu okların da değerlerin arasında olması daha
+       mantıklı değil mi pozisyon olarak da. üstüne koymanın hiçbir mantığı
+       yok." A row of arrows above the numbers said the step belonged to the
+       column; it belongs to the GAP. Each arrow stands in its own narrow cell
+       between two figures, with the +1 over it, and the aperture's runs the
+       other way because f/1.4 to f/2 is a stop less light. */
+    const backwards = (k) => (b.arrowsLeft || []).indexOf(k) >= 0;
+    /* a row may name what its direction means - "Shorter" under Shutter */
+    b.rows.forEach(([k, v, cls, lead]) => {
       const tr = el('tr');
-      tr.append(el('td', null, k));
-      tr.append(el('td', cls || null, v));
+      const kd = el('td', null, k);
+      if (lead) kd.append(el('span', 'sub', lead));
+      tr.append(kd);
+      if (Array.isArray(v)) {
+        v.forEach((x, i) => {
+          if (b.arrows && i > 0) {
+            const gap = el('td', 'ar');
+            gap.append(el('span', 'ar-n', b.arrows));
+            gap.append(el('span', 'ar-a', backwards(k) ? '←' : '→'));
+            tr.append(gap);
+          }
+          tr.append(el('td', cls || 'v', x));
+        });
+      } else tr.append(el('td', cls || null, v));
       t.append(tr);
     });
     return t;
@@ -1081,10 +1176,25 @@ const BLOCK = {
     if (b.shape) f.setAttribute('data-shape', b.shape);
     if (b.pos && (b.size || 'column') !== 'column') f.setAttribute('data-pos', b.pos);
     if (b.fullscreen) f.setAttribute('data-fullscreen', '');
+    /* A MODEL ON A LIGHT GROUND. His Keynote of 14-09 ("This is better") chose
+       the white-stage rendering of the box; `light: true` is the page saying
+       so, and the figure wears the class the stylesheet already has. */
+    if (b.light) f.classList.add('light');
     const cap = el('figcaption');
     if (b.fig) cap.append(el('span', 'figno', 'Fig. ' + b.fig));
     if (b.caption) cap.insertAdjacentHTML('beforeend', ' ' + b.caption);
     f.append(cap);
+    return f;
+  },
+
+  /* A MODEL IS BUILT LIKE A DEMO AND WEARS ITS OWN CLASS. Same element, same
+     mounting, same sizes — what the class changes is the chrome: a model has
+     no readout row, and its hands lie across the foot rather than in four
+     cells, because one or two hands in a four-column grid is two empty
+     columns (S6). Written as `{ type: 'model', id: 'obscura' }`. */
+  model: (b) => {
+    const f = BLOCK.demo(b);
+    f.classList.add('model');
     return f;
   },
 
@@ -1137,12 +1247,23 @@ const BLOCK = {
       poster.replaceWith(frame);
     });
     ratio.append(poster);
-    slot.append(ratio);
+    /* THE WORDS BELONG TO THE PICTURE, NOT TO THE PAGE. His word, 16-09-2026:
+       "ŞU CAPTION SENCE OLMUŞ MU? POZİSYONU DOĞRU GELİYOR MU? ÇÜNKÜ DOĞRU
+       DEĞİL. BUNUNLA İLGİLİ DAHA ÖNCE BİR KURAL BELİRLEMİŞTİK." The rule is
+       the one already written for pictures: a caption sits tight under the
+       thing it names and starts at its left edge. The video is centred in a
+       full-width slot while its caption was a paragraph of the page, so the
+       words began at the page's margin and broke over three centred lines
+       beside a picture that started a third of the way in. The video and its
+       words are ONE column now, and the column is as wide as the video. */
+    const col = el('div', 'video-col');
+    col.append(ratio);
+    if (b.title) col.append(el('p', 'video-title', b.title));
+    if (b.caption) col.append(el('p', 'video-cap', b.caption));
+    slot.append(col);
     const wrap = document.createElement('div');
     wrap.className = 'video-block';
     wrap.append(slot);
-    if (b.title) wrap.append(el('p', 'video-title', b.title));
-    if (b.caption) wrap.append(el('p', 'video-cap', b.caption));
     return wrap;
   },
 
@@ -1740,7 +1861,7 @@ function arrange(step) {
    because it is the renderer that knows what each type builds. */
 const EVIDENCE_BLOCKS = new Set([
   'figure', 'gallery', 'stack', 'carousel', 'trio', 'pair', 'grid2', 'annotate',
-  'doc', 'qr', 'svg', 'video', 'demo', 'demoPlaceholder',
+  'doc', 'qr', 'svg', 'video', 'demo', 'model', 'demoPlaceholder',
   'schedule', 'timetable', 'spec', 'plan', 'scen', 'sem',
   'two', 'three', 'four', 'five', 'zones', 'brief', 'takeaway', 'formula',
   'reveal', 'reveal3',
@@ -1794,7 +1915,7 @@ const FILLS = new Set([
   'figure', 'gallery', 'stack', 'carousel', 'trio', 'pair', 'grid2', 'annotate', 'doc', 'svg',
 ]);
 const GROWS = new Set([
-  ...FILLS, 'video', 'demo', 'demoPlaceholder', 'reveal', 'zones', 'brief',
+  ...FILLS, 'video', 'demo', 'model', 'demoPlaceholder', 'reveal', 'zones', 'brief',
 ]);
 
 /* The foot. A fixed rectangle is closed on four edges, so whatever height
@@ -2039,6 +2160,25 @@ function renderStep(st, ch) {
     const node = fn(b);
     /* a block that renders as a fragment (quote, zones) tags each of its parts */
     const parts = node.nodeType === 11 ? [...node.children] : [node];
+    /* W4 · EVERY GENERATED LINE SAYS SO, not only the paragraphs of a `text`
+       block. `text` marks its own as it builds them, because it knows which
+       paragraph is which; every other block carrying `gen` is marked here, in
+       the same register and with the same key shape (text/<name>/<i>), so one
+       gate covers all of them and the build's dead-key sweep keeps working.
+       Prose is marked line by line and a list once, because a tick belongs
+       under the thing it approves and a tick between two bullets is not that.
+       Added 13-09-2026, when a whole week was generated on his word and only
+       its paragraphs would have been orange. */
+    if (b.gen && typeof b.gen === 'string' && b.type !== 'text'
+        && typeof pending === 'function') {
+      const marks = [];
+      parts.forEach((n) => {
+        if (n.matches && n.matches('p')) { marks.push(n); return; }
+        const ps = n.querySelectorAll ? [...n.querySelectorAll('p')] : [];
+        if (ps.length) marks.push(...ps); else marks.push(n);
+      });
+      marks.forEach((n, k) => pending(n, 'text/' + b.gen + '/' + k));
+    }
     parts.forEach((n) => {
       n.setAttribute('data-bi', i);
       if (b.plate) n.classList.add('plate-box');

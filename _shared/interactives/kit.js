@@ -128,6 +128,35 @@ function slider(controls, { label, min, max, step, value, unit, cls, decimals, f
   return input;
 }
 
+/* A TYPED NUMBER. For a Tool whose input is a measurement the student has
+   in hand - a hole they drilled at 0.3 mm, a box they cut at 65 mm - and
+   which no ladder holds (C10 is about values that HAVE a ladder). Big, in
+   the stepper's own type, the unit beside it. Calls onChange(value) with a
+   number inside [min, max]; a field left empty or out of range keeps the
+   last good value and does not fire. Added 14-09-2026 for Pinhole Calculator. */
+function numberField(controls, { label, value, min, max, step, unit, onChange, cls }) {
+  const ctl = el('div', 'ctl num' + (cls ? ' ' + cls : ''));
+  ctl.append(el('label', null, label));
+  const row = el('div', 'num-row');
+  const input = el('input');
+  input.type = 'number';
+  Object.assign(input, { min, max, step: step || 'any', value });
+  input.setAttribute('inputmode', 'decimal');
+  row.append(input);
+  if (unit) row.append(el('span', 'num-unit', unit));
+  ctl.append(row);
+  controls.append(ctl);
+  let last = value;
+  input.addEventListener('input', () => {
+    const v = parseFloat(input.value);
+    if (!isFinite(v) || v < min || v > max) return;
+    last = v;
+    if (onChange) onChange(v);
+  });
+  input.addEventListener('blur', () => { input.value = last; });
+  return { node: ctl, input, get: () => last, set: (v) => { last = v; input.value = v; } };
+}
+
 /* A named-state stepper. Calls onChange(index).
 
    NOTHING IS LIVE THAT CANNOT BE USED. A state the instrument cannot go to

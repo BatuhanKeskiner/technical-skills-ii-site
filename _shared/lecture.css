@@ -127,8 +127,73 @@ figure.demo.light .zoom.top{background:rgba(255,255,255,.86);border-color:var(--
 @media print{ .fs,.peek{display:none} }
 
 /* ---------- control bar ---------- */
-.controls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 24px;padding:14px 18px 15px;background:var(--stage-2);border-top:1px solid var(--stage-rule)}
+/* A HAND IS AS WIDE AS IT NEEDS TO BE, AND THE ROW OF THEM IS CENTRED.
+   His second Keynote round of 16-09-2026, said on six slides and so a rule:
+   "Depending on the instrument sliders might be smaller, no full width most of
+   the time. Slider also has to be centred in the panel if there are no other
+   parameter." · "Terrible usage of space. Remember the rule."
+   The bar was four equal columns, so one slider took a quarter of the width and
+   three quarters stood empty, and a lone slider stretched the whole way. Now the
+   columns are as wide as what is in them and the row sits in the middle; a cell
+   that asks for the whole row (.wide) still gets it. */
+/* A cell has a width of its own - not a quarter of the bar, and not whatever
+   its longest label happens to measure. A column that grows with its text moves
+   the cell beside it the moment a value changes (C9, S18) and wraps the strip to
+   two rows (C3); a fixed track keeps the hands still and leaves the remainder as
+   margin, which is what the row being centred is for. */
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,230px));justify-content:center;gap:14px 24px;padding:14px 18px 15px;background:var(--stage-2);border-top:1px solid var(--stage-rule)}
 .ctl{min-width:0}
+/* Depth of Field's one action group: focus, the two formats and the lens, in a
+   single row of small presses at a fixed width (his second round, slide 29). */
+/* Three hands and the group of presses, in ONE row. The group is 430px wide,
+   and with the bar's ordinary spreading gaps the four cells measured wider
+   than the bar: the row wrapped, the presses dropped under the sliders, the
+   picture lost that height and the plan view's labels were cut off at the
+   foot. So this strip keeps its own tighter gaps, holds its row, and centres
+   what is left over rather than spreading it (the space rule: the remainder
+   is margin, not distance between hands).
+   It is written with `figure.demo` in front of it because the bar is a flex
+   row there, not the grid of the general rule above - without it the rule is
+   outranked and does nothing at all, which is how it was first written. */
+/* 200px, not 180: the longest of the three reads "Camera to the subject" and
+   then its value, and at 180 the value was cut to an ellipsis - a hand whose
+   number cannot be read is not a hand. Three at 200 and the group at 430,
+   with 18px between them, measure 1084 and the narrowest bar is 1106. */
+figure.demo .controls.dof-strip{flex-wrap:nowrap;justify-content:center;column-gap:18px}
+figure.demo .controls.dof-strip > .ctl{flex:0 1 auto;min-width:0}
+/* A hand is as wide as what it has to say (S20). Cut to one width, the long
+   one - "Camera to the subject", and then its metres - lost its number to an
+   ellipsis while the short one sat in empty room. 160 + 180 + 230 + 430 and
+   three 18px gaps measure 1054; the narrowest bar is 1106. */
+figure.demo .controls.dof-strip > .ctl.dof-ap{flex:0 0 160px}
+figure.demo .controls.dof-strip > .ctl.dof-fl{flex:0 0 180px}
+figure.demo .controls.dof-strip > .ctl.dof-dist{flex:0 0 230px}
+figure.demo .controls.dof-strip > .ctl.dof-opts{flex:0 0 430px}
+.controls .ctl.dof-opts{width:430px;min-width:430px}
+.controls .ctl.dof-opts .states{display:flex;flex-wrap:nowrap;gap:5px;max-width:none}
+.controls .ctl.dof-opts .states .st{padding:3px 7px;font-size:10px;letter-spacing:.08em;white-space:nowrap}
+/* the folded hand sits tight under the presses rather than opening a row of
+   its own - his note, 16-09: "focused at yüzünden koca bir satır da oluşuyor" */
+.controls .ctl.dof-opts .ctl{margin-top:2px}
+.controls .ctl.dof-opts .ctl label{font-size:9px;line-height:1.1}
+.controls .ctl.dof-opts .ctl input[type=range]{margin-top:1px}
+/* A MODEL'S HANDS LIE ACROSS THE FOOT. The four-column grid is right for an
+   instrument's strip and wrong for a model, which has one hand or two: in the
+   grid they sat in the first columns with half the bar empty beside them (S6).
+   Here they share the width instead, and a single hand takes all of it. The
+   kind was named by Batu on 13-09-2026 — simulation, tool, instrument, model. */
+figure.demo.model .controls{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:flex-end}
+/* a hand keeps its own length inside that panel - it does not grow to fill it */
+figure.demo.model .controls > .ctl{flex:0 1 240px;min-width:200px}
+figure.demo.model .controls > .ctl.stp{flex:0 1 auto}
+/* AND ITS CHIPS DO NOT RUN THE WHOLE BAR. A states row inside a model's
+   cell stretched to the full width and read as a white band under the
+   slider; it is as wide as the two words it holds. 13-09-2026. */
+figure.demo.model .ctl .states{max-width:230px}
+/* AND A CELL OF CHIPS IS AS WIDE AS ITS CHIPS. With four of them on one
+   model - material, light, time, and the press - each was taking a row of
+   its own and the strip grew to four, which is the stage's height. */
+figure.demo.model .controls > .ctl.wide{flex:0 1 auto;grid-column:auto}
 .ctl.wide{grid-column:1/-1}
 .ctl.span2{grid-column:span 2}
 .ctl.span3{grid-column:span 3}
@@ -245,7 +310,18 @@ figure.demo:fullscreen figcaption,figure.demo.fs-on figcaption{display:none}
 table.spec{width:100%;border-collapse:collapse;margin:28px 0 8px;font-family:var(--font-mono);font-size:13px;font-variant-numeric:tabular-nums}
 table.spec th{text-align:left;font-family:var(--font-mono);font-weight:400;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:0 10px 8px 0;border-bottom:1px solid var(--ink)}
 table.spec td{padding:8px 10px 8px 0;border-bottom:1px solid var(--rule);vertical-align:top}
-table.spec td .sub{color:var(--muted);font-size:11px}
+table.spec td .sub{color:var(--muted);font-size:11px;display:block;margin-top:2px}
+/* the step between the columns, drawn: one row of arrows carrying +1 (his
+   second round, 16-09-2026, slide 25) */
+/* the step stands in the gap between the two figures it joins: +1 over the
+   arrow, both small, the column no wider than they need */
+/* narrow: nine of these stand between ten columns of figures, and at 6px of
+   padding each they pushed the table 149px off the side of the page - which is
+   what RUNS OFF THE SIDE in check-pages.py now catches */
+table.spec td.ar{color:var(--signal-600);text-align:center;white-space:nowrap;
+  width:1%;padding:0 2px;line-height:1.05;vertical-align:middle}
+table.spec td.ar .ar-n{display:block;font-size:8.5px;letter-spacing:.04em}
+table.spec td.ar .ar-a{display:block;font-size:11px}
 table.spec caption.figno-table{caption-side:top;text-align:left;font-family:var(--font-mono);font-size:9px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--signal-600);padding:0 0 10px}
 p.tablenote{font-family:var(--font-display);font-size:14px;color:var(--muted);line-height:1.5;margin:8px 0 32px}
 @media (max-width:620px){ table.spec{font-size:11px} table.spec td .sub{display:block} }
@@ -358,6 +434,20 @@ body.present figure.slide.shapes svg{max-width:min(1100px,80vw)}
 
 /* ---------- galleries ---------- */
 figure.slide.gallery{max-width:none;width:100%}
+/* and on a lecture page the gallery is as wide as the strip inside it, so its
+   caption starts where the first picture starts - the same rule as a single
+   plate. Measured on 02 p29 and p31: the words ran 27px and 107px past the
+   pictures' left edge and 55px and 213px wider than the row. */
+/* (the same experiment on the figure itself is out for the same reason: a row
+   of pictures shrink-wrapped could measure wider than the column it sits in) */
+/* and the row itself is as wide as the pictures in it. Measured on 02 p31: the
+   strip was 581px with one 368px photograph centred in it, so the caption -
+   which takes the strip's width - stood 106px past the picture at each side. */
+/* (A height-driven row was tried here on 16-09 so that the strip would be as
+   wide as the pictures in it. It made a row of four photographs wider than the
+   column and they ran off the page — p7 and p8 of week 3. The caption is put on
+   its picture by measurement instead: fitCaptions() in pages.js, which reads
+   the painted rectangles after layout. The row keeps the sizing it had.) */
 figure.slide.gallery .strip,figure.slide.trio .strip{display:flex;gap:12px;--rowh:440px;--gap:12px;width:100%;max-width:calc(var(--rowh) * var(--sa,4.5) + var(--gaps,24px))}
 figure.slide.gallery .strip img,figure.slide.trio .strip img{flex:1 1 0;min-width:0;width:0;height:auto;background:transparent}
 /* The cursor is stamped from the one list in shell.js - see img.zoomable
@@ -651,6 +741,22 @@ body.present .ph{font-size:11px}
    never collide and never need bespoke offsets.
    ============================================================ */
 .stage.wide{aspect-ratio:16 / 9}
+/* ON A LECTURE PAGE THE STAGE TAKES THE HEIGHT THE PAGE HAS.
+   His word, 16-09-2026: "Bu interaktif neden aşağı doğru uzamıyor şu an
+   mesela? Görüntü en önemli çıktı ve çok az yer kaplıyor." Every stage was
+   locked to sixteen by nine, so an instrument stopped where that ratio ran out
+   and the rest of the page stayed empty under it — on every page, in every
+   week. Sixteen by nine is right for a page that is read by scrolling; a
+   lecture page is a fixed rectangle and the instrument is what it is for, so
+   the stage takes what is left after the strip and the readout. */
+/* The ratio is kept as the SHAPE the stage starts from, and the growing is
+   done by the flex line: where the page hands the figure a real height the
+   stage takes what is left and the ratio stops applying; on a bench page,
+   where the figure is as tall as its contents, the ratio still decides and
+   nothing moves. Setting aspect-ratio:auto did the first and broke the second
+   - the stage fell to 63-69% of its figure and S1 failed on six instruments. */
+body.pages .step.active figure.demo > .stage,
+body.present .step.active figure.demo > .stage{flex:1 1 auto;min-height:0}
 .stage.square{aspect-ratio:1 / 1}
 .stage.tall{aspect-ratio:4 / 5}
 .overlay{position:absolute;z-index:2;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:min(340px,46%)}
@@ -1007,7 +1113,13 @@ body.present .timetable table.plan td{padding:.55vh .8vw .55vh 0}
    from these variables.
    ============================================================ */
 figure.demo.light{
-  --k-stage:#F2F1EC;
+  /* THE SAME GROUND AS THE PAGE. His note of 16-09-2026 on the iris page:
+     "bunlar da aynı renkte değil" - the stage was #F2F1EC and the page #F7F5F0,
+     close enough to look like a mistake and far enough to be seen as a panel
+     floating on the paper. A model drawn on a light ground stands on the page's
+     own ground; the control bar under it keeps its lighter tone, which is what
+     makes it read as a bar. */
+  --k-stage:var(--paper-100);
   --k-inset:#FFFFFF;
   --k-fg:#0B0C0C;
   --k-muted:#5C605E;
@@ -1022,9 +1134,22 @@ figure.demo.light{
   --k-band:rgba(196,45,0,0.10);
 }
 figure.demo.light .stage{background:var(--k-stage)}
+/* AND NO BLACK LINE ACROSS THE TOP OF IT. His note of 16-09-2026 on the iris
+   page: "Get rid of this black line." The instrument's frame is drawn in ink,
+   which on a dark stage is an edge and on a light one is a black bar lying over
+   the paper. A light model is bounded by the same hairline as everything else
+   on the page. */
+figure.demo.light{border-color:var(--rule)}
 figure.demo.light .controls{background:var(--paper-000);border-top:1px solid var(--ink-900)}
 figure.demo.light .ctl label{color:var(--text-muted)}
 figure.demo.light .ctl label .val{color:var(--ink-900)}
+/* THE STEPPER'S OWN VALUE GOES WITH THEM. It takes --stage-fg, which is a
+   dark-ground colour and is not one of the variables this block swaps, so on
+   paper the one number in the cell came out pale grey while its name beside it
+   was ink. Found 13-09-2026 on the pinhole instruments, the first with a
+   ground switch and a stepper on the same strip; it is every stepper's. */
+figure.demo.light .stp-v{color:var(--ink-900)}
+figure.demo.light .ctl.stp.answering .stp-v{color:var(--k-signal)}
 figure.demo.light .ctl label.digital{color:var(--k-digital)}
 figure.demo.light .ctl label.film{color:#6E7E00}
 figure.demo.light .ctl label.cinema{color:var(--k-cinema)}
@@ -1551,11 +1676,34 @@ body.pages.design #pagebar:hover{opacity:1}
 
 /* A video page is the video: it takes the page, centred, as wide as the
    height allows, with its name and caption on their own lines beneath. */
-body.pages .step.active .pg-ev > .video-block{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center}
-body.pages .step.active .video-block .video-slot{flex:1 1 auto;min-height:0;width:100%;max-width:none;display:flex;align-items:center;justify-content:center;border:0;background:transparent;overflow:visible}
+/* ...and the same when the video sits in a cell of an arranged page (week 3,
+   p4): without this the block stays a plain box, the slot beneath it has no
+   height to take, and the poster collapses to a two-pixel line. */
+body.pages .step.active .pg-ev > .video-block,
+body.pages .step.active .pg-item > .video-block{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center}
+body.pages .step.active .video-block .video-slot{flex:1 1 auto;min-height:0;margin:0;width:100%;max-width:none;display:flex;align-items:center;justify-content:center;border:0;background:transparent;overflow:visible}
+/* the video and its words are one column, the column is the video's width, and
+   the words start at the video's left edge - the caption rule, applied to a
+   video for the first time */
+.video-col{display:flex;flex-direction:column;align-items:stretch;min-width:0;max-width:100%}
+body.pages .step.active .video-col{height:100%}
+body.pages .step.active .video-col > .ratio{flex:1 1 auto;min-height:0}
+/* the column is the video's width; the alignment is NOT set here - the site
+   has one owner for that ("a caption always sits on the right edge of what it
+   describes"), and the fault was never the alignment but the box: ranged right
+   inside a page-wide paragraph, the words landed nowhere near the picture. */
+.video-col > .video-title,.video-col > .video-cap{max-width:100%;margin:0}
+.video-col > .video-title{margin-top:1vh}
+.video-col > .video-cap{margin-top:.5vh}
 body.pages .step.active .video-slot .ratio{position:relative;padding-top:0;height:100%;width:auto;max-width:100%;aspect-ratio:16 / 9;border:1px solid var(--ink-900);background:var(--paper-200);overflow:hidden}
-body.pages .step.active .video-title{font-size:clamp(14px,2.4vh,24px);text-align:center;margin-top:1.4vh}
-body.pages .step.active .video-cap{font-size:clamp(8px,1.2vh,11px);text-align:center;max-width:62ch}
+/* size only: the alignment belongs to the caption rule further down, which
+   ranges every caption on the site against the right edge of its picture.
+   Centring them here is what put the words in the middle of the page. */
+body.pages .step.active .video-title{font-size:clamp(14px,2.4vh,24px);margin-top:1.4vh}
+/* the line is held to a readable measure, and that measure is pushed to the
+   picture's right edge - capped and left where it fell, it sat under the left
+   half of the video and read as three centred lines belonging to nothing */
+body.pages .step.active .video-cap{font-size:clamp(8px,1.2vh,11px);max-width:62ch;margin-left:auto}
 body.pages .step.active .video-poster .play{width:clamp(40px,7vh,72px);height:clamp(40px,7vh,72px);font-size:clamp(14px,2.4vh,22px)}
 /* the argument above a full-width video stays shallow, like an instrument */
 body.pages .step.active.stacked:has(.video-block) .pg-arg{max-width:none;width:100%}
@@ -2029,6 +2177,15 @@ body.pages .step.active figure.slide.trio{border:0;background:transparent;paddin
 body.pages .step.active figure.slide{flex:0 1 auto;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;min-height:0;width:fit-content;max-width:100%;margin-inline:auto}
 /* geometry only — type.css owns the caption's face and alignment */
 body.pages .step.active figure.slide > figcaption{width:0;min-width:100%;border-top:0;padding:0;margin-top:1vh;display:block;flex:0 0 auto}
+/* AND THE FIGURE IS AS WIDE AS ITS PICTURE, so the caption under it starts at
+   the picture's left edge and ends with it. A portrait photograph centred in a
+   landscape column left its words hanging past both sides - measured on 16-09
+   at 107px out and 213px wider on 02 p31. The check that found it is in
+   check-pages.py; this is the rule it enforces. */
+body.pages .step.active figure.slide:not(.pair):not(.gallery):not(.trio):not(.stack):not(.carousel):not(.qr):not(.icons):not(.reveal){
+  width:fit-content;max-width:100%;margin-inline:auto}
+body.pages .step.active figure.slide:not(.pair):not(.gallery):not(.trio):not(.stack):not(.carousel):not(.qr):not(.icons):not(.reveal) > figcaption{
+  text-align:left}
 body.pages .step.active figure.slide img{border:0;display:block}
 body.pages .step.active figure.slide > .ph{border:1px dashed var(--rule-hairline);box-sizing:border-box}
 
@@ -3151,6 +3308,23 @@ body.editing nav.chapters #chapter-list{display:none}
 #ed-outline .eo-pg{display:grid;grid-template-columns:26px 1fr;gap:6px;align-items:baseline;padding:5px 6px 5px 14px;border-bottom:1px solid var(--rule-hairline,var(--rule));cursor:grab;color:var(--ink)}
 #ed-outline .eo-pg:hover{background:var(--paper-200)}
 #ed-outline .eo-pg.on{background:var(--signal-500);color:var(--on-signal)}
+/* WHAT HE HAS TOUCHED, IN HIS OWN COLOUR. His word, 16-09-2026: "şuraya edit
+   yaptıklarımı turuncu renk ile belirtir misin hep." A page whose contents
+   differ from the file on disk is marked while the draft is open, so the list
+   says at a glance which pages a round is carrying - and the mark goes when the
+   round is submitted and the file catches up. */
+/* the same mark on the page he is looking at, so it says so without the list -
+   and not only while the panel is open: the draft is his round whether he is
+   editing at that moment or reading the page back */
+.step.active.ed-edited::after{content:'EDITED IN THIS ROUND';position:fixed;
+  top:10px;right:14px;z-index:70;font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--on-signal);background:var(--signal-500);padding:4px 9px;
+  pointer-events:none}
+#ed-outline .eo-pg.edited{color:var(--signal-600)}
+#ed-outline .eo-pg.edited .eo-n{color:var(--signal-600)}
+#ed-outline .eo-pg.edited::after{content:'·';margin-left:6px;color:var(--signal-600)}
+#ed-outline .eo-pg.on.edited,#ed-outline .eo-pg.on.edited .eo-n{color:var(--on-signal)}
+#ed-outline .eo-ch.edited .eo-t{color:var(--signal-600)}
 #ed-outline .eo-pg.proof .eo-i{color:#2f6fd0}
 #ed-outline .eo-pg.on .eo-i{color:inherit}
 #ed-outline .eo-n,#ed-outline .eo-i{color:var(--muted);text-align:right}
@@ -4776,6 +4950,35 @@ body.pages .step.active.arranged .pg-rows > .pg-row:not(:has(~ .pg-row)):not([da
    going to fall out of the page". */
 body.pages .step.active{--pg-head:3.2vh;--pg-foot:9.5vh}
 body.pages .step.active.arranged .pg-rows{padding-bottom:var(--pg-foot)}
+/* EXCEPT A PICTURE ALONE ON THE PAGE. The seated type area above is for words.
+   A page whose content is one picture - its caption and any words under it,
+   nothing beside it - is centred on the page: equal space above and below. Asked
+   228 times in one evening while CONTRACT.md called top alignment the default and
+   nothing measured either; shown the optical and the true centre side by side,
+   he chose the true centre. HIM 11-09-2026, W16, measured by check-pages.py.
+
+   What it takes, and why each line is there:
+   - the foot margin goes and the rows stack in the middle as one unit;
+   - the picture's row stops swallowing the slack, which is what pinned the words
+     meant to sit under a picture to the foot of the page (The Evolution of the
+     Eye: 172px apart);
+   - the words under it are rigid and only the picture gives way. The last row was
+     shrinkable, so on The School of Athens a six-line paragraph was squeezed into
+     114px of a 170px row and ran into the page bar while the picture kept its size.
+
+   `:has()` may not contain `:has()`. The first version nested one, the browser
+   dropped the whole rule without a word, and it matched nothing on 83 pages. This
+   one is tested to match exactly the lone-picture pages and no other.
+
+   NOT A STACK, A CAROUSEL OR A TRIO. Those take the height of their row and share
+   it out between their pictures, so a row that stops handing out height leaves
+   them nothing: the ten photographs of Week 1's The work and the four of Week 2's
+   Exercise: Form were drawn 0px tall, captions alone on an empty page, and a
+   centring measure read the emptiness as centred. check-pages.py now fails any
+   picture that is loaded but drawn at zero height. */
+body.pages .step.active.arranged .pg-rows:has(.pg-col[data-fillh] > .pg-item > figure.slide):not(:has(> .pg-row > .pg-col ~ .pg-col)):not(:has(figure.demo)):not(:has(figure.slide.pair, figure.slide.gallery, figure.slide.reveal, figure.slide.icons, figure.slide.qr, figure.slide.stack, figure.slide.carousel, figure.slide.trio)){justify-content:center;padding-bottom:0}
+body.pages .step.active.arranged .pg-rows:has(.pg-col[data-fillh] > .pg-item > figure.slide):not(:has(> .pg-row > .pg-col ~ .pg-col)):not(:has(figure.demo)):not(:has(figure.slide.pair, figure.slide.gallery, figure.slide.reveal, figure.slide.icons, figure.slide.qr, figure.slide.stack, figure.slide.carousel, figure.slide.trio)) > .pg-row[data-rgrow]{flex:0 1 auto}
+body.pages .step.active.arranged .pg-rows:has(.pg-col[data-fillh] > .pg-item > figure.slide):not(:has(> .pg-row > .pg-col ~ .pg-col)):not(:has(figure.demo)):not(:has(figure.slide.pair, figure.slide.gallery, figure.slide.reveal, figure.slide.icons, figure.slide.qr, figure.slide.stack, figure.slide.carousel, figure.slide.trio)) > .pg-row:not([data-rgrow]){flex:0 0 auto}
 /* EXCEPT WHEN THE PAGE IS ONE INSTRUMENT. The 1:2 head-to-foot above is for a
    type area: a block of text set to the true centre reads as falling out of
    the page, so it is lifted by about one head-margin. An instrument is not a
@@ -4944,10 +5147,17 @@ body.pages .step.active.arranged .pg-item[data-fit=bleed] figure.slide > img{wid
    a picture told to take the depth of the page stayed the size of its own
    caption. A picture that fills a height is still shown whole: it is
    `contain` inside a box that is now the right size, not a crop. */
+/* THE CAPTION IS UNDER THE PICTURE, NOT UNDER THE BOX IT WAS STRETCHED INTO.
+   The picture used to take the whole height (flex:1 1 auto; height:100%) and be
+   letterboxed inside it by `contain`, so a wide photograph was a band in the
+   middle of a tall invisible box and its caption sat at the foot of the box:
+   47px under Gravity, 134px under Print → Tracing paper → Drawing. It now takes
+   the width, shrinks to fit the height when it must, and the figure centres
+   picture and caption together. HIM 11-09-2026, W16. */
 body.pages .step.active.arranged .pg-col[data-fillh] > .pg-item:not([data-fit]) > figure.slide{
-  height:100%;display:flex;flex-direction:column;margin-block:0}
+  height:100%;display:flex;flex-direction:column;justify-content:center;margin-block:0}
 body.pages .step.active.arranged .pg-col[data-fillh] > .pg-item:not([data-fit]) > figure.slide > img{
-  flex:1 1 auto;min-height:0;height:100%;width:100%;max-height:none;object-fit:contain;object-position:var(--pg-pos,center)}
+  flex:0 1 auto;min-height:0;height:auto;width:100%;max-height:none;object-fit:contain;object-position:var(--pg-pos,center)}
 body.pages .step.active.arranged .pg-col[data-fillh] > .pg-item:not([data-fit]) > figure.slide > figcaption{flex:0 0 auto}
 body.pages .step.active.arranged .pg-col[data-fillh] > .pg-item.pg-solo{flex:1 1 auto;min-height:0}
 /* the same for a whole row levelled to one height */
@@ -8367,6 +8577,35 @@ figure.demo .stp-v{font-family:var(--font-mono);font-size:clamp(20px,2.4vh,26px)
   color:var(--stage-fg);letter-spacing:-.01em;min-width:4.2em;text-align:center;
   font-variant-numeric:tabular-nums}
 figure.demo .ctl.stp.answering .stp-v{color:var(--signal-500)}
+/* the typed number (numberField in kit.js): the stepper's type, in a box */
+figure.demo .controls > .ctl.num{flex:0 1 auto;min-width:168px}
+figure.demo .num-row{display:flex;align-items:baseline;gap:8px;margin-top:5px}
+figure.demo .num-row input{appearance:textfield;-moz-appearance:textfield;width:5.2em;background:transparent;
+  border:0;border-bottom:1px solid var(--stage-rule-2);border-radius:0;padding:0 0 2px;
+  font-family:var(--font-mono);font-size:clamp(20px,2.4vh,26px);color:var(--stage-fg);
+  letter-spacing:-.01em;font-variant-numeric:tabular-nums;outline:none}
+figure.demo .num-row input::-webkit-outer-spin-button,figure.demo .num-row input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+figure.demo .num-row input:focus{border-bottom-color:var(--signal-500)}
+figure.demo .num-unit{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--stage-muted)}
+figure.demo.light .num-row input{color:var(--ink-900);border-bottom-color:var(--ink-900)}
+figure.demo.light .num-unit{color:var(--text-muted)}
+/* PINHOLE CALCULATOR: three pages, one strip that never moves (C9, S18).
+   The tab row is as wide as its three chips; every other cell is one pinned
+   width and one pinned height - tall enough for a cell that carries a chip
+   row under its value, so a page without chips is the same height. */
+figure.demo.pc .controls > .ctl.tabs{flex:0 0 auto;grid-column:auto}
+figure.demo.pc .ctl.tabs .states{width:auto}
+figure.demo.pc .ctl.tabs .states button{flex:0 0 auto;padding-left:10px;padding-right:10px}
+figure.demo.pc .controls > .ctl.num,figure.demo.pc .controls > .ctl.stp{flex:0 0 196px;width:196px;min-width:0;
+  min-height:calc(clamp(20px,2.4vh,26px) * 1.2 + 70px);box-sizing:border-box}
+figure.demo.pc .ctl .states{margin-top:6px}
+/* the film names are longer than a stop; the cell stays 196 px (C9) */
+figure.demo.pc .ctl.stp.films .stp-v{font-size:clamp(12px,1.5vh,15px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+figure.demo.pc .ctl.stp.films .states .st{padding-left:0;padding-right:0;flex:1 1 0;min-width:0}
+/* the maker's data sheet, under the film on the sheet: a canvas holds no link */
+figure.demo.pc .pc-sheet{position:absolute;z-index:2;font-family:var(--font-mono);font-size:9px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--signal-500);text-decoration:underline;
+  text-underline-offset:3px}
 figure.demo .ctl.stp.answering label::after{content:' — answering';
   font-size:9px;letter-spacing:.16em;color:var(--stage-muted)}
 /* EVERY CELL PUTS ITS NAME IN THE SAME PLACE. `.ctl label` is a flex row that
@@ -8461,6 +8700,9 @@ figure.demo.ld{border-left:0;border-right:0}
 figure.demo.ld .viewbar{position:absolute;top:0;right:0;z-index:3;display:flex;align-items:stretch;gap:0}
 figure.demo.ld .viewbar .fs,figure.demo.ld .viewbar .zoom.top{position:static;height:26px;box-sizing:border-box;border-left:0}
 figure.demo.ld .viewbar .fs{border-right:1px solid var(--stage-rule-2)}
+/* the bar's left end is closed: its first box carries the left rule the others drop (Batu, 11-09: the open line) */
+figure.demo.ld .viewbar>:first-child{border-left:1px solid var(--stage-rule-2)}
+figure.demo.ld.light .viewbar>:first-child{border-left-color:var(--ink-900)}
 figure.demo.ld .viewbar .fs:last-child{border-right:0}
 figure.demo.ld .viewbar .fs.off{color:var(--ink-400);cursor:default;pointer-events:none}
 /* only the room switch shows a pressed state; Light mode and Leave full screen say what they do next and stay quiet */
@@ -8472,6 +8714,7 @@ figure.demo.ld .ld-acts{display:flex;flex-direction:column;align-self:stretch}
 figure.demo.ld .ld-acts .states{margin-top:auto}
 /* full screen: the strip runs the whole width, like the stage above it */
 figure.demo.ld:fullscreen .controls,figure.demo.ld.fs-on .controls{width:100%}
+/* the stage's height is set from where it stands on the page (audit F11); this is the fallback */
 figure.demo.ld .stage{aspect-ratio:auto;height:max(560px,calc(100vh - 250px))}
 figure.demo.ld .stage canvas{width:100%;height:100%}
 figure.demo.light:fullscreen,figure.demo.light.fs-on{background:var(--k-stage)}
@@ -8483,11 +8726,25 @@ figure.demo.light:fullscreen::backdrop{background:var(--k-stage,#FFFFFF)}
    measured off the tallest state - a camera selected, with several rows - and
    the strip is 96-128 px whatever is in it. 104 holds every state the panel
    actually has and leaves the stage its 70%. */
-figure.demo .ld-cell{min-height:104px}
-figure.demo .ld-slot{min-height:32px;display:flex;align-items:center}
+/* 104 was measured before a light had its rows: a light alone is 132 and a
+   light on a stand 159 (ON · Detach). One height means the tallest state,
+   measured 11-09 at 1440 x 900, and the strip stays under the ceiling. */
+/* THREE ROWS, 11-09: the cell is a wrapping flex box; its label sits beside
+   the slot on the first row instead of above it, so the whole state fits
+   under S2's 128 px strip. The height is the tallest state's, pinned. */
+figure.demo .ld-cell{display:flex;flex-wrap:wrap;align-items:center;align-content:flex-start;min-height:88px}
+figure.demo .ld-cell>label{flex:0 0 auto;width:72px;margin:0 8px 0 0}
+figure.demo .ld-cell>.ld-slot{flex:1 1 0;min-height:30px}
+figure.demo .ld-cell>.ld-blk{flex:0 0 100%;margin-top:0}
+figure.demo .ld-palrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+figure.demo .ld-palrow .ld-pal{margin-top:5px}
+figure.demo .ld-mate{margin-top:5px}
+figure.demo .ld-grid{margin-top:5px}
+figure.demo .ld-slot{min-height:30px;display:flex;align-items:center}
 figure.demo .ld-slot input[type=range]{flex:1 1 auto;max-width:360px}
 figure.demo .ld-line{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-figure.demo .ld-row{display:flex;align-items:center;gap:6px;margin-top:7px;min-width:0}
+figure.demo .ld-row{display:flex;align-items:center;gap:6px;margin-top:5px;min-width:0}
+figure.demo .ld-row .ld-k:not(:first-child){margin-left:10px}
 figure.demo .ld-k{font-family:var(--font-mono);font-size:8px;letter-spacing:.14em;color:var(--stage-muted);width:52px;flex:0 0 auto}
 figure.demo.light .ld-k{color:var(--text-muted)}
 figure.demo .ld-row .chips{gap:4px}
@@ -8508,6 +8765,22 @@ figure.demo.ld .viewbar .fs.roomedit{min-width:170px;text-align:center}
 figure.demo.ld .viewbar .fs.cones{min-width:104px;text-align:center}
 figure.demo.ld .viewbar .fs.gnd{min-width:96px;text-align:center}
 figure.demo.ld .viewbar .fs:not(.gnd):not(.cones):not(.gridsize):not(.roomedit){min-width:150px;text-align:center}
+/* NARROW (audit F2): under 1300 px the bar was 1200 px wide and covered the
+   bench's head. Every box keeps a fixed width, a smaller one. */
+@media (max-width:1300px){
+  figure.demo.ld .viewbar .fs.gridsize{min-width:92px}
+  figure.demo.ld .viewbar .fs.roomedit{min-width:140px}
+  figure.demo.ld .viewbar .fs.cones{min-width:88px}
+  figure.demo.ld .viewbar .fs.gnd{min-width:80px}
+  figure.demo.ld .viewbar .fs:not(.gnd):not(.cones):not(.gridsize):not(.roomedit){min-width:120px}
+  figure.demo.ld .viewbar .fs{padding-left:6px;padding-right:6px;letter-spacing:.08em}
+  figure.demo.ld .viewbar .zoom.top{padding:0 6px;gap:6px}
+  figure.demo.ld .viewbar .zoom.top label{min-width:0;width:auto}
+  figure.demo.ld .viewbar .zoom.top input[type=range]{flex:0 0 48px;width:48px}
+  figure.demo.ld .viewbar .zoom.top label{font-size:8px}
+  figure.demo.ld .viewbar .fs.clear{min-width:84px}
+}
+figure.demo.ld .viewbar .fs.clear{min-width:104px}
 
 /* ============================================================
    LIGHT METER — a part, not only a page
@@ -8559,6 +8832,19 @@ figure.demo .lm-wrap > .lm{flex:0 1 294px;min-width:220px}
   figure.demo .lm-wrap > .lm{flex:1 1 100%}
   figure.demo .lm-stage{aspect-ratio:auto}
 }
+/* ON A LECTURE PAGE AND IN FULL SCREEN, THE HEIGHT DECIDES.
+   His rule, said more than twice and now written here: an instrument has to
+   hold at both sizes, and what is left over is margin — never a crop. Both
+   panes were sized from the WIDTH (the picture keeping 4:3, the body keeping
+   its portrait shape), and a lecture page hands the stage a fixed height: so
+   both came out taller than the stage and were cut off at the foot — the ball
+   lost its bottom, the meter lost its top and bottom, and two grey bands stood
+   where the picture should have been. Sized from the height they always fit
+   whole, side by side, centred, with the remainder as margin. */
+/* (a height-driven version of these two panes was tried here on 16-09 and
+   collapsed the canvases in full screen - S5, G9 - so it is out again. What
+   the light meter needed was the stage growing on the page, which is the rule
+   written beside .stage.wide above.) */
 figure.demo.light .lm-v{color:var(--ink-900)}
 
 /* ============================================================
@@ -8887,6 +9173,12 @@ figure.demo .controls .lm-stepper .st{min-width:34px;padding:4px 0;font-size:15p
    refuses to push while a line is still waiting.
    ============================================================ */
 .gen-say{color:var(--signal-500)}
+/* AND THE ORANGE HAS TO SURVIVE THE PAGE'S OWN COLOURS. On a lecture page the
+   line, the list and the table each set their own ink at a higher specificity,
+   so a generated line carried the class and none of the colour: the tick sat
+   under it and the sentence still read as his. 13-09-2026, on week 3. */
+body.pages .step.active .gen-say,body.present .step.active .gen-say{color:var(--signal-500)}
+.gen-say p,.gen-say li,.gen-say td,.gen-say th,.gen-say h3,.gen-say b,.gen-say em,.gen-say span:not(.op):not(.res){color:inherit}
 figure.demo .readout .v.gen-say{color:var(--signal-500)}
 .gen-tick{display:inline-flex;align-items:center;gap:6px;margin-top:6px;
   padding:2px 8px 3px;border:1px solid var(--signal-500);background:transparent;
@@ -8930,3 +9222,75 @@ body.pages .step.active .golink{width:max-content}
 
 /* the two presses that empty the cumulative request list (edit mode only) */
 .ed-reqs-clear{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+
+
+/* ---- his Keynote round of 14-09-2026 ---------------------------------- */
+/* A SQUARE MODEL, CENTRED, with the words under it (p05): the stage keeps a
+   square and takes the height left over, and the hands lie across its foot. */
+body.pages .step.active figure.demo.model[data-shape=square] .stage{aspect-ratio:1/1;width:auto;max-width:100%;margin:0 auto;flex:0 1 auto;min-height:0;height:100%}
+body.pages .step.active figure.demo.model[data-shape=square]{align-items:center}
+/* THE FORMULA AS THE PAGE (p16): "make this bigger and centred". */
+.formula.big,body.pages .step.active .formula.big,body.present .formula.big,body.present .step.active .formula.big{font-size:clamp(40px,9vh,104px);line-height:1.3;border:0;background:transparent;padding:16vh 0 12vh;margin:0}
+.formula.big .fnote,body.pages .step.active .formula.big .fnote{font-size:clamp(9px,1.3vh,13px);margin-top:3vh}
+/* MATH TIME (p21): a big red button, and nothing else on the stage */
+figure.demo.model[data-demo=horn] .stage{display:flex;align-items:center;justify-content:center}
+.horn-btn{appearance:none;border:0;cursor:pointer;width:clamp(120px,22vh,220px);height:clamp(120px,22vh,220px);border-radius:50%;background:var(--signal-500);color:var(--paper-100);font-family:var(--font-mono);font-size:clamp(10px,1.4vh,13px);letter-spacing:.16em;text-transform:uppercase;box-shadow:0 0 0 clamp(8px,1.6vh,16px) rgba(255,59,0,.18);transition:transform .08s}
+.horn-btn:active{transform:scale(.94)}
+.horn-btn:focus-visible{outline:3px solid var(--marker-500);outline-offset:4px}
+
+/* ---- his Keynote round of 16-09-2026 ---------------------------------- */
+/* A MODEL'S HANDS ARE AS LONG AS THEY NEED TO BE, AND THE BAR FOLLOWS THEM
+   (p05: "Sliders don't need to be that long and the slider window has to follow
+   this size"). A slider is a fixed, comfortable length; the dark strip under a
+   model is as wide as the hands it holds and sits centred under the stage.
+   Every model, every week. */
+/* THE PANEL IS AS WIDE AS THE SCREEN ABOVE IT; THE HANDS INSIDE IT ARE NOT.
+   Corrected by him, 16-09-2026, on the aperture page: "bu panellerin üstteki
+   ekranla aynı uzunlukta olması ama slider alanının orada bulunması
+   gerekiyordu." The bar was made content-width this morning, which shrank the
+   whole panel under the stage; what has to be short is the slider area, sitting
+   in the middle of a panel that still runs the full width of the instrument. */
+figure.demo.model .controls{align-self:stretch;width:100%;max-width:100%;margin-inline:0;justify-content:center}
+figure.demo.model .controls > .ctl{flex:0 0 clamp(220px,22vw,340px);min-width:0}
+figure.demo.model .controls > .ctl.stp,figure.demo.model .controls > .ctl.wide{flex:0 0 auto}
+/* A NAME UNDER EACH LETTER (p16): each symbol in a column, its name under it */
+.formula.terms{display:flex;justify-content:center;align-items:flex-start;flex-wrap:wrap;column-gap:0}
+.formula.terms .term{display:inline-flex;flex-direction:column;align-items:center}
+.formula.terms .term .tlabel{font-family:var(--font-mono);font-size:clamp(10px,1.5vh,15px);letter-spacing:.14em;text-transform:uppercase;color:var(--on-paper-quiet);line-height:1.3;margin-top:.9vh;min-height:1.3em;white-space:nowrap}
+.formula.terms .op{align-self:flex-start}
+/* two formulas on one page (Math Time): half the air each */
+.formula.big.two,body.pages .step.active .formula.big.two,body.present .step.active .formula.big.two{font-size:clamp(34px,7vh,84px);padding:3vh 0 2vh}
+/* THE LINE UNDER A FORMULA, CENTRED (p16) */
+body.pages .step.active [data-h=centre] > p.line{text-align:center;margin-inline:auto}
+/* TEN STOPS A ROW, ONE STOP A COLUMN, BIGGER (p24) */
+/* ten columns of figures, nine arrows between them and a label column have to
+   stand on one line: the room per column is about 80px, so the figures are set
+   to fit it and the gap between columns is thin */
+table.spec.stops td.v{font-size:clamp(13px,2.2vh,22px);padding-right:.5vw;white-space:nowrap}
+/* SHORTER — his note of 16-09-2026, written inside a red box drawn round this
+   column alone: the names (Aperture · Shutter · ISO) were carrying a quarter of
+   the table's width between them, which is room the ten columns of figures
+   needed. The column is as wide as the longest name and no wider. */
+table.spec.stops td:first-child{width:1%;white-space:nowrap;padding-right:1.1vw}
+/* "Utilize the space for better infographic communication" - his note on this
+   page, 16-09-2026. The ten columns sat in the top two thirds of the page with
+   the bottom third empty, so the numbers a room has to read from the back were
+   set at the size of a footnote. The rows breathe and the values are set large;
+   the page check is what keeps them from running over. */
+/* the width is the binding constraint, not the height: ten columns and their
+   labels have to stand on one line, and at 38px the last of them ran off the
+   page. The room that was going spare is vertical, so the rows take it and the
+   figures stay at the size that fits. */
+body.present .step.active table.spec.stops td.v,body.pages .step.active table.spec.stops td.v{font-size:clamp(13px,2.2vh,22px)}
+body.present .step.active table.spec.stops td,body.pages .step.active table.spec.stops td{padding-top:1.5vh;padding-bottom:1.5vh}
+body.present .step.active table.spec.stops tr.arrows td,body.pages .step.active table.spec.stops tr.arrows td{padding-top:1.1vh;padding-bottom:0}
+/* THE BUTTON ALONE, ON WHITE (p21): no word on it */
+figure.demo.model.light[data-demo=horn] .stage{background:transparent}
+figure.demo.model[data-demo=horn] .horn-btn{width:clamp(180px,34vh,380px);height:clamp(180px,34vh,380px)}
+/* the button's halo is round, not cut square by its stage; no frame line over it */
+figure.demo.model[data-demo=horn],figure.demo.model[data-demo=horn] .stage{overflow:visible;border:0;box-shadow:none}
+figure.demo.model.light[data-demo=horn]{background:transparent;border-top:0}
+/* A HAND THAT IS FOLDED AWAY KEEPS ITS ROOM (dof, 16-09-2026): invisible and
+   dead until its press turns it on, so no cell beside it moves (S18). */
+.controls .ctl .ctl.folded{margin-top:8px;padding:0}
+.controls .ctl .ctl.folded.away{visibility:hidden}

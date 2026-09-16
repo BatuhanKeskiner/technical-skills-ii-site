@@ -56,8 +56,16 @@ const LM_LCD = { x: 330.7 - 228, y: 376.0 - 38, w: 326.7, h: 125.3 };
    ring put the same word on the meter twice. MEASURE keeps its label: the
    button on the right edge is unmarked on the real meter, so that word is the
    only thing saying what it does. */
+/* HIS ROUND OF 16-09-2026, slide 26: "Make ISO button working too." The ISO
+   slide sits low on the face and was photograph only, so the one control a
+   student actually reaches for on a real meter did nothing here. Its place was
+   read off the photograph the same way the other two were: the pale slide at
+   362,595 of the 1000px picture, which is 134,557 in the body's own crop. The
+   word ISO is printed on the body, so the ring carries no label of its own -
+   the same reason MODE has none. */
 const LM_BTNS = [
   { id: 'mode',    x: 125, y: 235, r: 42, label: '',        side: 'right' },
+  { id: 'iso',     x: 134, y: 557, r: 34, label: '',        side: 'right' },
   { id: 'measure', x: 512, y: 330, r: 40, label: 'MEASURE', side: 'right' },
 ];
 
@@ -253,7 +261,7 @@ function lmRound(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function lmDrawScene(ctx, w, h, look, label, art, fire) {
+function lmDrawScene(ctx, w, h, look, label, art, fire, read) {
   const L = look;
   const rgb = (a) => 'rgb(' + Math.round(a[0]) + ',' + Math.round(a[1]) + ',' + Math.round(a[2]) + ')';
 
@@ -306,7 +314,10 @@ function lmDrawScene(ctx, w, h, look, label, art, fire) {
   /* THE SUBJECT: one sphere on the floor, which is the object every lighting
      lesson has ever been taught on, and its shadow, which is the part that
      says how big the source was. */
-  const cx = w * 0.50, cy = horizon + h * 0.02, rr = h * 0.155;
+  /* HIS SECOND ROUND, 16-09-2026, slide 26: "Make the object and light meter
+     here bigger." The ball and the meter standing at it are the subject of the
+     picture; they were drawn as if the room were the subject. */
+  const cx = w * 0.50, cy = horizon + h * 0.02, rr = h * 0.20;
   const away = cx - fx;
   const dir = away === 0 ? 1 : away / Math.abs(away);
   ctx.save();
@@ -358,7 +369,7 @@ function lmDrawScene(ctx, w, h, look, label, art, fire) {
        meter hangs in front of it, which is exactly how it is held. Its centre
        inside the body is 262, 82 of the 539 x 925, the same figure the meter
        guide points at when it names the Lumisphere. */
-    const mh = h * 0.30, mw = mh * LM_BODY.w / LM_BODY.h;
+    const mh = h * 0.38, mw = mh * LM_BODY.w / LM_BODY.h;
     const bx2 = cx, by2 = cy - rr * 0.35;                    /* the ball's middle */
     const mx = bx2 - (262 / LM_BODY.w) * mw;
     const my = by2 - (82 / LM_BODY.h) * mh;
@@ -370,6 +381,40 @@ function lmDrawScene(ctx, w, h, look, label, art, fire) {
     ctx.drawImage(art.meter, LM_BODY.x, LM_BODY.y, LM_BODY.w, LM_BODY.h,
                   mx, my, mw, mh);
     ctx.restore();
+
+    /* AND THE NUMBERS ARE ON IT. His second round, 16-09-2026, slide 26: "Make
+       the results visible on this light meter screen too." The meter standing at
+       the subject was a photograph of a meter with a blank screen, so the room
+       had to look from the picture to the big meter and back to see what it had
+       read. The screen sits at a fixed place inside the body, so its corner and
+       its size come off the same crop the picture does. */
+    if (read) {
+      const lx2 = mx + (LM_LCD.x / LM_BODY.w) * mw;
+      const ly2 = my + (LM_LCD.y / LM_BODY.h) * mh;
+      const lw2 = (LM_LCD.w / LM_BODY.w) * mw;
+      const lh2 = (LM_LCD.h / LM_BODY.h) * mh;
+      ctx.save();
+      ctx.fillStyle = '#0B1512';
+      ctx.textBaseline = 'alphabetic';
+      /* THE SAME SCREEN AS THE METER BESIDE IT. His word, 16-09-2026: "bu iki
+         reading'in ekranı farklı, aynı ekran olsun (çalışan sağdaki)." The
+         small meter was lettered by hand - its own sizes, "ISO" typed over the
+         ISO already printed on the glass - so the two screens disagreed. It is
+         drawn now from the same grid the big one uses: the film speed, the
+         shutter, the aperture and its tenth, in the same places, in the same
+         seven-segment face, only smaller. */
+      const lk2 = lw2 / 490;
+      const seg2 = (p2, text) => {
+        ctx.font = Math.round(p2.h * lk2) + 'px "Seven Segment", monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText(text, lx2 + p2.x * lk2, ly2 + (p2.y + p2.h) * lk2);
+      };
+      seg2(LM_P.isoNo, String(read.iso));
+      seg2(LM_P.shut, lmShutterText(read.shutter));
+      seg2(LM_P.ap, String(read.stop));
+      seg2(LM_P.tenth, String(read.tenth));
+      ctx.restore();
+    }
   }
 
   /* THE POP. A flash meter is pressed and the head fires: the room is white
@@ -573,6 +618,14 @@ function lightMeter(host, opts) {
     }
     e.preventDefault();
     if (b === 'mode') setMode(state.mode === 'ambient' ? 'flash' : 'ambient');
+    /* the ISO slide steps the film speed, and comes round again at the top -
+       the one thing on a real meter a student changes before every roll. A held
+       reading belongs to the speed it was taken at, so it goes. */
+    else if (b === 'iso') {
+      ii = (ii + 1) % LM_ISO.length;
+      state.held = null;
+      changed();
+    }
     else measure();
   });
   cv.addEventListener('pointermove', (e) => {
@@ -765,15 +818,15 @@ function mountLightMeter(fig) {
     [15, 'open sun — sunny 16'],
     [14, 'hazy sun'],
     [13, 'bright overcast'],
-    [12, 'overcast'],
-    [11, 'heavy overcast, or open shade'],
+    /* 17-09-2026: the ISO 100 table puts heavy overcast and open shade at 12 */
+    [12, 'heavy overcast, or open shade'],
     [10, 'the hour after sunrise'],
     [9,  'window light indoors'],
     [8,  'a bright room'],
-    [7,  'a room with the lamps on'],
+    [7,  'a room with the lamps on, or a lit street'],
     [5,  'a dim room'],
     [4,  'candlelit'],
-    [2,  'a lit street at night'],
+    [2,  'lit buildings, seen from afar'],
     [0,  'a dark street'],
     [-2, 'full moon on snow'],
   ];
@@ -831,9 +884,9 @@ function mountLightMeter(fig) {
       st.headText = evfToPow(r.evf).toFixed(1);
       st.amb = 0.24 + p2 * 0.55;
       st.glow = 0.35 + p2 * 0.75;
-      lmDrawScene(sg, sw2, sh2, st, 'studio flash', sArt, r.firing);
+      lmDrawScene(sg, sw2, sh2, st, 'studio flash', sArt, r.firing, r);
     } else {
-      lmDrawScene(sg, sw2, sh2, lmLook(r.ev100), sceneName(r.ev100), sArt, 0);
+      lmDrawScene(sg, sw2, sh2, lmLook(r.ev100), sceneName(r.ev100), sArt, 0, r);
     }
   }
   new ResizeObserver(() => {
@@ -898,7 +951,10 @@ function mountLightMeter(fig) {
       ? 'the head at ' + evfToPow(r.evf).toFixed(1)
         + (evfToPow(r.evf) >= LM_POW.max - 0.05 ? ' — full power' : '')
         + ' · f/' + lmAperture(Math.sqrt(Math.pow(2, r.evf))).stop + ' at ISO 100'
-      : sceneName(r.ev100) + ' · EV ' + (Math.round(r.ev100 * 10) / 10).toFixed(1);
+      /* his second round, 16-09-2026, slide 26: "Remove EV so they won't get
+         confused." The day is the thing a student learns to recognise; the
+         number is a second scale nobody has been taught yet. */
+      : sceneName(r.ev100);
   }
 
   const scRow = slider(controls, {

@@ -1,22 +1,55 @@
 /* ============================================================
-   A2.1 · Aperture and depth of field
-   Top panel: the frame, with three subjects rendered at their
-   true defocus. Bottom panel: the plan view, with the zone of
-   acceptable sharpness drawn against the scale.
+   B2 · Depth of field
+
+   HIS KEYNOTE OF 16-09-2026, slide 28:
+     "Keep the subject centred in the scale. Don't resize the
+      metres scale. Move the camera closer instead, so we can see
+      the change of DOF in a fixed place. Also I don't understand
+      the relationship with the two other subjects in the frame.
+      Can it be a landscape only, so we can see the scale and the
+      blurriness amount?"
+   And the same day: "bir de manuel focus ekler misin? biz focusu
+   değiştirdiğimizde nereler netleniyor görelim" — a manual focus,
+   "açılıp kapanabilen bir şey olsun ve açıldığında çıksın sadece.
+   Ana denklemde değil, sadece fokus değişince ne olduğunu
+   göstermek için."
+
+   SO THE INSTRUMENT IS ONE ROAD, SEEN TWICE.
+   The plan is a fixed scale in metres, nought to twenty, with a
+   post every two metres and the subject standing still at ten.
+   The camera moves along it. The frame above is that same road
+   from the camera's place: the posts carry the same numbers, and
+   each one is blurred by exactly as much as it is out of focus.
+   The band between the near and the far limit is drawn on both.
+
+   Focus follows the subject until manual focus is switched on;
+   then a hand appears in the same cell and the plane of focus is
+   the student's to move, and the posts answer.
+
+   C1 (three variable controls) is flexed here, by him, for the
+   fourth hand — and only while it is switched on.
    ============================================================ */
 
-const COC = 0.03;              /* circle of confusion, mm, 35 mm frame */
-const STOPS = [1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22];
+const DOF_STOPS = [1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22];
+const DOF_ROAD = 20;            /* the scale is nought to twenty metres, always */
+const DOF_SUBJECT = 10;         /* the subject stands here, always */
+/* THE TWO FORMATS THIS PAGE COMPARES. His second round, 16-09-2026, slide 29:
+   "option to switch between 6*9 and full frame. I want to show the doF is not
+   related with format." A format is a piece of film with a width, a height and
+   a circle of confusion of its own - the diagonal over 1500, the usual rule -
+   and with the same lens at the same distance the depth of field barely moves,
+   which is the thing he wants the room to see. */
+const DOF_FORMATS = {
+  'full frame': { w: 36, h: 24 },
+  '6×9': { w: 84, h: 56 },
+};
+const DOF_COC = Math.hypot(36, 24) / 1500;   /* full frame, mm — the default */
 
 function mountDof(fig) {
   const p = palette(fig);
   const stage = el('div', 'stage wide');
   fig.prepend(stage);
 
-  /* A NAME ON THE INSTRUMENT. In full screen the page's own heading is gone
-     and there is nothing on screen saying what this is. IG-01 02: the head is
-     the name and a three-noun eyebrow. Added to every instrument 08-09-2026 -
-     five of eleven had one, and on a wall the other six were anonymous. */
   const head = el('div', 'ts-head');
   head.append(el('span', 'ts-name', 'Depth of Field'),
               el('span', 'ts-sub', 'aperture · distance · focal length'));
@@ -26,164 +59,176 @@ function mountDof(fig) {
   const caption = fig.querySelector('figcaption');
   fig.insertBefore(controls, caption);
 
-  /* THE FORMAT IS THE FOURTH VARIABLE, and the one the old page left out.
-     Fig. 6 of last year's brief: "plan view; hold framing / hold lens". To
-     frame the same picture a larger format needs a longer lens, and a longer
-     lens at the same f-number gives a shallower zone - the whole "medium
-     format look" is that sentence. Hold the lens instead and the format only
-     crops; the depth does not move.
-
-     WHICH ONE IS HELD IS THE PAGE'S DECISION, not the student's (IG-01 06,
-     rule 01): a page about the look holds the framing, a page about cropping
-     holds the lens. `data-hold` pins it, `data-view` pins Frame / Plan / Both,
-     and pinning both keeps the strip at four cells. */
-  /* AND WHICH ONE IS HELD IS THE LESSON, SO IT IS A HAND AGAIN. It was pinned
-     by the page; his note of 09-09-2026 sent me back to the Cowork module this
-     instrument was ported from (Fig. 6, format-aspect-ratio), where the two
-     modes are a pair of chips INSIDE the lens cell - because they are about
-     the lens, and because the strip has four cells and no fifth. Comparing
-     the two is the whole argument: hold the framing and the format changes
-     the lens, and the depth with it; hold the lens and the depth does not move
-     at all, because the format only crops. `data-hold` still says where it
-     starts. */
   const VIEWS = ['frame', 'plan', 'both'];
   const state = {
-    stop: 2, focal: 85, dist: 3.0,
+    stop: 2, focal: 50, dist: 4.0, focus: 4.0, manual: false,
+    format: 'full frame', keepLens: true,
     mode: Math.max(0, VIEWS.indexOf(fig.dataset.view || 'both')),
-    fmt: 'ff',
-    hold: fig.dataset.hold === 'lens' ? 'lens' : 'framing',
   };
-  /* the formats a photograph is actually made on, with the diagonal that sets
-     both the crop factor and what a normal lens is */
-  const DFMT = [
-    { id: 'mft',  name: 'MFT',         w: 17.3, h: 13 },
-    { id: 'apsc', name: 'APS-C',       w: 23.6, h: 15.7 },
-    { id: 'ff',   name: 'Full frame',  w: 36,   h: 24 },
-    { id: 'gfx',  name: 'MF digital',  w: 43.8, h: 32.9 },
-    { id: '67',   name: '6×7',         w: 70,   h: 56 },
-    { id: '45',   name: '4×5',         w: 127,  h: 102 },
-  ];
-  const dfmt = () => DFMT.find((f) => f.id === state.fmt) || DFMT[2];
-  const dDiag = (f) => Math.sqrt(f.w * f.w + f.h * f.h);
-  const FF_DIAG = 43.27;
-  const crop = () => FF_DIAG / dDiag(dfmt());
-  /* THE CIRCLE OF CONFUSION DEPENDS ON WHICH THING IS BEING HELD, and this is
-     the part my version had wrong. Holding the FRAMING, every format is
-     enlarged to the same print, so the acceptable blur is the format's own
-     diagonal over 1500 — a bigger negative is enlarged less and forgives
-     more. Holding the LENS, the blur is judged on the sensor itself, so one
-     fixed full-frame figure applies to all of them — and that is exactly what
-     makes the format drop out of the equation and become a crop and nothing
-     else. His own module, ported (Fig. 6 of the 26-08 page). */
-  const FF_DIAG_MM = Math.hypot(36, 24);
-  const coc = () => (state.hold === 'framing' ? dDiag(dfmt()) : FF_DIAG_MM) / 1500;
-
-  /* Holding the framing means the lens IS the format: one metre of scene at
-     the subject, on every format, is f = width × distance / field. Not a
-     ratio nudge — the equation. */
-  const FIELD_MM = 1000;
-  const lensForFraming = (f) => (f || dfmt()).w * (state.dist * 1000) / FIELD_MM;
+  const film = () => DOF_FORMATS[state.format];
+  /* HIS WORD, 16-09-2026: "full frame'den 6x9'a geçerken aynı lensi
+     kullanıyorsak alan derinliği nasıl değişebilir? Burada kanıtlamak
+     istediğimiz şey tam olarak değişmeyeceği."
+     He is right, and the page exists to show exactly that. The circle of
+     confusion was scaled with the diagonal of the format - the convention for
+     comparing PRINTS of the same size - and that made the depth of field move
+     when the format changed with the same lens on, which is the opposite of
+     the lesson. The same lens at the same aperture at the same distance throws
+     the same image; a bigger film only holds more of it. So the circle stays
+     what it is on the film: 0.03 mm, one value, every format. */
+  const coc = () => 0.03;
 
   const view = canvas(stage, draw);
 
+  /* each hand as wide as its own longest reading: "Aperture f/22" is a short
+     cell and "Camera to the subject 9.0 m" is a long one, and cut to the same
+     width the long one loses its number to an ellipsis. */
   const fStop = slider(controls, {
-    label: 'Aperture', min: 0, max: STOPS.length - 1, step: 1, value: state.stop,
-    format: (v) => 'f/' + STOPS[v],
+    label: 'Aperture', min: 0, max: DOF_STOPS.length - 1, step: 1, value: state.stop,
+    format: (v) => 'f/' + DOF_STOPS[v], cls: 'dof-ap',
   });
-  const fFocal = slider(controls, { label: 'Focal length', min: 24, max: 200, step: 1, value: state.focal, unit: ' mm' });
-  const fDist = slider(controls, { label: 'Subject distance', min: 0.6, max: 12, step: 0.1, value: state.dist, unit: ' m', decimals: 1 });
-
-  const fFormat = stepper(controls, {
-    label: 'Format', ladder: DFMT.map((f) => f.id), value: state.fmt,
-    format: (id) => (DFMT.find((f) => f.id === id) || DFMT[2]).name,
-    onChange: (id) => {
-      state.fmt = id;
-      /* HOLDING THE FRAMING MEANS THE LENS ANSWERS. Change the format and the
-         focal length moves with it, so the subject stays the same size in the
-         frame - which is the only way two formats can be compared at all. */
-      if (state.hold === 'framing') syncFraming();
-      compute(); view.render();
-    },
+  const fFocal = slider(controls, {
+    label: 'Focal length', min: 24, max: 200, step: 1, value: state.focal, unit: ' mm',
+    cls: 'dof-fl',
   });
-  function syncFraming() {
-    const f = Math.round(lensForFraming());
-    state.focal = Math.max(+fFocal.min, Math.min(+fFocal.max, f));
-    fFocal.value = String(state.focal); fFocal._sync();
-  }
+  const fDist = slider(controls, {
+    label: 'Camera to the subject', min: 1, max: 9, step: 0.1, value: state.dist,
+    unit: ' m', decimals: 1, cls: 'dof-dist',
+  });
 
-  /* THE TWO MODES, IN THE LENS CELL, where his own module put them. The cell
-     keeps its size in both states (S18): the slider is always drawn, and
-     holding the framing takes the hand off it rather than removing it - the
-     number is then the format's answer, not a broken control (IG-02 P4). */
-  const lensCell = fFocal.closest('.ctl');
-  const holdRow = el('div', 'states');
-  const bFrame = el('button', 'st', 'Hold framing');
-  const bLens = el('button', 'st', 'Hold lens');
-  [bFrame, bLens].forEach((b) => { b.type = 'button'; holdRow.append(b); });
-  lensCell.append(holdRow);
-  function setHold(which) {
-    state.hold = which;
-    bFrame.setAttribute('aria-current', String(which === 'framing'));
-    bLens.setAttribute('aria-current', String(which === 'lens'));
-    lensCell.classList.toggle('answering', which === 'framing');
-    fFocal.disabled = which === 'framing';
-    if (which === 'framing') syncFraming();
+  /* THE FOURTH HAND, FOLDED AWAY. The cell holds the press; the hand is not
+     drawn at all until the press is on — and the room it will take is held
+     open by an empty block, so no cell beside it moves (S18), and no control
+     nobody can use is left on the strip (C7). */
+  /* one cell, four presses, a fixed width: the focus press and the three that
+     answer his slide 29. The width is pinned so unfolding the manual hand does
+     not move the cells beside it (S18) and the strip stays one row (C3). */
+  /* this strip is three hands and one group of presses, and the presses are
+     wider than a hand: the even columns of the ordinary bar would wrap it to
+     two rows (C3), so the strip names itself and takes its own columns. */
+  controls.classList.add('dof-strip');
+  const focusCell = el('div', 'ctl dof-opts');
+  focusCell.append(el('label', null, 'Focus · format'));
+  const focusRow = el('div', 'states');
+  const bManual = el('button', 'st', 'Manual focus');
+  bManual.type = 'button';
+  focusRow.append(bManual);
+  focusCell.append(focusRow);
+  controls.append(focusCell);
+  /* the press keeps one width, or the cells beside it move when the word
+     changes (C15, S18) */
+  pinWidth(bManual, ['Manual focus', 'Focus on the subject']);
+  /* THE FORMAT, AND WHETHER THE LENS TRAVELS WITH IT. His second round, slide
+     29. Four presses in one group, which is what the strip allows (C1): the
+     focus press, the two formats, and the one that decides what happens to the
+     lens when the format changes. Keep the lens on, and 6×9 sees a narrower
+     slice of the same scene with almost the same depth - which is the lesson.
+     Keep the lens off, and the focal length is scaled to hold the framing, so
+     the two formats can be compared frame for frame. */
+  const bFF = el('button', 'st', 'Full frame');
+  const b69 = el('button', 'st', '6×9');
+  const bKeep = el('button', 'st', 'Same lens');
+  [bFF, b69, bKeep].forEach((b) => { b.type = 'button'; focusRow.append(b); });
+  function setFormat(name) {
+    if (name === state.format) return;
+    const was = film();
+    state.format = name;
+    if (!state.keepLens) {
+      const k = Math.hypot(film().w, film().h) / Math.hypot(was.w, was.h);
+      state.focal = Math.max(24, Math.min(200, Math.round(state.focal * k)));
+      fFocal.value = String(state.focal);
+      if (fFocal._sync) fFocal._sync();
+    }
+    marks();
     compute(); view.render();
   }
-  bFrame.addEventListener('click', () => setHold('framing'));
-  bLens.addEventListener('click', () => setHold('lens'));
+  function marks() {
+    bFF.setAttribute('aria-current', String(state.format === 'full frame'));
+    b69.setAttribute('aria-current', String(state.format === '6×9'));
+    bKeep.setAttribute('aria-current', String(state.keepLens));
+  }
+  bFF.addEventListener('click', () => setFormat('full frame'));
+  b69.addEventListener('click', () => setFormat('6×9'));
+  bKeep.addEventListener('click', () => { state.keepLens = !state.keepLens; marks(); });
+  marks();
+  const fFocus = slider(controls, {
+    label: 'Focused at', min: 0.6, max: 20, step: 0.1, value: state.focus,
+    unit: ' m', decimals: 1,
+  });
+  const focusSliderCell = fFocus.closest('.ctl');
+  focusSliderCell.classList.add('folded');
+  focusCell.append(focusSliderCell);        /* inside the cell, not beside it */
 
-  legend(stage, [
-    { c: p.marker, label: 'In focus', kind: 'line' },
-    { c: p.signal, label: 'Depth limits', kind: 'dash' },
-    { c: p.muted, label: 'Subject plane' },
-  ]);
+  function setManual(on) {
+    state.manual = on;
+    bManual.setAttribute('aria-current', String(on));
+    bManual.textContent = on ? 'Focus on the subject' : 'Manual focus';
+    /* out of sight and dead while it is folded away, and its room kept, so no
+       cell beside it moves (S18) and nothing undoable is live (C7, C8) */
+    /* THE ROOM IT TAKES IS USED, NOT RESERVED. Hidden, the folded hand still
+       held its height and the strip carried a black band under the other three
+       cells - his note of 16-09 on this very strip. It stands there instead,
+       dead until the press is on: a control that cannot be used is dead, which
+       the rules allow; a panel with a hole in it is not. */
+    ctlOff(fFocus, !on);
+    if (!on) state.focus = state.dist;
+    else { fFocus.value = String(state.focus); fFocus._sync(); }
+    compute(); view.render();
+  }
+  bManual.addEventListener('click', () => setManual(!state.manual));
 
-  /* THE THREE GATES (O1 O2 O3), ANSWERED — four cells went to two.
-     Near limit and Far limit are DRAWN: the two dashed lines in the picture
-     are those limits, and the legend names them. A number for each is a
-     caption on a mark the picture already makes, so G2 removes both.
-     Total depth stays: nobody sets it, nothing in the picture states the
-     distance BETWEEN the two lines as a quantity, and it is the thing a
-     photographer acts on — whether the whole face is in.
-     Hyperfocal stays: it is derived, it is nowhere in the drawing, and it is
-     acted on directly — focus there and everything past half of it is sharp. */
+  /* HIS SECOND ROUND, 16-09-2026, slide 29: "Remove the text and make it
+     bigger." The legend sat over the top right of the picture, naming three
+     things the drawing already names on itself - the subject is the tall mark
+     at ten metres, the limits are the two dashed lines, the sharp band is the
+     band. The room it took goes to the photograph. */
+
+  /* THE THREE GATES (O1 O2 O3). Total depth: nobody sets it, nothing in the
+     drawing states the distance BETWEEN the two limits as a quantity, and it
+     is the thing a photographer acts on - whether the whole face is in.
+     Sharp from, to: the limits are drawn as the two dashed lines, but their
+     distances in metres are not written anywhere on the scale, and "from 3.5
+     to 4.6" is what a student carries to a shoot. Near and far are one row,
+     not two: they are one answer with two ends. */
   const out = readout(fig, [
     { id: 'depth', key: 'Total depth', cls: 'hi' },
-    /* THE NUMBER THAT MAKES TWO FORMATS COMPARABLE, and the one nobody is
-       taught: multiply the f-number by the crop factor and you have the
-       full-frame aperture that blurs the same. f/2.8 on APS-C is f/4.3 on full
-       frame; f/4 on 6×7 is f/2. Nobody sets it, nothing in the drawing states
-       it, and it is what a student acts on when choosing a body. */
-    { id: 'equiv', key: 'Blurs like, on full frame' },
+    { id: 'sharp', key: 'Sharp from, to' },
   ]);
 
   fsButton(stage, fig);
 
-  [fStop, fFocal, fDist].forEach((i) => i.addEventListener('input', () => {
+  [fStop, fFocal, fDist, fFocus].forEach((i) => i.addEventListener('input', () => {
     state.stop = +fStop.value;
     state.focal = +fFocal.value;
     state.dist = +fDist.value;
-    if (state.hold === 'framing') syncFraming();
+    state.focus = state.manual ? +fFocus.value : state.dist;
     compute();
     view.render();
   }));
 
   /* ---- optics ---- */
   function limits() {
-    const N = STOPS[state.stop];
-    const f = state.focal;                 /* mm */
-    const s = state.dist * 1000;           /* mm */
-    const H = (f * f) / (N * coc()) + f;   /* hyperfocal, mm — the format's own circle of confusion */
+    const N = DOF_STOPS[state.stop];
+    const f = state.focal;                       /* mm */
+    const s = (state.manual ? state.focus : state.dist) * 1000;   /* mm */
+    const H = (f * f) / (N * coc()) + f;
     const near = (s * (H - f)) / (H + s - 2 * f);
-    const farDen = H - s;
-    const far = farDen <= 0 ? Infinity : (s * (H - f)) / farDen;
-    return { N, f, s, H, near, far };
+    const far = H - s <= 0 ? Infinity : (s * (H - f)) / (H - s);
+    return { N: N, f: f, s: s, H: H, near: near, far: far };
   }
 
-  function fmt(mm) {
+  /* the blur a post that far away lands on the film, as a share of the
+     circle of confusion: 1 is the edge of sharp */
+  function blurFor(objM) {
+    const { N, f, s } = limits();
+    const o = Math.max(200, objM * 1000);
+    const b = Math.abs((f * f * (o - s)) / (N * o * (s - f)));
+    return b / DOF_COC;
+  }
+
+  function metres(mm) {
     if (!isFinite(mm)) return '∞';
-    return mm >= 1000 ? (mm / 1000).toFixed(2) + ' m' : Math.round(mm) + ' mm';
+    return (mm / 1000).toFixed(mm < 10000 ? 1 : 0) + ' m';
   }
 
   function compute() {
@@ -191,35 +236,20 @@ function mountDof(fig) {
     out.depth.innerHTML = isFinite(far)
       ? ((far - near) / 1000).toFixed(2) + '<span class="u">m</span>'
       : '∞';
-    const eq = STOPS[state.stop] * crop();
-    out.equiv.textContent = state.fmt === 'ff'
-      ? 'f/' + STOPS[state.stop] + ' — it is full frame'
-      : 'f/' + (eq < 10 ? eq.toFixed(1) : Math.round(eq))
-        + '  (×' + crop().toFixed(2) + ')';
+    out.sharp.textContent = metres(near) + ' — ' + metres(far);
   }
 
   /* ---- drawing ---- */
-  const SUBJECTS = [
-    { rel: -1.6, w: 0.30, h: 0.42, tag: 'Fore' },
-    { rel: 0, w: 0.42, h: 0.62, tag: 'Subject' },
-    { rel: 3.2, w: 0.22, h: 0.34, tag: 'Back' },
-  ];
-
-  function blurFor(objDistM) {
-    const { N, f, s } = limits();
-    const o = Math.max(300, objDistM * 1000);
-    /* defocus blur diameter on the sensor, mm */
-    const b = Math.abs((f * f * (o - s)) / (N * o * (s - f)));
-    return Math.min(26, (b / COC) * 1.5);
-  }
-
   function draw(ctx, w, h) {
     ctx.clearRect(0, 0, w, h);
     ctx.fillStyle = p.stage;
     ctx.fillRect(0, 0, w, h);
 
     const both = state.mode === 2;
-    const frameH = state.mode === 0 ? h : both ? h * 0.62 : 0;
+    /* THE PICTURE IS THE OUTPUT, so it takes the room. His word, 16-09-2026:
+       "Görüntü en önemli çıktı ve çok az yer kaplıyor." The plan view keeps
+       what it needs to carry the scale and no more. */
+    const frameH = state.mode === 0 ? h : both ? h * 0.76 : 0;
     const planTop = state.mode === 1 ? 0 : frameH;
     const planH = state.mode === 0 ? 0 : h - planTop;
 
@@ -230,127 +260,190 @@ function mountDof(fig) {
     }
   }
 
+  /* THE ROAD, FROM THE CAMERA'S PLACE. A landscape and nothing else in it:
+     the ground, a treeline on the horizon, and a post every two metres
+     carrying the number it has on the scale below. Each is blurred by exactly
+     how far out of focus it is. Drawn at true optics: a post 1.6 m tall, on a
+     35 mm frame 24 mm high, at z metres, through an f mm lens. */
+  const POST_M = 0.9, CAM_H = 0.9;
   function drawFrame(ctx, w, h) {
-    const pad = 26;
-    const fw = Math.min(w - pad * 2, (h - pad * 2) * 1.5);
-    const fh = fw / 1.5;
-    const x0 = (w - fw) / 2;
-    const y0 = (h - fh) / 2;
+    /* "Image bigger" - his second round, slide 29. The photograph takes the
+       room the legend used to take, with a hairline of margin. Its shape is the
+       film's own: 3:2 on full frame, 3:2 on 6×9 as well, but the film is bigger,
+       which is the point of the switch. */
+    const FILM_W = film().w, FILM_H = film().h;
+    const ar = FILM_W / FILM_H;
+    const pad = 6;
+    const fw = Math.min(w - pad * 2, (h - pad * 2) * ar);
+    const fh = fw / ar;
+    const x0 = (w - fw) / 2, y0 = (h - fh) / 2;
+    const camX = DOF_SUBJECT - state.dist;
+    const f = state.focal;
+    const horizon = y0 + fh * 0.34;
+    const up = (L, z) => fh * (L * f) / (z * FILM_H);
+    const across = (L, z) => fw * (L * f) / (z * FILM_W);
+    const ground = (z) => horizon + up(CAM_H, z);
+    /* HOW SOFT, IN THE PICTURE'S OWN PIXELS. His word, 16-09-2026: "Bunun fizik
+       kurallarına uygun hareket etmesi gerekiyor. Blur miktarının özellikle
+       kontrol edilmesi gerekiyor." The blur disc has a real size on the film -
+       b = f²·|o−s| / (N·o·(s−f)) millimetres - and what the eye sees is that
+       disc mapped onto the frame as it is drawn: so many millimetres of film
+       become so many pixels of picture. It was a hand-tuned multiple of the
+       circle of confusion before, which is a number with no units behind it.
+       This way the same lens on a bigger film also renders correctly: the disc
+       is the same size in millimetres and the film carries more of them. */
+    const softPx = (z) => Math.min(24, (blurFor(z) * DOF_COC / FILM_H) * fh);
 
     ctx.save();
+    ctx.beginPath(); ctx.rect(x0, y0, fw, fh); ctx.clip();
+
+    /* the sky, and the ground under it */
+    const sky = ctx.createLinearGradient(0, y0, 0, horizon);
+    sky.addColorStop(0, p.rule); sky.addColorStop(1, p.inset);
+    ctx.fillStyle = sky; ctx.fillRect(x0, y0, fw, horizon - y0);
+    const grd = ctx.createLinearGradient(0, horizon, 0, y0 + fh);
+    grd.addColorStop(0, p.inset); grd.addColorStop(1, p.stage);
+    ctx.fillStyle = grd; ctx.fillRect(x0, horizon, fw, y0 + fh - horizon);
+
+    /* the treeline on the horizon, at the blur of something far away */
+    const farSoft = softPx(300);
+    ctx.save();
+    if (farSoft > 0.3) ctx.filter = 'blur(' + farSoft.toFixed(1) + 'px)';
+    ctx.fillStyle = p.rule2; ctx.globalAlpha = 0.85;
     ctx.beginPath();
-    ctx.rect(x0, y0, fw, fh);
-    ctx.clip();
-    ctx.fillStyle = p.inset;
-    ctx.fillRect(x0, y0, fw, fh);
+    ctx.moveTo(x0, horizon);
+    for (let i = 0; i <= 48; i += 1) {
+      const t = i / 48;
+      const k = 0.014 + 0.010 * Math.abs(Math.sin(t * 9.7)) + 0.006 * Math.abs(Math.sin(t * 3.1));
+      ctx.lineTo(x0 + fw * t, horizon - fh * k);
+    }
+    ctx.lineTo(x0 + fw, horizon); ctx.closePath(); ctx.fill();
+    ctx.restore();
 
-    /* ground line */
-    const horizon = y0 + fh * 0.74;
-    line(ctx, x0, horizon, x0 + fw, horizon, p.rule2);
+    /* the road, and a rung across it at every post, so the ground carries the
+       same scale as the plan below */
+    ctx.save();
+    ctx.strokeStyle = p.rule2; ctx.lineWidth = 1; ctx.globalAlpha = 0.75;
+    [-1.5, 1.5].forEach((side) => {
+      ctx.beginPath();
+      let first = true;
+      for (let z = 0.8; z <= 80; z *= 1.06) {
+        const xx = x0 + fw / 2 + across(side, z), yy = ground(z);
+        if (first) { ctx.moveTo(xx, yy); first = false; } else ctx.lineTo(xx, yy);
+      }
+      ctx.stroke();
+    });
+    ctx.restore();
 
-    /* back to front, so nearer objects overlap */
-    const order = [2, 0, 1];
-    order.forEach((i) => {
-      const s = SUBJECTS[i];
-      const d = Math.max(0.4, state.dist + s.rel);
-      const scale = state.dist / d;
-      const bw = fw * s.w * scale;
-      const bh = fh * s.h * scale;
-      const cx = x0 + fw * (0.5 + (i - 1) * 0.26 * (0.6 + scale * 0.4));
-      const by = horizon;
-      const blur = blurFor(d);
-
+    /* the posts, far to near, each softened by how far out of focus it is */
+    const posts = [];
+    for (let m = 2; m <= DOF_ROAD; m += 2) posts.push(m);
+    posts.sort((a2, b2) => b2 - a2);
+    posts.forEach((m) => {
+      const z = m - camX;
+      if (z < 0.7) return;
+      const isSub = Math.abs(m - DOF_SUBJECT) < 0.01;
+      /* "Put the subject center of the scene" - his second round, slide 29. The
+         subject stands in the middle of the road; the other posts keep to the
+         verges, which is what makes the near ones leave the frame. */
+      const side = isSub ? 0 : ((m / 2) % 2 === 0 ? -0.9 : 0.9);
+      const px = x0 + fw / 2 + across(side, z);
+      const base = ground(z);
+      const ph = up(isSub ? POST_M * 1.3 : POST_M, z);
+      const pw = Math.max(1.2, across(0.09, z));
+      const soft = softPx(z);
       ctx.save();
-      ctx.filter = blur > 0.4 ? 'blur(' + blur.toFixed(1) + 'px)' : 'none';
-      ctx.strokeStyle = i === 1 ? p.marker : p.fg;
-      ctx.lineWidth = i === 1 ? 1.6 : 1.2;
-      ctx.fillStyle = p.inset;
+      if (soft > 0.3) ctx.filter = 'blur(' + soft.toFixed(1) + 'px)';
+      /* the rung it stands on */
+      ctx.strokeStyle = isSub ? p.marker : p.rule2;
+      ctx.globalAlpha = isSub ? 0.9 : 0.55;
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.rect(cx - bw / 2, by - bh, bw, bh);
-      ctx.fill();
+      ctx.moveTo(x0 + fw / 2 + across(-1.5, z), base);
+      ctx.lineTo(x0 + fw / 2 + across(1.5, z), base);
       ctx.stroke();
-      /* a head, so the thing reads as a subject */
-      ctx.beginPath();
-      ctx.arc(cx, by - bh - bw * 0.26, bw * 0.24, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = isSub ? p.marker : p.fg;
+      ctx.fillRect(px - pw / 2, base - ph, pw, ph);
+      ctx.fillRect(px - pw * 1.5, base - ph - pw * 0.7, pw * 3, pw * 0.8);
       ctx.restore();
-
-      if (blur <= 0.4 || i === 1) {
-        label(ctx, s.tag.toUpperCase() + ' · ' + d.toFixed(1) + ' M',
-          cx, by + 16, i === 1 ? p.marker : p.muted, 9, 'center');
+      if (isSub || m % 4 === 0) {
+        ctx.save();
+        if (soft > 0.3) ctx.filter = 'blur(' + Math.min(6, soft).toFixed(1) + 'px)';
+        label(ctx, String(m) + ' M', px, base + 13, isSub ? p.marker : p.muted,
+              isSub ? 11 : 9, 'center');
+        ctx.restore();
       }
     });
     ctx.restore();
 
-    ctx.strokeStyle = p.rule2;
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = p.rule2; ctx.lineWidth = 1;
     ctx.strokeRect(Math.round(x0) + 0.5, Math.round(y0) + 0.5, Math.round(fw), Math.round(fh));
-    label(ctx, 'FRAME · 3:2', x0, y0 - 8, p.muted, 9);
+    /* the name inside the frame: above it, it ran under the instrument's head */
+    label(ctx, 'WHAT THE CAMERA TAKES · ' + state.focal + ' MM', x0 + 8, y0 + 16, p.muted, 9);
   }
 
+  /* THE SCALE DOES NOT MOVE. Nought to twenty metres, the subject at ten,
+     and the camera walks up the road toward it. */
   function drawPlan(ctx, w, top, h) {
-    const { near, far, H } = limits();
+    const { near, far } = limits();
     const padL = 54, padR = 54;
-    const axisY = top + h * 0.58;
-    const maxM = Math.max(state.dist * 2.4, 6);
-    const x = (m) => padL + (Math.min(m, maxM) / maxM) * (w - padL - padR);
+    /* the axis sits high enough in its band for the two words under it - the
+       camera's distance and the road's name were cut off at the foot when the
+       picture took more of the stage */
+    const axisY = top + h * 0.46;
+    const x = (m) => padL + (Math.max(0, Math.min(m, DOF_ROAD)) / DOF_ROAD) * (w - padL - padR);
+    const camX = DOF_SUBJECT - state.dist;
 
-    /* scale */
     line(ctx, padL, axisY, w - padR, axisY, p.rule2);
-    for (let m = 0; m <= maxM; m += maxM > 12 ? 2 : 1) {
+    for (let m = 0; m <= DOF_ROAD; m += 2) {
       const tx = x(m);
       line(ctx, tx, axisY, tx, axisY + 5, p.rule2);
-      label(ctx, m + '', tx, axisY + 17, p.muted, 9, 'center');
+      label(ctx, String(m), tx, axisY + 17, p.muted, 9, 'center');
     }
-    label(ctx, 'DISTANCE · METRES', w - padR, axisY + 32, p.muted, 9, 'right');
+    label(ctx, 'THE ROAD · METRES', w - padR, axisY + 30, p.muted, 9, 'right');
 
-    /* depth band */
-    const nx = x(near / 1000);
-    const fx = isFinite(far) ? x(far / 1000) : w - padR;
+    /* what is sharp, drawn on the same scale */
+    const nx = x(camX + near / 1000);
+    const fx = isFinite(far) ? x(camX + far / 1000) : w - padR;
     ctx.save();
     ctx.fillStyle = p.band;
-    ctx.fillRect(nx, axisY - h * 0.34, Math.max(1, fx - nx), h * 0.34);
+    ctx.fillRect(nx, axisY - h * 0.36, Math.max(1, fx - nx), h * 0.36);
     ctx.restore();
-    line(ctx, nx, axisY - h * 0.34, nx, axisY, p.signal, [3, 3]);
-    line(ctx, fx, axisY - h * 0.34, fx, axisY, p.signal, [3, 3]);
+    line(ctx, nx, axisY - h * 0.36, nx, axisY, p.signal, [3, 3]);
+    line(ctx, fx, axisY - h * 0.36, fx, axisY, p.signal, [3, 3]);
+    if (!isFinite(far)) label(ctx, '∞', w - padR + 8, axisY - 4, p.signal, 11, 'left');
 
-    /* subject plane */
-    const sx = x(state.dist);
-    line(ctx, sx, axisY - h * 0.44, sx, axisY, p.marker);
-    label(ctx, 'SUBJECT', sx, axisY - h * 0.44 - 7, p.marker, 9, 'center');
+    /* the subject, standing still */
+    const sx = x(DOF_SUBJECT);
+    line(ctx, sx, axisY - h * 0.48, sx, axisY, p.marker);
+    label(ctx, 'THE SUBJECT', sx, axisY - h * 0.48 - 7, p.marker, 9, 'center');
 
-    /* camera */
-    ctx.save();
-    ctx.strokeStyle = p.fg;
-    ctx.lineWidth = 1.2;
-    ctx.beginPath();
-    ctx.rect(padL - 26, axisY - 11, 20, 22);
-    ctx.moveTo(padL - 6, axisY - 6);
-    ctx.lineTo(padL + 2, axisY);
-    ctx.lineTo(padL - 6, axisY + 6);
-    ctx.stroke();
-    ctx.restore();
-
-    /* hyperfocal marker, when it is on the scale */
-    const hm = H / 1000;
-    if (hm <= maxM) {
-      const hx = x(hm);
-      line(ctx, hx, axisY - h * 0.2, hx, axisY, p.muted, [2, 4]);
-      label(ctx, 'HYPERFOCAL ' + fmt(hm * 1000), hx, axisY - h * 0.2 - 6,
-            p.muted, 9, 'center');
+    /* the plane of focus, when the student is holding it */
+    if (state.manual) {
+      const px = x(camX + state.focus);
+      line(ctx, px, axisY - h * 0.3, px, axisY, p.digital || p.fg, [6, 4]);
+      label(ctx, 'FOCUSED AT ' + state.focus.toFixed(1) + ' M', px, axisY - h * 0.3 - 7,
+            p.digital || p.fg, 9, 'center');
     }
 
-    label(ctx, 'PLAN VIEW · ' + dfmt().name.toUpperCase() + ' · '
-          + state.focal + ' MM'
-          + (state.hold === 'framing' ? ' · LENS HELD TO THE FRAME'
-                                      : ' · LENS HELD, FORMAT ONLY CROPS'),
+    /* the camera, walking up the road */
+    const cx = x(camX);
+    ctx.save();
+    ctx.strokeStyle = p.fg; ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.rect(cx - 20, axisY - 11, 20, 22);
+    ctx.moveTo(cx, axisY - 6); ctx.lineTo(cx + 8, axisY); ctx.lineTo(cx, axisY + 6);
+    ctx.stroke();
+    ctx.restore();
+    label(ctx, 'THE CAMERA · ' + state.dist.toFixed(1) + ' M FROM THE SUBJECT',
+          cx - 20, axisY + 30, p.muted, 9, 'left');
+
+    label(ctx, 'PLAN VIEW · f/' + DOF_STOPS[state.stop] + ' · ' + state.focal + ' MM',
           padL - 26, top + 20, p.muted, 9);
   }
 
-  /* the hyperfocal is a distance and the plan draws distances, so it is
-     labelled H on the axis (G2) rather than repeated in a readout cell */
-  setHold(state.hold);
+  setManual(false);
   compute();
   return { render: view.render };
 }

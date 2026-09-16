@@ -5,7 +5,7 @@
    than as a picture. The camera stands in front of it, cut off
    at the bottom edge, and on its screen is the only thing that
    will survive: one rectilinear frame.
-     Pan · tilt with the arrow keys, or by dragging the picture.
+     Pan · tilt by dragging the picture.
      Zoom on the slider — 14 to 200 mm on a 36 mm frame.
    Full screen keeps the stage's proportions, so the
    composition on the wall is the composition on the laptop.
@@ -252,18 +252,17 @@ function mountTransform(fig) {
     });
   }
 
-  /* PAN AND TILT ARE A READING, NOT A SECOND HAND. The arrow keys turn the
-     camera and the keys are printed on the stage; dragging the picture turns
-     it too. A pad on top of both was a third way to do one thing, and it cost
-     the strip forty pixels it does not have - IG-01 11's verdict drawing for
-     this instrument shows PAN · TILT as a value, and that is what it is. */
+  /* PAN AND TILT ARE A READING, NOT A SECOND HAND. Dragging the picture turns
+     the camera. A pad on top of that was a second way to do one thing, and it
+     cost the strip forty pixels it does not have - IG-01 11's verdict drawing
+     for this instrument shows PAN · TILT as a value, and that is what it is. */
   /* PAN AND TILT ARE NOT WRITTEN DOWN AT ALL. They were a reading in the
      strip; his note of 09-09-2026 struck them from the photograph - "Pan ve
      Tilt bilgisine de ihtiyacimiz yok sadece zooma ihtiyacimiz var ... bu
      bilginin bir islevi var mi? yok" - and on 09-09-2026 from the model too.
      The camera turning is the whole of what the stage shows; a number beside
-     it is the same sentence said twice (W15). The keys are printed on the
-     stage and the drag turns it, so nothing is lost with the cell. */
+     it is the same sentence said twice (W15). The drag turns it, so nothing
+     is lost with the cell. */
 
   /* WHERE IT STANDS, on a plan of the room. The first pad is where the camera
      LOOKS; this one is where it IS, and the two are the only things a
@@ -334,7 +333,7 @@ function mountTransform(fig) {
   }
 
   /* ---- WALKING ---------------------------------------------------------
-     W A S D moves the camera, the arrows turn it, and the two are kept apart
+     W A S D moves the camera, dragging the picture turns it, and the two are kept apart
      on purpose: one changes where you are standing, the other only what you
      are pointing at, and confusing them is the commonest thing a first-year
      does with a zoom.
@@ -343,14 +342,17 @@ function mountTransform(fig) {
      up the grid, which is what walking is - and because the Position pad
      shows the camera's place on the floor, you watch yourself walk.
 
-     THE DECK ALSO WANTS THE ARROWS. Left and right turn the page, so this
-     listens in the CAPTURE phase and stops the event before the deck's own
-     handler ever sees it - but only while the instrument is under the pointer
-     or holding focus. Anywhere else on the page the arrows still turn pages. */
+     THE ARROWS BELONG TO THE DECK. They used to turn the camera as well, and
+     this listened for them in the capture phase whenever the pointer rested on
+     the picture - so a presenter who left the mouse there pressed right for the
+     next page and watched the camera turn instead, with nothing on the screen
+     to say why (week 2, page 26). The drag already turns it; the arrows came
+     out on his call, 11-09-2026: "zaten mouse ile donuyor". W A S D and Q E
+     stay, because the deck does not use them. */
   stage.tabIndex = 0;
   const mine = () => state.space === 'model'
     && (fig.contains(document.activeElement) || fig.matches(':hover'));
-  const STEP = 0.4, TURN = 5;
+  const STEP = 0.4;
   window.addEventListener('keydown', (e) => {
     if (!mine() || e.altKey || e.metaKey || e.ctrlKey) return;
     if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;
@@ -379,10 +381,6 @@ function mountTransform(fig) {
          and the picture disagreed, and the control is the one people read. */
       fZoom.dispatchEvent(new Event('input', { bubbles: true }));
     }
-    else if (k === 'ArrowLeft') state.pan = ((state.pan - TURN + 180 + 360) % 360) - 180;
-    else if (k === 'ArrowRight') state.pan = ((state.pan + TURN + 180 + 360) % 360) - 180;
-    else if (k === 'ArrowUp') state.tilt = Math.min(tiltLim(), state.tilt + TURN);
-    else if (k === 'ArrowDown') state.tilt = Math.max(-tiltLim(), state.tilt - TURN);
     else hit = false;
     if (!hit) return;
     e.preventDefault();
@@ -479,13 +477,13 @@ function mountTransform(fig) {
 
     /* EVERY KEY THAT DOES SOMETHING, in a cap, under the room it drives -
        the same row the test strip and the photogram carry, so a student who
-       has used one instrument already knows to look here. Walking and looking
-       are two groups because they are two different things, and telling them
-       apart is most of what this page is for. */
+       has used one instrument already knows to look here. Looking is not a
+       key any more: the drag turns the camera, and the arrows came off on
+       11-09-2026 because they took the deck's page turn under a resting
+       pointer - so their caps left this row with them. */
     /* clear of the camera, which stands in the right half */
     keyRow(ctx, F.x + F.w * 0.21, F.y + F.h - 16,
            [[['W', 'A', 'S', 'D'], 'walk'],
-            [['\u25C0', '\u25B6', '\u25B2', '\u25BC'], 'look'],
             [['Q', 'E'], 'zoom']],
            p.fg, p.muted);
   }

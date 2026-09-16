@@ -380,6 +380,8 @@
        slides in any form; strip it every time a page is shown. */
     page.step.classList.remove('ts-divider');
     railButtons.forEach((b, k) => b.setAttribute('aria-current', k === page.ci ? 'true' : 'false'));
+    /* after this page has been laid out, put every caption on its own picture */
+    requestAnimationFrame(() => { try { fitCaptions(page.step); } catch (e) { /* a caption is not worth a broken page */ } });
     /* The part label of the part being taught is the one that stands out; the
        others stand back. Which one that is changes as the lecture moves. */
     const part = page.chapter && page.chapter.getAttribute('data-part');
@@ -552,8 +554,42 @@
     },
   };
 
+  /* A CAPTION IS AS WIDE AS THE PICTURE IT NAMES, AND STARTS WHERE IT STARTS.
+     16-09-2026. The site already had the rule - "a caption always sits on the
+     right edge of what it describes" - and the layout could not keep it: a row
+     of photographs is sized from an assumed row height, so the box is as wide
+     as the pictures WOULD be, while the page's height paints them smaller. On
+     02 p31 the row asked for 581px and the photograph painted 368, so the words
+     hung 106px past it on each side. No stylesheet can know the painted width
+     of a replaced element - intrinsic sizing uses the natural one - so it is
+     measured after layout and the caption is set to it. Cheap: a handful of
+     rectangles, once per page and once per resize. */
+  function fitCaptions(step) {
+    if (!step) return;
+    step.querySelectorAll('figure.slide').forEach((fig) => {
+      const cap = fig.querySelector(':scope > figcaption');
+      if (!cap) return;
+      const media = [...fig.querySelectorAll('img, svg, canvas, .ph')].filter((m) => {
+        const b = m.getBoundingClientRect();
+        return b.width > 4 && b.height > 4;
+      });
+      if (!media.length) { cap.style.width = ''; cap.style.marginLeft = ''; return; }
+      const boxes = media.map((m) => m.getBoundingClientRect());
+      const l = Math.min.apply(null, boxes.map((b) => b.left));
+      const r = Math.max.apply(null, boxes.map((b) => b.right));
+      const fb = fig.getBoundingClientRect();
+      cap.style.width = Math.round(r - l) + 'px';
+      cap.style.minWidth = '0';
+      cap.style.marginLeft = Math.round(l - fb.left) + 'px';
+    });
+  }
+  window.fitCaptions = fitCaptions;
+
   window.addEventListener('resize', () => {
     const demo = pages[at].step.querySelector('figure.demo');
     if (demo && demo._demo && typeof demo._demo.resize === 'function') demo._demo.resize();
+    fitCaptions(pages[at].step);
   });
+  /* pictures arrive after the page does */
+  window.addEventListener('load', () => fitCaptions(pages[at].step));
 })();

@@ -511,7 +511,7 @@ window.TS2_WEEK = {
                to. Three sayings of one thing, and the one that was only words
                went. */
             { type: 'demo', id: 'transform', space: 'model', size: 'page', fig: 1,
-              caption: 'The room, the camera standing in it, and the cone in front of the lens — that cone is the frame. Walk with W A S D, look with the arrow keys, and the slider changes the focal length.' },
+              caption: 'The room, the camera standing in it, and the cone in front of the lens — that cone is the frame. Walk with W A S D, turn by dragging the picture, and the slider changes the focal length.' },
           ],
         },
       ],
@@ -1002,54 +1002,6 @@ window.TS2_WEEK = {
       ],
     },
 
-    {
-      id: 'c-dof',
-      title: 'Depth of Field',
-      n: 'B7',
-      part: 'b',
-      partTitle: 'Format',
-      head: { kicker: 'Part B · Format' },
-      steps: [
-        {
-          id: 's-b7',
-          layout: 'argument',
-          title: 'Depth of Field',
-          blocks: [
-            { type: 'line', place: { row: 1, col: 1, w: 'full' }, html: 'Depth of Field = focal length, aperture, distance. Keep the lens and the format changes nothing; keep the framing and it changes everything.' },
-            { type: 'text', place: { row: 2, col: 1, w: '1/2', ruled: true, rgrow: true }, paras: [
-              'Depth of field cares about the focal length, the aperture and the distance — not about the format itself. Put the same lens on a bigger format and nothing about the blur moves: the format only cuts a wider rectangle out of the same circle.',
-              'But you rarely keep the lens; you keep the picture. To frame the same thing a larger format needs a longer lens, and a longer lens at the same f-number gives a shallower zone of sharpness. That, and nothing more mysterious, is the “medium-format look” — and it is why the table beside this says <em>same framing</em>.',
-              'Multiply the f-number by the crop factor and you have the equivalent aperture: the full-frame f-number that would blur the same.',
-            ] },
-            /* HIS NOTE OF 09-09-2026 asked for a diagram from shotkit.com.
-               The file is behind Cloudflare's bot check and cannot be fetched,
-               and it is their drawing, which a public student site should not
-               be reprinting. Drawn here instead, in the house's own hand and
-               in whatever colour the page is: near limit, plane of focus, far
-               limit, and the third-in-front two-thirds-behind that everyone is
-               taught and nobody is shown. Swap it for his file if he wants
-               that one - the slot is a picture either way. */
-            { type: 'svg', place: { row: 3, col: 1, w: 'full', rgrow: true, fillH: true }, svg: '<svg viewBox="0 0 1000 300" role="img" aria-label="Depth of field: near limit, plane of focus and far limit, with the sharp zone between them" style="font-family:var(--font-mono);font-size:15px;letter-spacing:.08em"><rect x="430" y="60" width="390" height="150" fill="currentColor" opacity=".13"/><line x1="120" y1="210" x2="960" y2="210" stroke="currentColor" stroke-width="2" opacity=".45"/><rect x="26" y="150" width="78" height="60" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="112" cy="180" r="22" fill="none" stroke="currentColor" stroke-width="3"/><line x1="120" y1="180" x2="960" y2="52" stroke="currentColor" stroke-width="1" opacity=".35" stroke-dasharray="6 5"/><line x1="120" y1="180" x2="960" y2="242" stroke="currentColor" stroke-width="1" opacity=".35" stroke-dasharray="6 5"/><line x1="430" y1="60" x2="430" y2="230" stroke="currentColor" stroke-width="2" stroke-dasharray="7 5"/><line x1="560" y1="40" x2="560" y2="230" stroke="currentColor" stroke-width="4"/><line x1="820" y1="60" x2="820" y2="230" stroke="currentColor" stroke-width="2" stroke-dasharray="7 5"/><line x1="430" y1="252" x2="820" y2="252" stroke="currentColor" stroke-width="2"/><line x1="430" y1="245" x2="430" y2="259" stroke="currentColor" stroke-width="2"/><line x1="820" y1="245" x2="820" y2="259" stroke="currentColor" stroke-width="2"/><text x="430" y="34" text-anchor="middle" fill="currentColor">Near limit</text><text x="560" y="34" text-anchor="middle" fill="currentColor" font-weight="700">Plane of focus</text><text x="820" y="34" text-anchor="middle" fill="currentColor">Far limit</text><text x="625" y="278" text-anchor="middle" fill="currentColor">Depth of field</text><text x="495" y="200" text-anchor="middle" fill="currentColor" font-size="13" opacity=".75">one third</text><text x="690" y="200" text-anchor="middle" fill="currentColor" font-size="13" opacity=".75">two thirds</text><text x="65" y="238" text-anchor="middle" fill="currentColor" font-size="13" opacity=".75">camera</text></svg>' },
-            { type: 'sheet', title: 'Equivalent aperture', kicker: 'Same framing, against full frame', place: { row: 2, col: 2, w: '1/2', fillH: true }, items: [
-              ['f/2.8 on Micro Four Thirds', 'f/5.6'],
-              ['f/2.8 on APS-C', 'f/4.2'],
-              ['f/2.8 on full frame', 'f/2.8'],
-              ['f/4 on 6×7', 'f/1.9'],
-              ['f/5.6 on 4×5 in', 'f/1.6'],
-            ] },
-          ],
-        },
-        {
-          id: 's-b7i',
-          layout: 'stacked',
-          title: 'Depth of Field',
-          blocks: [
-            { type: 'demo', id: 'dof', fig: 12, pin: { hold: 'framing', view: 'both' },
-              caption: 'Step the format and the focal length answers, so the framing does not change. Hold the lens instead and watch the depth stand still.' },
-          ],
-        },
-      ],
-    },
     /* ================================================== Close */
     {
       id: 'c-close',

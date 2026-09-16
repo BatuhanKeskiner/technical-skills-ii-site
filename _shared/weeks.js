@@ -34,6 +34,17 @@ window.TS2_WEEKS = [
     desc: 'Aspect ratio, sensor and film size, crop factor, and what a crop costs. Gaze, composition, and the form exercise.',
     status: 'done',
   },
+  /* WRITTEN 13-09-2026. 'open' on his word the same day — "bu publish edilmiş
+     websitesi degil ki neden acilmasin ustunde calisiyoruz": the door is on
+     HIS contents page, the card says IN PROGRESS, and students cannot reach it
+     because PUBLISH.json does not carry the week. */
+  {
+    n: '3',
+    slug: '03-camera-i',
+    title: 'Camera I',
+    desc: 'Camera obscura, pinhole, aperture and shutter, focal length and depth of field — and the box you build from them.',
+    status: 'open',
+  },
 ];
 
 /* Not a teaching week — the format catalogue. Listed separately. */
