@@ -8,10 +8,19 @@
 
        d = 1.22 · λ · L / r
 
-   The pattern is drawn from that formula at the two lengths in
-   the student's hands, so the ring on the drawing is the ring
-   they will measure in the corridor — including the part where a
-   short corridor makes the rings too small to read with a ruler.
+   THE TWO THINGS IN THE STUDENT'S HANDS ARE THE TWO THINGS THEY
+   CAN MEASURE (his word, 20-09-2026: "mesafeyi ve ölçülen
+   uzunluğun verilip deliğin boyunun tespit edilmesi daha
+   mantıklı"). So the hands are the distance to the wall and the
+   ring measured ACROSS with a ruler — his own sentence names the
+   diameter, and a ruler laid across the ring is what anybody
+   actually does — so the sum here is d = 2.44 · λ · L / D, the
+   same formula with the radius written as half the diameter.
+   The hole is what the drawing answers with, which is the way
+   round it happens in the corridor, where nobody knows the hole
+   yet.
+   A short corridor still tells on itself: the ring goes too
+   small to read, and the answer with it.
 
    Numbers checked in _notes/PINHOLE-RESEARCH.md §1.
    ============================================================ */
@@ -25,24 +34,27 @@ function modelLaser(fig) {
   const controls = el('div', 'controls');
   fig.insertBefore(controls, fig.querySelector('figcaption'));
 
-  const state = { hole: 0.3, wall: 10 };
-  const fHole = slider(controls, {
-    label: 'The hole', min: 0.1, max: 0.8, step: 0.01, value: state.hole,
-    unit: ' mm', decimals: 2,
-  });
+  const state = { wall: 10, ring: 53 };
   const fWall = slider(controls, {
     label: 'How far the wall is', min: 1, max: 15, step: 0.5, value: state.wall,
     unit: ' m', decimals: 1,
   });
+  const fRing = slider(controls, {
+    label: 'What the ruler says · across the first dark ring',
+    min: 2, max: 240, step: 1, value: state.ring, unit: ' mm',
+  });
   const view = canvas(stage, draw);
-  [fHole, fWall].forEach((i) => i.addEventListener('input', () => {
-    state.hole = +fHole.value;
+  [fWall, fRing].forEach((i) => i.addEventListener('input', () => {
     state.wall = +fWall.value;
+    state.ring = +fRing.value;
     view.render();
   }));
 
-  /* the first dark ring, in millimetres on the wall */
-  const ring = () => (1.22 * LZ_LAMBDA * state.wall * 1000) / state.hole;
+  /* the ring measured across, in millimetres, and its radius */
+  const across = () => state.ring;
+  const ring = () => state.ring / 2;
+  /* and the hole it gives back: d = 2.44 · λ · L / D */
+  const hole = () => (2.44 * LZ_LAMBDA * state.wall * 1000) / state.ring;
 
   function draw(ctx, w, h) {
     ctx.clearRect(0, 0, w, h);
@@ -69,7 +81,13 @@ function modelLaser(fig) {
     ctx.moveTo(hx, midY + 3); ctx.lineTo(hx, midY + 46);
     ctx.stroke();
     ctx.restore();
+    /* THE ANSWER IS ON THE HOLE, because the hole is the thing being found.
+       A model carries no readout row, so the number stands on the drawing. */
     label(ctx, 'YOUR HOLE', hx, midY + 60, p.muted, 9, 'center');
+    const d = hole();
+    label(ctx, d < 0.01 ? '—' : (d < 1 ? d.toFixed(2) : d.toFixed(1)) + ' mm',
+          hx, midY + 92, p.signal, 26, 'center');
+    label(ctx, 'd = 2.44 · λ · L ÷ D', hx, midY + 112, p.muted, 9, 'center');
 
     /* the cone of the first ring, drawn at its true half-angle */
     const theta = Math.atan((ring() / 1000) / state.wall);
@@ -86,7 +104,7 @@ function modelLaser(fig) {
        sliders can make is a tenth of a millimetre at fifteen metres, and it is
        what the panel is sized against. Everything smaller is smaller here too,
        which is the point of the page. */
-    const WIDEST = (1.22 * LZ_LAMBDA * 15 * 1000) / 0.1;
+    const WIDEST = 120;                       /* half the widest the ruler hand goes */
     const perMM = Math.min(ww / 2, (h - 96) / 2) * 0.94 / WIDEST;
     ctx.save();
     ctx.beginPath(); ctx.rect(wx, pad, ww, h - pad - 46); ctx.clip();
@@ -125,9 +143,9 @@ function modelLaser(fig) {
        red pointer gives 26 mm from the middle of the spot to the first dark ring,
        and 53 mm across it. The measurement the page asks for is the radius,
        because that is what the sum takes back: d = 1.22 λ L / r. */
-    label(ctx, ring() < 4 ? 'TOO SMALL TO MEASURE — WALK FURTHER BACK'
-                          : ring().toFixed(0) + ' MM FROM THE MIDDLE TO THE FIRST DARK RING',
-          cx, ry - 12, ring() < 4 ? p.signal : p.fg, 10, 'center');
+    label(ctx, across() < 8 ? across().toFixed(0) + ' MM ACROSS — TOO SMALL TO READ, WALK FURTHER BACK'
+                            : across().toFixed(0) + ' MM ACROSS THE FIRST DARK RING',
+          cx, ry - 12, across() < 8 ? p.signal : p.fg, 10, 'center');
     label(ctx, 'THE WALL, ' + state.wall.toFixed(1) + ' M AWAY', wx, pad - 12, p.muted, 9, 'left');
   }
 

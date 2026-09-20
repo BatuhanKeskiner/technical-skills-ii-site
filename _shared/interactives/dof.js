@@ -223,7 +223,9 @@ function mountDof(fig) {
     const { N, f, s } = limits();
     const o = Math.max(200, objM * 1000);
     const b = Math.abs((f * f * (o - s)) / (N * o * (s - f)));
-    return b / DOF_COC;
+    /* the same circle the limits use (17-09-2026): DOF_COC is 0.0288, and the
+       frame's edge of sharp sat 4% off the plotted band */
+    return b / coc();
   }
 
   function metres(mm) {
@@ -292,7 +294,7 @@ function mountDof(fig) {
        circle of confusion before, which is a number with no units behind it.
        This way the same lens on a bigger film also renders correctly: the disc
        is the same size in millimetres and the film carries more of them. */
-    const softPx = (z) => Math.min(24, (blurFor(z) * DOF_COC / FILM_H) * fh);
+    const softPx = (z) => Math.min(24, (blurFor(z) * coc() / FILM_H) * fh);
 
     ctx.save();
     ctx.beginPath(); ctx.rect(x0, y0, fw, fh); ctx.clip();

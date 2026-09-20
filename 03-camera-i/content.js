@@ -117,7 +117,7 @@ window.TS2_WEEK = {
             /* his engraving, and the Painters paragraph moved here from p04 */
             { type: 'figure', src: 'a1-camera-obscura-engraving.png',
               alt: 'A camera obscura room on legs: light from the landscape enters a small hole and a kneeling man traces the image on the far wall',
-              caption: 'Camera obscura, engraving.' },
+              caption: 'Camera obscura, engraving · anonymous · Heritage Images, via Alamy.' },
             { type: 'text', paras: [
               'Painters used this to trace an image for hundreds of years. The challenge for the invention of photography was keeping the image.',
             ] },
@@ -176,7 +176,7 @@ window.TS2_WEEK = {
               { src: 'a2-pinhole-camera-cigar-box.jpg', alt: 'A pinhole camera built into a cigar box, with two film spools' },
               { src: 'a2-pinhole-camera-fs1.jpg', alt: 'A small 3D-printed pinhole camera, the FS-1' },
               { src: 'a2-pinhole-camera-cardboard.jpg', alt: 'A cardboard-box pinhole camera, open, with a film holder inside' },
-            ], caption: 'A muesli box, a cigar box, a printed FS-1, a cardboard box.' },
+            ], caption: 'A muesli box (Brian Auer, 2010), a cigar box (sandravo, Lomography, 2013), a printed FS-1 (Simi Fernezelyi, 2020), a cardboard box (source not confirmed).' },
           ],
         },
         {
@@ -190,7 +190,7 @@ window.TS2_WEEK = {
               { src: 'a2-pinhole-photo-carousel.jpg', alt: 'A carousel, riders blurred by the long exposure, pinhole' },
               /* the picture he gave the link for, 16-09-2026 */
               { src: 'b5-kimmeridge-bay.jpg', alt: 'Kimmeridge Bay and the Clavell Tower, pinhole · Ilford Photo' },
-            ], caption: 'Kimmeridge Bay and the Clavell Tower, on ILFORD FP4+ · Ilford Photo' },
+            ], caption: 'Will Gudgeon, Our Lady, Hastings, 2021 · source unknown · Stefan Killen, Jane\'s Carousel, Brooklyn, 2013 · Kimmeridge Bay and the Clavell Tower, on ILFORD FP4+, Ilford Photo' },
           ],
         },
         {
@@ -201,7 +201,7 @@ window.TS2_WEEK = {
             { type: 'gallery', title: 'Pinhole photographs', images: [
               { src: 'a2-pinhole-photo-tree-colour.jpg', alt: 'A tree by a lake with a stone monument, pinhole, colour' },
               { src: 'a2-pinhole-photo-shore.jpg', alt: 'A rocky shore under a moving sky, pinhole, colour' },
-            ] },
+            ], caption: 'Sebastian Schutyser, The Pinhole Project, for Miró Rivera Architects, 2018 · Kenneth Leishman, La Jolla, 2014' },
           ],
         },
         {
@@ -211,7 +211,7 @@ window.TS2_WEEK = {
           blocks: [
             { type: 'figure', src: 'a2-solargraph.jpg',
               alt: 'A solargraph: months of sun paths arcing over a treeline, on photographic paper',
-              caption: 'A solargraph: the sun, over months, on paper.' },
+              caption: 'A solargraph: four months of the sun on Ilford Multigrade RC paper · u/33liter, Reddit, 2021.' },
           ],
         },
         {
@@ -377,17 +377,6 @@ window.TS2_WEEK = {
           blocks: [
             /* HIS WORDS */
             { type: 'lineBig', html: 'Why does it go f/1.4 · f/2 · f/2.8 · f/4 · f/5.6?' },
-          ],
-        },
-        {
-          id: 's-d8',
-          /* Keynote 16-09, slide 21: "No title, no text, just this button, no
-             'play' on it. On white." The title is kept, and not drawn. */
-          layout: 'poster',
-          title: 'Math Time',
-          noTitle: true,
-          blocks: [
-            { type: 'model', id: 'horn', light: true },
           ],
         },
         {
@@ -700,9 +689,11 @@ window.TS2_WEEK = {
           layout: 'stacked',
           title: 'Measuring the hole',
           blocks: [
-            { type: 'line', gen: 'hole-laser', html: 'A laser through the hole throws rings on a wall. The size of the first dark ring gives the diameter.' },
+            { type: 'line', gen: 'hole-laser', html: 'A laser through the hole throws rings on a wall. Measure how far the wall is and how wide the first dark ring is across, and the hole&rsquo;s width follows.' },
             { type: 'model', id: 'laser', fig: 16,
-              caption: 'The hole, the wall, and the rings. A short corridor makes them too small to read.' },
+              caption: 'Set the distance to the wall and the diameter of the first dark ring; the hole is the answer. A short corridor makes the rings too small to read.' },
+            /* HIS WORDS, 20-09-2026, proofread on his word. */
+            { type: 'note', html: 'Update: the calculation ran the other way round, and it now follows the order you measure in. You measure the distance to the wall and the diameter of the ring on the wall, and the pinhole&rsquo;s diameter follows from them.' },
           ],
         },
         {

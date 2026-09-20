@@ -90,7 +90,8 @@ const LM_SHUT = [
   1 / 8000, 1 / 4000, 1 / 2000, 1 / 1000, 1 / 500, 1 / 250, 1 / 125,
   1 / 60, 1 / 30, 1 / 15, 1 / 8, 1 / 4, 1 / 2, 1, 2, 4, 8, 15, 30, 60,
 ];
-const LM_FSTOP = ['1.0', '1.4', '2.0', '2.8', '4.0', '5.6', '8.0', '11',
+/* 17-09-2026: the L-308X reads from f/0.5, so the scale starts there */
+const LM_FSTOP = ['0.5', '0.7', '1.0', '1.4', '2.0', '2.8', '4.0', '5.6', '8.0', '11',
                   '16', '22', '32', '45', '64', '90'];
 
 /* how a shutter is written on the face: 1/125 is "125", a whole
@@ -111,12 +112,12 @@ function lmAperture(n) {
      the light really is off the bottom of the scale, and the honest reading is
      the one the L-308X gives: Eu under, Eo over. An instrument that invents a
      number where it has none is worse than one that admits the range. */
-  if (n < 1.0) return { stop: 'Eu', tenth: '', exact: n, over: true };
+  if (n < 0.5) return { stop: 'Eu', tenth: '', exact: n, over: true };
   /* The real L-308X stops at f/90.9, and that limit is worth keeping rather
      than quietly exceeding: it is exactly why a pinhole at f/168 cannot be
      metered directly and has to be converted. */
   if (n > 90.9) return { stop: 'Eo', tenth: '', exact: n, over: true };
-  const s = 2 * Math.log2(n);                     /* stops above f/1 */
+  const s = 2 * Math.log2(n / 0.5);               /* stops above f/0.5 */
   let whole = Math.floor(s + 1e-9);
   let tenth = Math.round((s - whole) * 10);
   if (tenth >= 10) { whole += 1; tenth = 0; }

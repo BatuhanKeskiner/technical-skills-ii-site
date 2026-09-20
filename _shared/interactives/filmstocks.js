@@ -16,6 +16,21 @@
    had 100); Ektar's sheet stops at 1 s like Portra's; Velvia 50's +1/3,
    +1/2, +2/3 stop are 2^(1/3), 2^(1/2), 2^(2/3), not 4/3, 3/2, 5/3. The
    other Fujifilm tables were not compared against their sheets. */
+/* A MAKER'S TABLE, AS IT IS PRINTED: from each listed time on, add that many
+   stops - as time, 2^stops. 17-09-2026, every Fujifilm sheet read and the
+   compilation's formulas replaced where they were not the sheet: Velvia 100
+   (none to 1 min; 2, 4, 8 min: +1/3, +1/2, +2/3), Provia 100F (none to 128 s;
+   4 min +1/3), Reala (4 s +1/3, 16 s +1), Pro 400H (4 s +1/2, 16 s +1),
+   X-TRA 400, Superia 100 and C200 (4, 16, 64 s: +1/3, +2/3, +1), Acros II
+   (120-1000 s +1/2). T-Max 400 follows its linked 2016 sheet F-4043: 10 s
+   +1/3, 100 s -> 300 s, joined in log time. Past the last row the
+   compilation's own extension is kept where it had one. */
+function pcSteps(t, table) {
+  let st = 0;
+  table.forEach((r) => { if (t >= r[0]) st = r[1]; });
+  return t * Math.pow(2, st);
+}
+
 const PC_RECIP = [
   { brand: 'Kodak', name: 'Portra 160', slug: 'kodak-portra-160', img: 'portra160.jpg', iso: 160, p: 1.34, after: 1, trust: 'short',
     fn: (t, p) => Math.pow(t, p),
@@ -90,15 +105,15 @@ const PC_RECIP = [
     note: '',
     src: 'https://www.ilfordphoto.com/amfile/file/download/file/1909/product/703/' },
   { brand: 'Fujifilm', name: 'Velvia 50', slug: 'fujifilm-velvia-50', img: 'velvia50.jpg', iso: 50, p: 1, after: 3, trust: 'sheet',
-    fn: (t, p) => t>=64?2.3*t:t>=32?2*t:t>=16?t*Math.pow(2,2/3):t>=8?t*Math.SQRT2:t>=4?t*Math.pow(2,1/3):t,
+    fn: (t, p) => t>=64?2.3*t:t>=32?2*t:pcSteps(t, [[4, 1/3], [8, 1/2], [16, 2/3]]),
     note: 'Exposures above 1 minute are not recommended, as it will produce a green tint.',
     src: 'https://asset.fujifilm.com/master/emea/files/2020-10/a71dda63e2662f012b3b74110794918a/films_velvia-50_datasheet_01.pdf' },
   { brand: 'Fujifilm', name: 'Velvia 100', slug: 'fujifilm-velvia-100', img: 'velvia100.jpg', iso: 100, p: 1, after: 60, trust: 'sheet',
-    fn: (t, p) => t>=1920?2.3*t:t>=960?2*t:t>=480?t+2*t/3:t>=240?t+t/2:t>=120?t+t/3:t>=80?t+t/4:t>60?t+t/20:t,
+    fn: (t, p) => t>=1920?2.3*t:t>=960?2*t:pcSteps(t, [[120, 1/3], [240, 1/2], [480, 2/3]]),
     note: '',
     src: 'https://asset.fujifilm.com/master/emea/files/2020-10/2f3c7f90a0b0c6e605e84f98b7d489c2/films_velvia-100_datasheet_01.pdf' },
   { brand: 'Fujifilm', name: 'Provia 100F', slug: 'fujifilm-provia-100f', img: 'provia100f.jpg', iso: 100, p: 1, after: 128, trust: 'sheet',
-    fn: (t, p) => t>=1920?2.3*t:t>=960?2*t:t>=480?t+t/2:t>=240?t+t/3:t>=180?t+t/4:t>128?t+t/6:t,
+    fn: (t, p) => pcSteps(t, [[240, 1/3]]),
     note: 'Provia 100F handles reciprocity very well. However, exposures above 8 minutes are not recommended.',
     src: 'https://asset.fujifilm.com/master/emea/files/2020-10/2c27854d5609945fbe7e48afc61f815d/films_provia-100f_datasheet_01.pdf' },
   { brand: 'Kodak', name: 'Color Plus 200', slug: 'kodak-color-plus-200', img: 'colorplus.jpg', iso: 200, p: 1.3, after: 1, trust: 'untested',
@@ -106,15 +121,15 @@ const PC_RECIP = [
     note: 'Kodak publishes no data sheet for ColorPlus; the linked sheet is Gold 200\'s, the nearest film. The data is untested.',
     src: 'https://business.kodakmoments.com/sites/default/files/files/resources/E7022_Gold_200.pdf' },
   { brand: 'Fujifilm', name: 'Superia Reala 100', slug: 'fujifilm-superia-reala-100', img: 'reala100.jpg', iso: 100, p: 1.3, after: 1, trust: 'sheet',
-    fn: (t, p) => t>=64?2.3*t:t>=16?2*t:t>=4?t+t/3:t>1?t+t/6:t,
+    fn: (t, p) => pcSteps(t, [[4, 1/3], [16, 1]]),
     note: 'Exposures above 1 minute are not recommended.',
     src: 'https://asset.fujifilm.com/www/us/files/2020-03/3ab271f46f8d71c7e4c91bcedb7de050/ProfessionalFilmDataGuide.pdf' },
   { brand: 'Fujifilm', name: 'Pro 400H', slug: 'fujifilm-pro-400h', img: 'pro400h.jpg', iso: 400, p: 1.3, after: 1, trust: 'sheet',
-    fn: (t, p) => t>=16?2*t:t>=4?t+t/2:t>1?t+t/6:t,
+    fn: (t, p) => pcSteps(t, [[4, 1/2], [16, 1]]),
     note: 'Exposures above 16 seconds are not recommended.',
     src: 'https://asset.fujifilm.com/master/emea/files/2020-10/a6cb96275e4957ddc7b3ca932b7755e5/films_pro-400h_datasheet_01.pdf' },
   { brand: 'Fujifilm', name: 'Superia X-TRA 400', slug: 'fujifilm-superia-x-tra-400', img: 'superiaxtra400.jpg', iso: 400, p: 1.161, after: 2, trust: 'sheet',
-    fn: (t, p) => t>100?1.06*Math.pow(t, p):t>=64?2*t:t>=16?t+2*t/3:t>=4?t+t/3:t>2?t+t/6:t,
+    fn: (t, p) => t>100?1.06*Math.pow(t, p):pcSteps(t, [[4, 1/3], [16, 2/3], [64, 1]]),
     note: '',
     src: 'https://asset.fujifilm.com/master/emea/files/2020-10/9a958fdcc6bd1442a06f71e134b811f6/films_superia-xtra400_datasheet_01.pdf' },
   { brand: 'Kodak', name: 'Tri-X 400', slug: 'kodak-tri-x-400', img: 'trix400.jpg', iso: 400, p: 1.54, after: .9, trust: 'sheet',
@@ -126,7 +141,7 @@ const PC_RECIP = [
     note: '',
     src: 'https://imaging.kodakalaris.com/sites/default/files/files/resources/f4016_TMax_100.pdf, https://retro-pixel.com/film-reciprocity-tables/, https://www.flickr.com/photos/janokelly/6804638225/' },
   { brand: 'Kodak', name: 'T-Max 400', slug: 'kodak-t-max-400', img: 'tmax400.jpg', iso: 400, p: 1.24, after: 1, trust: 'sheet',
-    fn: (t, p) => t>100?Math.pow(t, p):t*(2/3*Math.pow(Math.log10(t),2)-.5*Math.log10(t)+4/3),
+    fn: (t, p) => t>100?Math.pow(t, p):t<=10?t*Math.pow(2, Math.log10(t)/3):Math.exp(Math.log(10*Math.pow(2, 1/3)) + (Math.log(300) - Math.log(10*Math.pow(2, 1/3))) * (Math.log10(t) - 1)),
     note: '',
     src: 'https://imaging.kodakalaris.com/sites/default/files/files/resources/f4043_TMax_400.pdf, https://retro-pixel.com/film-reciprocity-tables/, https://www.flickr.com/photos/janokelly/6804638225/' },
   { brand: 'Kodak', name: 'T-Max P3200', slug: 'kodak-t-max-p3200', img: 'tmaxp3200.jpg', iso: 3200, p: 1.426, after: 1, trust: 'sheet',
@@ -138,19 +153,19 @@ const PC_RECIP = [
     note: 'The reciprocity data on this stock is untested — results may vary.',
     src: 'https://dreamartemis.wordpress.com/wp-content/uploads/2014/01/kodak-proimage-100.pdf' },
   { brand: 'Fujifilm', name: 'Fujicolor 100', slug: 'fujifilm-fujicolor-100', img: 'fujicolor100.jpg', iso: 100, p: 1.3, after: 2, trust: 'sheet',
-    fn: (t, p) => t*(.5537*Math.log10(t)+1),
+    fn: (t, p) => pcSteps(t, [[4, 1/3], [16, 2/3], [64, 1]]),
     note: 'Fujifilm lists Superia 100 data sheet for Fujicolor 100, so they are assumed to be identical.',
     src: 'https://www.fujifilm.com.hk/products/consumer_film/pdf/superia_100_datasheet.pdf, https://www.flickr.com/photos/janokelly/6804638225/' },
   { brand: 'Fujifilm', name: 'Neopan 100 Acros II', slug: 'fujifilm-neopan-100-acros-ii', img: 'fujiacrosii.jpg', iso: 100, p: 1.3, after: 119, trust: 'sheet',
-    fn: (t, p) => t+t/3,
+    fn: (t, p) => pcSteps(t, [[120, 1/2]]),
     note: 'Data for exposures above 16.5 minutes becomes unreliable.',
     src: 'https://asset.fujifilm.com/www/ca/files/2020-07/fb477bd9803b3c27ab592edcf9f3567c/AF3-0258E_PIB-NEOPAN-100-ACROSII-135-3_data-sheet.pdf, https://asset.fujifilm.com/www/us/files/2020-04/299395cd078366c7a2956af612ca9fdb/NeopanAcros100.pdf' },
   { brand: 'Fujifilm', name: 'C200', slug: 'fujifilm-fujicolor-c200', img: 'fujic200.jpg', iso: 200, p: 1.3, after: 2, trust: 'sheet',
-    fn: (t, p) => t*(.5537*Math.log10(t)+1),
+    fn: (t, p) => pcSteps(t, [[4, 1/3], [16, 2/3], [64, 1]]),
     note: '',
     src: 'https://asset.fujifilm.com/master/emea/files/2020-10/98c3d5087c253f51c132a5d46059f131/films_c200_datasheet_01.pdf' },
   { brand: 'Fujifilm', name: 'Superia Premium 400', slug: 'fujifilm-superia-premium-400', img: 'superiapremium400.jpg', iso: 400, p: 1.161, after: 2, trust: 'untested',
-    fn: (t, p) => t>100?1.06*Math.pow(t, p):t>=64?2*t:t>=16?t+2*t/3:t>=4?t+t/3:t>2?t+t/6:t,
+    fn: (t, p) => t>100?1.06*Math.pow(t, p):pcSteps(t, [[4, 1/3], [16, 2/3], [64, 1]]),
     note: 'The reciprocity data on this stock is untested — results may vary.',
     src: 'https://asset.fujifilm.com/master/emea/files/2020-10/9a958fdcc6bd1442a06f71e134b811f6/films_superia-xtra400_datasheet_01.pdf' },
   { brand: 'Fujifilm', name: 'Provia 400F', slug: 'fujifilm-provia-400f', img: 'provia400f.jpg', iso: 400, p: 1, after: 32, trust: 'sheet',

@@ -199,7 +199,11 @@ function modelHoleLight(fig) {
     const crop = 1 - state.dist * 0.75;                  /* 1 .. 0.25 */
     const dist = 0.9 / crop;                             /* 0.9 .. 3.6 */
     const hole = 0.15 + state.hole * 1.85;               /* 0.15 .. 2 */
-    const blurPx = (hole * hole * 0.9 + 0.3) * (S / 90) * (0.7 + dist * 0.3);
+    /* 17-09-2026, after the fact-check: a point lands as a disc the hole's
+       width times (1 + v/u) - linear in the hole, and only a little wider as
+       the film goes back, since the room is far compared with the box. It was
+       the hole squared, and grew by half again with distance. */
+    const blurPx = (0.3 + hole * 1.9) * (S / 90) * (1 + dist * 0.05);
     /* the light goes with the hole's area over the square of the distance;
        shown in stops, not raw, or the range is a hundredfold and most of the
        slider would be black */

@@ -9233,10 +9233,9 @@ body.pages .step.active figure.demo.model[data-shape=square]{align-items:center}
 .formula.big,body.pages .step.active .formula.big,body.present .formula.big,body.present .step.active .formula.big{font-size:clamp(40px,9vh,104px);line-height:1.3;border:0;background:transparent;padding:16vh 0 12vh;margin:0}
 .formula.big .fnote,body.pages .step.active .formula.big .fnote{font-size:clamp(9px,1.3vh,13px);margin-top:3vh}
 /* MATH TIME (p21): a big red button, and nothing else on the stage */
-figure.demo.model[data-demo=horn] .stage{display:flex;align-items:center;justify-content:center}
-.horn-btn{appearance:none;border:0;cursor:pointer;width:clamp(120px,22vh,220px);height:clamp(120px,22vh,220px);border-radius:50%;background:var(--signal-500);color:var(--paper-100);font-family:var(--font-mono);font-size:clamp(10px,1.4vh,13px);letter-spacing:.16em;text-transform:uppercase;box-shadow:0 0 0 clamp(8px,1.6vh,16px) rgba(255,59,0,.18);transition:transform .08s}
-.horn-btn:active{transform:scale(.94)}
-.horn-btn:focus-visible{outline:3px solid var(--marker-500);outline-offset:4px}
+/* the Math Time button and its page are gone, 20-09-2026: his word,
+   "butonu tamamen kaldır assetlerini de kaldır". horn.js and the air-horn
+   picture are in _notes/parked/. */
 
 /* ---- his Keynote round of 16-09-2026 ---------------------------------- */
 /* A MODEL'S HANDS ARE AS LONG AS THEY NEED TO BE, AND THE BAR FOLLOWS THEM
@@ -9285,11 +9284,7 @@ body.present .step.active table.spec.stops td.v,body.pages .step.active table.sp
 body.present .step.active table.spec.stops td,body.pages .step.active table.spec.stops td{padding-top:1.5vh;padding-bottom:1.5vh}
 body.present .step.active table.spec.stops tr.arrows td,body.pages .step.active table.spec.stops tr.arrows td{padding-top:1.1vh;padding-bottom:0}
 /* THE BUTTON ALONE, ON WHITE (p21): no word on it */
-figure.demo.model.light[data-demo=horn] .stage{background:transparent}
-figure.demo.model[data-demo=horn] .horn-btn{width:clamp(180px,34vh,380px);height:clamp(180px,34vh,380px)}
 /* the button's halo is round, not cut square by its stage; no frame line over it */
-figure.demo.model[data-demo=horn],figure.demo.model[data-demo=horn] .stage{overflow:visible;border:0;box-shadow:none}
-figure.demo.model.light[data-demo=horn]{background:transparent;border-top:0}
 /* A HAND THAT IS FOLDED AWAY KEEPS ITS ROOM (dof, 16-09-2026): invisible and
    dead until its press turns it on, so no cell beside it moves (S18). */
 .controls .ctl .ctl.folded{margin-top:8px;padding:0}

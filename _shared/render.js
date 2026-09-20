@@ -56,7 +56,6 @@ const MODELS = {
   /* his Keynote round of 14-09-2026 */
   boxstill: { url: './models/box.js', fn: 'modelBoxStill' },
   exposure: { url: './models/exposure.js', fn: 'modelExposure' },
-  horn: { url: './models/horn.js', fn: 'modelHorn' },
 };
 Object.assign(DEMOS, MODELS);
 /* the editor lists what a page can hold from these, so one registry */
