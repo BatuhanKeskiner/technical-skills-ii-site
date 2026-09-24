@@ -43,6 +43,15 @@ window.TS2_WEEKS = [
     desc: 'Camera obscura, pinhole, aperture and shutter, focal length and depth of field — and the box you build from them.',
     status: 'done',
   },
+  /* OPENED 20-09-2026, empty: the folder exists so the plan can be built into
+     it. 'todo' until there are pages. */
+  {
+    n: '4',
+    slug: '04-camera-ii',
+    title: 'Camera II',
+    desc: 'Workflow: files, naming and storage, the analog and the digital route, tethered shooting and Capture One.',
+    status: 'todo',
+  },
 ];
 
 /* Not a teaching week — the format catalogue. Listed separately. */
