@@ -8,7 +8,7 @@
    BACK TO THE FIRST DRAWING, on his word, 13-09-2026: the round
    view of the film at ten times, with the two discs falling on
    the same place and adding up. The square version that replaced
-   it is kept at _notes/discs.js.square-version.
+   it is kept at _notes/_old-versions/discs.js.square-version.
 
    Two points are drawn rather than one, because the lesson is
    what happens when their discs meet: wide open they overlap

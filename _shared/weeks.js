@@ -43,13 +43,33 @@ window.TS2_WEEKS = [
     desc: 'Camera obscura, pinhole, aperture and shutter, focal length and depth of field — and the box you build from them.',
     status: 'done',
   },
-  /* OPENED 20-09-2026, empty: the folder exists so the plan can be built into
-     it. 'todo' until there are pages. */
+  /* WEEK 4 BECAME AN EXERCISE WEEK, 29-09-2026, in his words: "we had one
+     week exercise so dates are postponed one week". Every week after it moved
+     one later - except the Mid-Term Review, which keeps week 7 and its date.
+     The folder is here for the presentation sections he is bringing. */
   {
     n: '4',
-    slug: '04-camera-ii',
+    slug: '04-exercise-copycat',
+    title: 'Exercise: Copycat',
+    desc: '',
+    status: 'todo',
+  },
+  /* OPENED 20-09-2026 as week 4, empty; moved to week 5 on 29-09-2026.
+     'todo' until there are pages. */
+  {
+    n: '5',
+    slug: '05-camera-ii',
     title: 'Camera II',
     desc: 'Workflow: files, naming and storage, the analog and the digital route, tethered shooting and Capture One.',
+    status: 'done',
+  },
+  /* DRAFTED 30-09-2026 from the plan table (06-light-i/notes/PLAN.md), for
+     Batu to review. 'todo' until he says otherwise. */
+  {
+    n: '6',
+    slug: '06-light-i',
+    title: 'Light I',
+    desc: 'What light is, hard and soft light, power and distance, metering, exposure value, the guide number and the lighting ratio.',
     status: 'todo',
   },
 ];

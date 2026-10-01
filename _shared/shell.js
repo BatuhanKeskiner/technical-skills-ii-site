@@ -134,6 +134,31 @@ async function boot(root = document, week) {
        two numbers that can never be equal, so every draft was ruled stale on the
        very next load and every edit Batu made disappeared by itself. */
     window.TS2_FILE_STAMP = fingerprint(week);
+/* 01-10-2026, his words: "ben onları yolladıktan sonra da yapılmadığını görüp tekrar yazıyorum" - a tab left open
+   while a round is applied keeps showing the week it loaded, so he wrote the same notes on pages that had already
+   changed. On the working copy (localhost) the page asks every 15 s whether content.js has changed since it was
+   opened, and when it has, a banner says so and offers the reload. Nothing is reloaded by itself. */
+(function watchFile() {
+  if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname) || window.__ts2Watch) return;
+  window.__ts2Watch = true;   /* boot can run more than once; one watcher */
+  let first = null, shown = false;
+  const hash = (t) => { let h = 5381; for (let i = 0; i < t.length; i += 1) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return t.length + '-' + h; };
+  const tick = () => fetch('./content.js', { cache: 'no-store' }).then((r) => (r.ok ? r.text() : null)).then((t) => {
+    if (!t) return;
+    const h = hash(t);
+    if (first === null) { first = h; return; }
+    if (h === first || shown) return;
+    shown = true;
+    const bar = document.createElement('div');
+    bar.className = 'ts2-file-moved';
+    bar.innerHTML = '<b>Claude changed this week.</b> This tab still shows the version it opened with. ';
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Reload to see it';
+    b.addEventListener('click', () => location.reload());
+    bar.append(b);
+    document.body.append(bar);
+  }).catch(() => {});
+  tick(); setInterval(tick, 15000);
+})();
     window.TS2_WEEK_FILE = JSON.parse(JSON.stringify(week));
     /* Every page is arranged, and a page that names no placement is given one
        as it loads. The baseline must be given the same one, or the panel opens
@@ -377,12 +402,32 @@ async function boot(root = document, week) {
     const lbImg = lb.querySelector('img');
     const lbCap = lb.querySelector('.lb-cap');
     const lbN = lb.querySelector('.lb-n');
-    let set = [], at = 0;
+    let set = [], at = 0, ref = -1;
+    /* 01-10-2026, his word: "büyüttüğümüzde Correct ve o seçtiğimiz görsel yan yana açılsın".
+       A gallery with data-compare="n" opens the picture beside picture n, each named under it. */
+    const lbRef = document.createElement('img');
+    lbRef.className = 'lb-ref';
+    const lbNameA = document.createElement('span'); lbNameA.className = 'lb-name a';
+    const lbNameB = document.createElement('span'); lbNameB.className = 'lb-name b';
+    lb.append(lbRef, lbNameA, lbNameB);
+    const nameOf = (im) => {
+      const c = im.closest('.cell');
+      const cap = c && c.querySelector('.cell-cap');
+      return cap ? cap.textContent.trim() : (im.alt || '');
+    };
     const paint = () => {
       const img = set[at];
       if (!img) return;
       lbImg.src = img.currentSrc || img.src;
       lbImg.alt = img.alt || '';
+      const pair = ref >= 0 && at !== ref && set[ref];
+      lb.classList.toggle('pair', !!pair);
+      if (pair) {
+        lbRef.src = set[ref].currentSrc || set[ref].src;
+        lbRef.alt = set[ref].alt || '';
+        lbNameA.textContent = nameOf(set[ref]);
+        lbNameB.textContent = nameOf(img);
+      }
       lbCap.textContent = (img.closest('figure').getAttribute('data-title') || '');
       lbN.textContent = (at + 1) + ' / ' + set.length;
       lb.querySelector('.lb-p').hidden = set.length < 2;
@@ -440,8 +485,11 @@ async function boot(root = document, week) {
       const img = e.target.closest && e.target.closest(window.TS2_ZOOMABLE);
       if (img) {
         const scope = img.closest('.stk-row') || img.closest('figure');
-        set = [...scope.querySelectorAll('img')];
+        /* only the pictures on show: a gallery with a Negative / Print switch holds both states */
+        set = [...scope.querySelectorAll('img')].filter((im) => im.getClientRects().length);
         at = Math.max(0, set.indexOf(img));
+        const cmp = img.closest('figure') && img.closest('figure').getAttribute('data-compare');
+        ref = cmp !== null && cmp !== undefined && cmp !== '' ? Number(cmp) : -1;
         lb.classList.add('on');
         paint();
         return;

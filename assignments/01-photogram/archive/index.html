@@ -81,7 +81,7 @@ h2.yr .c{color:var(--faint)}
 
 .note{margin:56px 0 0;padding-top:16px;border-top:1px solid var(--ink)}
 p.body{font-size:15px;line-height:1.6;color:var(--body);margin:0;max-width:64ch}
-p.body.gen-say{color:var(--signal)}
+.gen-say, .gen-say *{color:var(--signal) !important}
 /* HIS NOTE, 10-09-2026: mono, and spread onto a second line. A disclaimer is
    not prose - it is a notice, so it is set like one and given a measure that
    breaks it rather than running it out as one long sentence. */
@@ -659,7 +659,7 @@ a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
   <button type="button" class="gen-tick" data-gen="brief/01-photogram/archiveNote#a57f">Claude wrote this &middot; tick to approve</button>
 
   </div>
-  <div class="foot"><span>Batuhan Keskiner &middot; Royal Academy of Art &middot; Bachelor Photography</span><span>build 817 &middot; 28.09.2026 17:23</span></div>
+  <div class="foot"><span>Batuhan Keskiner &middot; Royal Academy of Art &middot; Bachelor Photography</span><span>build 952 &middot; 01.10.2026 09:05</span></div>
 </div>
 
 <div id="lb" role="dialog" aria-modal="true" aria-label="Photogram, full size">
@@ -740,8 +740,8 @@ a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
           body: JSON.stringify({ key: btn.dataset.gen }) })
           .then(function () {
             btn.hidden = true;
-            var t = document.querySelector('p[data-gen="' + btn.dataset.gen + '"]');
-            if (t) t.classList.remove('gen-say');
+            [].forEach.call(document.querySelectorAll('[data-gen="' + btn.dataset.gen + '"]:not(button)'),
+              function (t) { t.classList.remove('gen-say'); });
           }).catch(function () {});
       });
     });

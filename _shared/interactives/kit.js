@@ -170,7 +170,11 @@ function numberField(controls, { label, value, min, max, step, unit, onChange, c
    A disabled item does not fire onChange and does not take the mark. Nor
    does the item already marked: pressing the state you are in changes
    nothing, so it is not a press. */
-function states(controls, { label, items, onChange, cls, disabled }) {
+/* `numbered: false` drops the 01 02 03 above each chip. A chip row whose
+   items are themselves numbers - 16 bit, 8 bit, 4 bit - read "01 16 BIT",
+   one number stacked on another, and the index is the one that means nothing.
+   Added 30-09-2026 for Bit Depth; every other row keeps its numbers. */
+function states(controls, { label, items, onChange, cls, disabled, numbered }) {
   const ctl = el('div', 'ctl ' + (cls || 'wide'));
   if (label) ctl.append(el('label', null, label));
   const group = el('div', 'states');
@@ -179,7 +183,8 @@ function states(controls, { label, items, onChange, cls, disabled }) {
     group.setAttribute('data-state', String(i));
   };
   items.forEach((text, i) => {
-    const b = el('button', null, '<span class="n">' + String(i + 1).padStart(2, '0') + '</span>' + text);
+    const b = el('button', null, (numbered === false ? ''
+      : '<span class="n">' + String(i + 1).padStart(2, '0') + '</span>') + text);
     b.type = 'button';
     b.setAttribute('aria-current', String(i === 0));
     b.addEventListener('click', () => {
@@ -633,8 +638,23 @@ function reviewed(key, then) {
 
 /* Mark a node as text Claude wrote. Orange, with a tick beneath it, until he
    has approved it. `key` is what REVIEW.json is keyed by. */
+/* notes kept in the browser because the server did not answer are sent again once per page load */
+if (typeof window !== 'undefined' && !window.__ts2ReviewFlush) {
+  window.__ts2ReviewFlush = true;
+  try {
+    const q = JSON.parse(localStorage.getItem('ts2-review-queue') || '[]');
+    if (q.length) {
+      Promise.all(q.map((it) => fetch('/__review', { method: 'POST', body: JSON.stringify(it) }).then((r) => r.ok).catch(() => false)))
+        .then((ok) => { const left = q.filter((_, i) => !ok[i]); localStorage.setItem('ts2-review-queue', JSON.stringify(left)); });
+    }
+  } catch (e) {}
+}
+
 function pending(node, key) {
   if (!node) return;
+  /* ?clean (30-09-2026, his word: "claude wrote this'leri kaldır ki gerçek layoutu görebileyim"): the page
+     as it will be published - no review controls, no orange. Used by the variant viewer and its shots. */
+  if (/[?&]clean\b/.test(location.search)) return;
   reviewed(key, (ok) => {
     node.classList.toggle('gen-say', !ok);
     const host = node.parentElement;
@@ -644,9 +664,15 @@ function pending(node, key) {
        shared a single tick, and ticking it approved whichever of the two had
        been drawn last. It is inserted directly after the line it is about, so
        "altlarina bir tik koy" is true of each of them. */
-    let tick = host.querySelector('.gen-tick[data-key="' + key + '"]');
+    let tick = host.querySelector('.gen-review[data-key="' + key + '"]');
     if (ok) { if (tick) tick.remove(); return; }
     if (tick) return;
+    /* 30-09-2026, his word: beside the tick, a cross and an "other" box, so a line can
+       be turned back on the spot with a reason. Every reject and note is kept
+       (_notes/TONE-FEEDBACK.jsonl, via /__review) so the tone of the presentation can
+       be learned from what he turned back. The tick keeps its class and its words. */
+    const group = el('span', 'gen-review');
+    group.dataset.key = key;
     tick = el('button', 'gen-tick', '<span class="tk">✓</span> claude wrote this');
     tick.type = 'button';
     tick.dataset.key = key;
@@ -660,10 +686,56 @@ function pending(node, key) {
         if (!r.ok) return;
         if (TS2_REVIEW.map) TS2_REVIEW.map[k] = true;
         node.classList.remove('gen-say');
-        tick.remove();
+        group.remove();
       }).catch(() => {});
     });
-    node.insertAdjacentElement('afterend', tick);
+    const cross = el('button', 'gen-x', '✗');
+    cross.type = 'button'; cross.title = 'Reject this line, with a reason';
+    const other = el('button', 'gen-other', 'other');
+    other.type = 'button'; other.title = 'A note on this line';
+    const form = el('span', 'gen-note');
+    form.hidden = true;
+    const field = document.createElement('input');
+    field.type = 'text'; field.className = 'gen-field'; field.placeholder = 'why, or what instead';
+    const save = el('button', 'gen-save', 'save');
+    save.type = 'button';
+    const said = el('span', 'gen-said');
+    form.append(field, save);
+    let verdict = 'reject';
+    const open = (v) => {
+      verdict = v; form.hidden = false; group.dataset.verdict = v;
+      field.placeholder = v === 'reject' ? 'why is it wrong?' : 'your note';
+      field.focus();
+    };
+    cross.addEventListener('click', () => open('reject'));
+    other.addEventListener('click', () => open('other'));
+    /* 30-09-2026: a note that could not be sent was lost without a word (his "other" notes that evening, to a
+       server that did not have /__review yet). Now it is kept in the browser, the line says so, and every page
+       load sends what is kept until the server takes it. */
+    const send = () => {
+      const t = document.querySelector('.step.active .pg-title');
+      const item = {
+        key, verdict, note: field.value.trim(), text: node.textContent.trim(),
+        page: location.pathname + location.hash, title: t ? t.textContent.trim() : '',
+      };
+      const done = () => {
+        form.hidden = true;
+        said.textContent = (verdict === 'reject' ? '✗ rejected' : 'note saved') + (item.note ? ': ' + item.note : '');
+        field.value = '';
+      };
+      const keep = () => {
+        try { const q = JSON.parse(localStorage.getItem('ts2-review-queue') || '[]'); q.push(item); localStorage.setItem('ts2-review-queue', JSON.stringify(q)); } catch (e) {}
+        form.hidden = true;
+        said.textContent = 'not sent yet — kept in this browser, sent when the lecture server answers' + (item.note ? ': ' + item.note : '');
+        field.value = '';
+      };
+      fetch('/__review', { method: 'POST', body: JSON.stringify(item) })
+        .then((r) => (r.ok ? done() : keep())).catch(keep);
+    };
+    save.addEventListener('click', send);
+    field.addEventListener('keydown', (e) => { e.stopPropagation(); if (e.key === 'Enter') send(); if (e.key === 'Escape') form.hidden = true; });
+    group.append(tick, cross, other, form, said);
+    node.insertAdjacentElement('afterend', group);
   });
 }
 

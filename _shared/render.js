@@ -24,6 +24,13 @@ const DEMOS = {
   sizechart: { url: './interactives/sizechart.js', fn: 'mountSizeChart' },
   root2: { url: './interactives/root2.js', fn: 'mountRoot2' },
   pinholecalc: { url: './interactives/pinholecalc.js', fn: 'mountPinholeCalculator' },
+  compression: { url: './interactives/compression.js', fn: 'mountCompression' },
+  /* week 5: one negative, two scanners, a curtain between them (30-09-2026) */
+  scancompare: { url: './interactives/scancompare.js', fn: 'mountScanCompare' },
+  /* week 5: Alisa exposed and developed nine ways, two of them under the same curtain (01-10-2026) */
+  devcompare: { url: './interactives/devcompare.js', fn: 'mountDevCompare' },
+  /* week 5: one photograph with a sky, 16 to 1 bit, and a hard curve (30-09-2026) */
+  bitdepth: { url: './interactives/bitdepth.js', fn: 'mountBitDepth' },
 };
 
 /* ============================================================
@@ -422,6 +429,29 @@ function capEl(b) {
    that thing is drawn. Every route on to the page goes through
    the renderer, so every route now gets a working slideshow.
    ============================================================ */
+/* 01-10-2026: a lone picture is drawn with object-fit: contain inside a box that can be wider (or taller) than
+   the picture itself, so its caption and the caption's rule ran the width of the box - 1061 px under a 440 px
+   screenshot (Import Settings). The caption takes the drawn picture's width and starts at its left edge. */
+function fitCapToPicture(fig, im) {
+  const cap = fig.querySelector(':scope > figcaption');
+  if (!cap || !im || im.tagName !== 'IMG') return;
+  const fit = () => {
+    const bw = im.clientWidth, bh = im.clientHeight, nw = im.naturalWidth, nh = im.naturalHeight;
+    if (!bw || !bh || !nw || !nh) return;
+    if (getComputedStyle(im).objectFit !== 'contain') { cap.style.width = ''; cap.style.marginLeft = ''; return; }
+    /* never narrower than 320 px: under a narrow screenshot the words broke into a column and squeezed the picture */
+    const w = Math.min(bw, Math.max(bh * nw / nh, 320));
+    const pos = (getComputedStyle(im).objectPosition || '50% 50%').split(' ')[0];
+    const frac = /%$/.test(pos) ? parseFloat(pos) / 100 : (pos === 'left' ? 0 : pos === 'right' ? 1 : 0.5);
+    const off = im.offsetLeft + (bw - w) * frac;
+    cap.style.width = Math.round(w) + 'px';
+    cap.style.marginLeft = Math.round(Math.max(0, off - (cap.offsetParent === im.offsetParent ? 0 : 0))) + 'px';
+  };
+  if (!im.complete) im.addEventListener('load', fit, { once: true });
+  if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(fit)).observe(im);
+  requestAnimationFrame(fit);
+}
+
 function wireCarousel(fig) {
   const plates = [...fig.querySelectorAll('.car-plate')];
   const thumbs = [...fig.querySelectorAll('.car-thumb')];
@@ -435,6 +465,7 @@ function wireCarousel(fig) {
     plates.forEach((p, k) => p.classList.toggle('on', k === at));
     thumbs.forEach((t, k) => t.classList.toggle('on', k === at));
     if (count) count.textContent = pad(at + 1) + ' / ' + pad(plates.length);
+    const nm = fig.querySelector('.car-name'); if (nm) nm.textContent = plates[at].dataset.cap || '';
     alignCount(); kick();
   }
   /* 01 / 03 SITS UNDER THE PICTURE, AT THE PICTURE'S RIGHT EDGE - not at the
@@ -449,6 +480,12 @@ function wireCarousel(fig) {
     const pr = plates[at].getBoundingClientRect();
     if (!pr.width || !sr.width) return;
     count.style.right = Math.max(0, Math.round(sr.right - pr.right)) + 'px';
+    const nm = fig.querySelector('.car-name'); if (nm) nm.style.left = Math.max(0, Math.round(pr.left - sr.left)) + 'px';
+    /* 30-09-2026: the caption is as wide as the picture above it and starts at its left
+       edge, as under a single figure; it ran the stage's full width (check-pages: CAPTION
+       OFF ITS PICTURE on every captioned slideshow). */
+    const cap = fig.querySelector(':scope > figcaption');
+    if (cap) { cap.style.width = Math.round(pr.width) + 'px'; cap.style.marginLeft = Math.max(0, Math.round(pr.left - sr.left)) + 'px'; }
   }
   /* THE PAGE IS NOT ITS FINAL SIZE WHEN IT IS WIRED. A step that is not the
      active one measures zero, and the plate reaches its own width a frame or
@@ -647,6 +684,15 @@ const BLOCK = {
     a.append(b.away ? awayMark() : arrowMark());
     if (b.note) a.append(el('span', 'golink-n', b.note));
     return a;
+  },
+
+  /* 01-10-2026, his word: "file formatlar için ikonlar tasarlamıştık, onları bu formatların slidelarında da görsel
+     olarak kullanalım" - the attachment's own mark (a page, its ending, the colour of its kind), drawn large on
+     the page that explains that format. `kinds: ['PSD', 'PSB']` draws one mark each. */
+  fileicon: (b) => {
+    const f = el('div', 'fileicons');
+    (b.kinds || [b.kind || 'FILE']).forEach((k) => f.append(pdfMark({ kind: k })));
+    return f;
   },
 
   pdf: (b) => {
@@ -993,7 +1039,10 @@ const BLOCK = {
     f.setAttribute('data-layout', b.layout || 'stacked');
     const pic = b.src ? img(b.src, b.alt, b.ar) : phBox(b.label || 'Plate', b.shape || '');
     f.append(b.overlay ? overlayBox(pic, b.overlay) : pic);
-    if (b.caption || b.cap) f.append(capEl(b));
+    if (b.caption || b.cap) {
+      f.append(capEl(b));
+      if (b.src && !b.overlay) fitCapToPicture(f, pic);
+    }
     return f;
   },
 
@@ -1001,11 +1050,101 @@ const BLOCK = {
     const f = el('figure', 'slide gallery');
     f.setAttribute('data-layout', b.layout || 'stacked');
     if (b.title) f.setAttribute('data-title', b.title);
+    /* 01-10-2026: `compare: n` - the enlargement shows the picture beside picture n (the reference) */
+    if (typeof b.compare === 'number') f.setAttribute('data-compare', String(b.compare));
     const strip = el('div', 'strip');
-    b.images.forEach((i) => strip.append(cell(i, i.src ? img(i.src, i.alt, i.ar) : phBox(i.label || '', ''))));
+    b.images.forEach((i) => {
+      const a = i.src ? img(i.src, i.alt, i.ar) : phBox(i.label || '', '');
+      if (!b.flip) { strip.append(cell(i, a)); return; }
+      /* a second state of every picture (b.flip = its two names, i.flip = the second file) */
+      const c = cell(Object.assign({}, i, { cap: i.cap || '\u00a0' }), a);
+      a.classList.add('flip-a');
+      const z = i.flip ? img(i.flip, i.alt, i.ar) : phBox((i.label || '') + ' \u2014 ' + b.flip[1], '');
+      z.classList.add('flip-b');
+      c.insertBefore(z, a.nextSibling);
+      strip.append(c);
+    });
     f.append(strip);
+    if (b.flip) f.append(flipCtl(f, b.flip));
     if (b.caption) f.append(capEl(b));
     return f;
+  },
+
+  /* ---- Sequence: the steps of one change to one picture, in order, driven by a slider (30-09-2026, his word:
+     "Bir görseli adım adım slider ile dönüşümünü görelim"). Each frame is a picture and, when given, a detail of
+     the same place beside it; the slider and [ ] step through, the frame's name says where you are. ---- */
+  sequence: (b) => {
+    const f = el('figure', 'slide sequence');
+    const frames = b.frames || [];
+    const stage = el('div', 'seq-stage' + (frames.some((x) => x.detail) ? ' has-detail' : ''));
+    const main = img(frames[0].src, frames[0].alt || '');
+    stage.append(main);
+    let det = null;
+    if (frames.some((x) => x.detail)) { det = img(frames[0].detail, (frames[0].alt || '') + ' — detail'); det.classList.add('seq-detail'); stage.append(det); }
+    f.append(stage);
+    frames.forEach((x) => { new Image().src = img(x.src).src; if (x.detail) new Image().src = img(x.detail).src; });
+    const bar = el('div', 'seq-bar');
+    const name = el('span', 'seq-name', frames[0].label || '');
+    const range = document.createElement('input');
+    range.type = 'range'; range.min = 0; range.max = frames.length - 1; range.step = 1; range.value = 0; range.className = 'seq-range';
+    range.setAttribute('aria-label', b.title || 'Step');
+    let cur = 0;
+    const set = (k) => {
+      cur = Math.max(0, Math.min(frames.length - 1, k)); range.value = cur;
+      main.src = img(frames[cur].src).src; main.alt = frames[cur].alt || '';
+      if (det && frames[cur].detail) det.src = img(frames[cur].detail).src;
+      name.textContent = frames[cur].label || String(cur);
+    };
+    range.addEventListener('input', () => set(+range.value));
+    bar.append(name, range, el('span', 'tabs-keys', '[ ]  step'));
+    f.append(bar);
+    f._step = (d) => set(cur + d);
+    if (b.caption) f.append(capEl(b));
+    return f;
+  },
+
+  /* ---- Tabs: one thing at a time out of a set that belongs on one page (30-09-2026, his word on the
+     developing faults: "tek tek sayfa sayfa göstermektense tab olarak gösterebiliriz"). Each tab is a
+     picture and its rows (spec); b.flip gives every picture a second state, as in a gallery. ---- */
+  tabs: (b) => {
+    const box = el('div', 'tabs' + (b.flip ? ' has-flip' : ''));
+    const bar = el('div', 'tabs-bar');
+    const panes = el('div', 'tabs-panes');
+    const items = b.items || [];
+    const tabs = [], ps = [];
+    let cur = 0;
+    const sel = (k) => {
+      cur = (k + items.length) % items.length;
+      tabs.forEach((t, j) => { t.classList.toggle('on', j === cur); t.setAttribute('aria-selected', j === cur ? 'true' : 'false'); });
+      ps.forEach((q, j) => { q.hidden = j !== cur; });
+    };
+    items.forEach((it, k) => {
+      const t = el('button', 'tabs-t', it.tab || String(k + 1));
+      t.type = 'button'; t.setAttribute('role', 'tab');
+      t.addEventListener('click', () => sel(k));
+      bar.append(t); tabs.push(t);
+      const pane = el('div', 'tabs-p');
+      const pic = el('div', 'tabs-pic');
+      const a = it.src ? img(it.src, it.alt) : phBox(it.label || it.tab || '', '');
+      a.classList.add('flip-a'); pic.append(a);
+      if (b.flip) {
+        const z = it.flip ? img(it.flip, it.alt) : phBox((it.label || it.tab || '') + ' \u2014 ' + b.flip[1], '');
+        z.classList.add('flip-b'); pic.append(z);
+      }
+      if (it.cap) pic.append(el('span', 'tabs-cap', it.cap));
+      pane.append(pic);
+      if (it.rows) pane.append(BLOCK.spec({ rows: it.rows }));
+      panes.append(pane); ps.push(pane);
+    });
+    box.append(bar, panes);
+    /* the keys that drive it are printed on it */
+    const foot = el('div', 'tabs-foot');
+    foot.append(el('span', 'tabs-keys', '[ ]  previous · next'));
+    if (b.flip) foot.append(flipCtl(box, b.flip));
+    box.append(foot);
+    box._tab = (d) => sel(cur + d);
+    sel(0);
+    return box;
   },
 
   /* Several groups of work on one page — one row each, caption under the row.
@@ -1039,6 +1178,7 @@ const BLOCK = {
     b.images.forEach((i, k) => {
       const plate = i.src ? img(i.src, i.alt) : phBox(i.label || '', '');
       plate.classList.add('car-plate');
+      if (i.cap) plate.dataset.cap = i.cap;
       if (k === 0) plate.classList.add('on');
       stage.append(plate);
       const th = el('button', 'car-thumb' + (k === 0 ? ' on' : ''));
@@ -1050,6 +1190,8 @@ const BLOCK = {
     });
     const count = el('span', 'car-count', '01 / ' + String(b.images.length).padStart(2, '0'));
     stage.append(count);
+    /* 01-10-2026: a slide may carry its own name (`cap`), under the picture's left edge, opposite the count */
+    if (b.images.some((i) => i.cap)) stage.append(el('span', 'car-name', b.images[0].cap || ''));
     f.append(stage, rail);
     if (b.caption) f.append(capEl(b));
     return wireCarousel(f);
@@ -1358,6 +1500,18 @@ const BLOCK = {
     return f;
   },
 
+  /* diagram: one form from the information-design library (Design v2, 30-09), filled from
+     data. { type:'diagram', form:'flow', variant?:'B', data:{…} }. The library loads only
+     when a page uses it; forms and data shapes are listed in CONTRACT.md. */
+  diagram: (b) => {
+    const f = el('figure', 'slide diagram');
+    const host = el('div', 'diagram-host');
+    f.append(host);
+    loadDiagrams().then(() => window.IDL.mount(host, { form: b.form, variant: b.variant, data: b.data, pageTitle: b.pageTitle }));
+    if (b.caption) f.append(capEl(b));
+    return f;
+  },
+
   svg: (b) => {
     const f = el('figure', 'slide icons');
     f.insertAdjacentHTML('afterbegin', b.svg);
@@ -1498,11 +1652,50 @@ function grid(b, cls) {
    holding all of them. The caption is optional: a picture without one is
    rendered exactly as it was before, so no page that does not use this
    changes at all. */
+/* The switch between the two states of a set of pictures (Negative / Print). It says what it will do
+   next, and its key is printed on it; V presses it on the page that is showing (P is taken by pages.js). */
+function flipCtl(host, names) {
+  const btn = el('button', 'flip-btn');
+  btn.type = 'button';
+  const set = (v) => {
+    host.setAttribute('data-flip', v);
+    btn.textContent = (v === 'a' ? names[1] : names[0]) + ' ';
+    btn.append(el('span', 'flip-key', '[V]'));
+  };
+  set('a');
+  btn.addEventListener('click', () => set(host.getAttribute('data-flip') === 'a' ? 'b' : 'a'));
+  host._flip = () => btn.click();
+  return btn;
+}
+if (!window.__flipKeys) {
+  window.__flipKeys = true;
+  document.addEventListener('keydown', (e) => {
+    /* 01-10-2026, his note: "i cant write v because the invert shortcut" - text being edited in place is
+       contenteditable, which the INPUT/TEXTAREA test did not see; typing there is never a shortcut */
+    const ae = document.activeElement || {};
+    if (e.metaKey || e.ctrlKey || e.altKey || /INPUT|TEXTAREA|SELECT/.test(ae.tagName || '') || ae.isContentEditable
+        || (e.target && e.target.isContentEditable)) return;
+    const step = document.querySelector('.step.active');
+    if (!step) return;
+    if (e.key === 'v' || e.key === 'V') {
+      const h = step.querySelector('[data-flip]');
+      if (h && h._flip) { h._flip(); e.preventDefault(); }
+    } else if (e.key === '[' || e.key === ']') {
+      const t = step.querySelector('.tabs');
+      if (t && t._tab) { t._tab(e.key === ']' ? 1 : -1); e.preventDefault(); }
+      const q = step.querySelector('.sequence');
+      if (q && q._step) { q._step(e.key === ']' ? 1 : -1); e.preventDefault(); }
+    }
+  });
+}
+
 function cell(i, node) {
   if (!i || !i.cap) return node;
   const c = el('div', 'cell');
   c.append(node);
   c.append(el('p', 'cell-cap', i.cap));
+  /* 01-10-2026: a second, quieter line under the name - how the picture is read ("darker film base") */
+  if (i.sub) c.append(el('p', 'cell-sub', i.sub));
   return c;
 }
 
@@ -1858,12 +2051,26 @@ function arrange(step) {
 
 /* What a block becomes: a picture or a device (evidence), or words. Kept here
    because it is the renderer that knows what each type builds. */
+if (/[?&]fit\b/.test(location.search)) document.documentElement.classList.add('fitspec');
+
+/* the diagram library, loaded once and only when a page has a diagram block */
+let diagramLoad = null;
+function loadDiagrams() {
+  if (diagramLoad) return diagramLoad;
+  const base = (document.currentScript && document.currentScript.src || [...document.scripts].map(x => x.src).find(u => /_shared\/render\.js/.test(u)) || '').replace(/render\.js.*$/, '');
+  const files = ['idl-core', 'idl-units-c', 'idl-units-a', 'idl-units-week5', 'idl-units-b', 'idl-alts', 'idl-forms', 'idl-mount'];
+  diagramLoad = files.reduce((p, n) => p.then(() => new Promise((ok, no) => {
+    const t = document.createElement('script'); t.src = base + 'diagrams/' + n + '.js'; t.onload = ok; t.onerror = no; document.head.append(t);
+  })), Promise.resolve());
+  return diagramLoad;
+}
+
 const EVIDENCE_BLOCKS = new Set([
   'figure', 'gallery', 'stack', 'carousel', 'trio', 'pair', 'grid2', 'annotate',
-  'doc', 'qr', 'svg', 'video', 'demo', 'model', 'demoPlaceholder',
+  'doc', 'qr', 'svg', 'diagram', 'video', 'demo', 'model', 'demoPlaceholder',
   'schedule', 'timetable', 'spec', 'plan', 'scen', 'sem',
   'two', 'three', 'four', 'five', 'zones', 'brief', 'takeaway', 'formula',
-  'reveal', 'reveal3',
+  'reveal', 'reveal3', 'tabs', 'sequence',
 ]);
 const isEvidence = (b) => EVIDENCE_BLOCKS.has(b.type);
 /* A working note is not part of the composition; it is never placed, and Pages
@@ -1911,7 +2118,7 @@ const SHAPES = {
    same instruction they overflow. So there are two lists: what may take the
    height left over, and the smaller set that may also be stretched into it. */
 const FILLS = new Set([
-  'figure', 'gallery', 'stack', 'carousel', 'trio', 'pair', 'grid2', 'annotate', 'doc', 'svg',
+  'figure', 'gallery', 'stack', 'carousel', 'trio', 'pair', 'grid2', 'annotate', 'doc', 'svg', 'tabs', 'sequence',
 ]);
 const GROWS = new Set([
   ...FILLS, 'video', 'demo', 'model', 'demoPlaceholder', 'reveal', 'zones', 'brief',
@@ -1928,7 +2135,15 @@ function seat(st, blocks) {
   /* decided fresh every time: a page of words is seated, and the moment it is
      given a picture the picture takes the foot instead. Leaving `centred` on
      from an earlier state centred a page that now had a photograph in it. */
-  if (!pick) { st.centred = true; return; }
+  /* a page with a diagram hangs it from the lede (30-09, his word: no gap above); only a page of words is seated in the middle */
+  /* ?top in the address previews his open decision (30-09): every words page hangs from the
+     title like the diagram pages, except the layouts that are the page (statement, question,
+     list, poster). The default is unchanged until he decides. */
+  const topPreview = /[?&]top\b/.test(location.search) && !['statement', 'question', 'list', 'poster'].includes(st.layout);
+  /* 30-09-2026, his word on the drawing variants: "Tablo sayfayı YİNE ORTALANMAMIŞ. ORTALANMASI GEREKTİĞİNİ KAÇ
+     KERE DAHA SÖYLEYECEĞİM" - a page with a diagram is seated in the middle like a page of words; the
+     exemption that hung it under the lede is gone */
+  if (!pick) { if (topPreview) delete st.centred; else st.centred = true; return; }
   delete st.centred;
   pick.place.rgrow = true;
   if (FILLS.has(pick.type)) pick.place.fillH = true;
@@ -2171,9 +2386,11 @@ function renderStep(st, ch) {
     if (b.gen && typeof b.gen === 'string' && b.type !== 'text'
         && typeof pending === 'function') {
       const marks = [];
+      /* a gallery's generated words are its reading lines, not the names of its pictures */
+      const only = b.type === 'gallery' ? 'p.cell-sub' : 'p';
       parts.forEach((n) => {
-        if (n.matches && n.matches('p')) { marks.push(n); return; }
-        const ps = n.querySelectorAll ? [...n.querySelectorAll('p')] : [];
+        if (n.matches && n.matches(only)) { marks.push(n); return; }
+        const ps = n.querySelectorAll ? [...n.querySelectorAll(only)] : [];
         if (ps.length) marks.push(...ps); else marks.push(n);
       });
       marks.forEach((n, k) => pending(n, 'text/' + b.gen + '/' + k));

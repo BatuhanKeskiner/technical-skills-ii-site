@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../../_shared/favicon.svg" type="image/svg+xml">
+<title>Assignment 3 — Anti-Self Portrait</title>
+<link rel="stylesheet" href="../../_shared/tokens/fonts.css">
+<style>
+:root{
+  --paper:#F7F5F0; --ink:#0B0C0C; --body:#1A1C1B; --grey:#5C605E;
+  --faint:#606060; --rule:#C9CAC4; --signal:#C42D00;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --sans:'Archivo','Helvetica Neue',Helvetica,sans-serif;
+  --title:'Instrument Sans','Archivo',sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased}
+.sheet{max-width:840px;margin:0 auto;padding:5vh 40px 7vh}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:24px;
+  padding-bottom:11px;border-bottom:2px solid var(--ink)}
+.top a,.top span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey);text-decoration:none}
+.top a:hover{color:var(--signal)}
+/* A WAY BACK AND A WAY TO TAKE IT AWAY. The bar used to be a label and a
+   crest: nothing on the page said how to get home, and a student who wanted
+   the brief on paper had to know the browser's own print menu. His note of
+   09-09-2026. */
+.top .back{display:inline-flex;align-items:center;gap:8px;color:var(--ink)}
+.top .back .ar{color:var(--signal)}
+.top .what{margin-right:auto}
+.pdf{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;border:1px solid var(--ink);background:transparent;
+  color:var(--ink);padding:7px 12px;cursor:pointer;
+  transition:background .12s,color .12s}
+.pdf:hover{background:var(--ink);color:var(--paper)}
+.mark{height:44px;width:auto;mix-blend-mode:multiply;flex:0 0 auto}
+.no{font-family:var(--mono);font-size:13px;letter-spacing:.16em;
+  color:var(--signal);margin:24px 0 0}
+h1{font-family:var(--title);font-size:46px;font-weight:500;letter-spacing:-.03em;
+  line-height:1.02;margin:8px 0 0}
+.premise{font-size:18px;line-height:1.5;color:var(--body);margin:14px 0 0;max-width:56ch}
+.draft{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--signal);border:1px solid var(--signal);
+  padding:8px 12px;margin:18px 0 0;display:inline-block}
+.link{margin:16px 0 0}
+.link a{font-family:var(--mono);font-size:15px;letter-spacing:.04em;
+  color:var(--ink);text-decoration:underline;text-underline-offset:4px;
+  text-decoration-color:var(--faint)}
+.link a:hover{color:var(--signal);text-decoration-color:var(--signal)}
+ul.qs{list-style:none;margin:18px 0 0;padding:0;border-top:1px solid var(--rule)}
+ul.qs li{padding:10px 0;border-bottom:1px solid var(--rule);font-size:16px;
+  line-height:1.5;color:var(--body)}
+
+.spec{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:26px;
+  padding-top:13px;border-top:1px solid var(--ink)}
+.spec dt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint)}
+.spec dd{font-family:var(--mono);font-size:13px;margin:5px 0 0}
+.spec dd.hot{color:var(--signal)}
+.spec dd.tbc{color:var(--faint)}
+.spec dd .g{color:var(--faint)}
+
+.sec{display:flex;align-items:center;gap:12px;margin:38px 0 0}
+.sec span:first-child,.sec span:nth-child(2){font-family:var(--mono);font-size:12px;
+  letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink)}
+.sec .ln{flex:1;border-top:1px solid var(--ink)}
+p.body{font-size:16px;line-height:1.6;color:var(--body);margin:14px 0 0;max-width:64ch}
+
+/* W4 - A LINE CLAUDE WROTE IS ORANGE UNTIL BATU HAS TICKED IT. The lectures
+   had this and the briefs did not, so a paragraph generated into a brief went
+   out looking exactly like one he wrote. Same colour, same tick, same key. */
+.gen-say, .gen-say *{color:var(--signal) !important}
+/* HIS NOTE, 10-09-2026: mono, and spread onto a second line. A disclaimer is
+   not prose - it is a notice, so it is set like one and given a measure that
+   breaks it rather than running it out as one long sentence. */
+p.body.notice{font-family:var(--mono);font-size:11.5px;line-height:1.75;
+  letter-spacing:.045em;max-width:100ch}
+p.lbl{font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--grey);margin:0 0 7px}
+a.mail{color:inherit;text-decoration:underline;text-decoration-thickness:1px;
+  text-underline-offset:3px;text-decoration-color:var(--rule)}
+a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
+.gen-tick{display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+  padding:2px 8px 3px;border:1px solid var(--signal);background:transparent;
+  color:var(--signal);font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+  text-transform:uppercase;cursor:pointer;line-height:1.6}
+.gen-tick[hidden]{display:none}
+@media print{.gen-tick{display:none !important}p.body.gen-say{color:var(--body)}}
+
+ol.steps{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--rule)}
+ol.steps li{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:13px 0;
+  border-bottom:1px solid var(--rule)}
+ol.steps .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--faint)}
+ol.steps .t{font-size:16px;line-height:1.5;color:var(--body)}
+
+dl.limits{margin:16px 0 0;padding:0;border-top:1px solid var(--rule)}
+dl.limits > div{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:11px 0;
+  border-bottom:1px solid var(--rule)}
+dl.limits dt{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+dl.limits dd{margin:0;font-size:15px;line-height:1.5;color:var(--body)}
+
+.warn{display:grid;grid-template-columns:auto 1fr;gap:14px;margin-top:18px;
+  padding:14px 16px;border:1px solid var(--ink);border-left:3px solid var(--signal)}
+.warn .m{font-family:var(--mono);font-size:15px;color:var(--signal);line-height:1}
+.warn b{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint);font-weight:400;display:block}
+.warn p{margin:5px 0 0;font-size:15px;line-height:1.55;color:var(--body)}
+
+ul.plain{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
+ul.plain li{display:grid;grid-template-columns:16px 1fr;gap:9px;font-size:15px;
+  line-height:1.5;color:var(--body)}
+ul.plain .m{font-family:var(--mono);color:var(--signal)}
+ul.plain.quiet .m{color:var(--faint)}
+
+/* ---- the deadline, where the work is handed over ---- */
+.dline{display:flex;align-items:center;justify-content:space-between;gap:24px;
+  flex-wrap:wrap;border:1px solid var(--ink);padding:16px 20px;margin:6px 0 22px}
+.dl-dates{display:flex;gap:34px;margin:0;flex-wrap:wrap}
+.dl-dates > div{display:flex;flex-direction:column;gap:5px}
+.dl-dates dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey)}
+.dl-dates dd{margin:0}
+.dl-dates .when{font-family:var(--mono);font-size:16px;letter-spacing:.02em;
+  color:var(--signal);display:flex;align-items:baseline;gap:10px}
+.dl-dates .wk{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey)}
+.left{margin:0;display:flex;align-items:baseline;gap:8px}
+.left .cd{font-family:var(--mono);font-size:20px;color:var(--ink)}
+.left .cd.soon{color:var(--signal)}
+.left .lb{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey)}
+.left:empty,.left .cd:empty + .lb{display:none}
+/* AND IT IS NOT PRINTED. A PDF is read on a day nobody can know, so a
+   countdown in it is a lie with a number on it. The dates stay. */
+@media print{.left{display:none !important}}
+/* A CHIP IS A BOX AROUND ITS WORDS. Inline, the border wrapped only the
+   fragment that fitted the line - "OPTIONAL" showed a box around its O and
+   the rest ran out of it. inline-block keeps the box and the words together;
+   it drops to its own line under the item rather than breaking across two. */
+.opt{display:inline-block;font-family:var(--mono);font-size:9px;
+  letter-spacing:.14em;line-height:1.5;
+  text-transform:uppercase;color:var(--grey);border:1px solid var(--rule);
+  padding:3px 8px 4px;margin-left:9px;white-space:nowrap;vertical-align:middle}
+ul.plain .opt{margin:6px 0 0 0;display:table}
+.sub-h{font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--grey);margin:26px 0 10px}
+/* ---- where to look: an address you can read, not a press you have to trust ---- */
+ul.reads{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+ul.reads li{padding:11px 0;border-bottom:1px solid var(--rule);display:grid;gap:3px}
+ul.reads a{font-size:15px;line-height:1.45;color:var(--ink);text-decoration:underline;
+  text-underline-offset:3px;text-decoration-color:var(--rule)}
+ul.reads a:hover{color:var(--signal);text-decoration-color:var(--signal)}
+ul.reads .who{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+ul.reads .what{font-size:13.5px;line-height:1.5;color:var(--body)}
+@media print{ul.reads a{text-decoration:none}}
+dl.reflist dt a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+dl.reflist dt a:hover{color:var(--signal)}
+dl.reflist .reflist-host{display:block;margin-top:3px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--quiet,#777)}
+.reads-fold .reads-body{display:none}
+.reads-fold.open .reads-body{display:block}
+.reads-open{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  background:none;border:1px solid var(--ink);color:var(--ink);padding:8px 12px;cursor:pointer}
+.reads-open:hover{background:var(--ink);color:var(--paper,#fff)}
+.reads-fold.open .reads-open{margin-bottom:14px}
+@media print{.reads-fold .reads-body{display:block!important}.reads-open{display:none!important}}
+ul.reads-heads{list-style:none;margin:10px 0 14px;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+ul.reads-heads li{font-size:15px;color:var(--ink)}
+ul.reads-heads li span{margin-left:6px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--signal)}
+@media print{ul.reads-heads{display:none}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;padding:4px 8px;border:1px solid var(--rule);color:var(--grey)}
+
+.foot{margin-top:44px;padding-top:12px;border-top:1px solid var(--rule);
+  display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+@media(max-width:620px){
+  .sheet{padding:4vh 20px 7vh}
+  .spec{grid-template-columns:repeat(2,1fr)}
+  dl.limits > div{grid-template-columns:1fr;gap:4px}
+  .sh-thumbs{gap:5px}
+  .sh-th{width:44px;height:44px}
+  .gal{grid-template-columns:repeat(2,1fr)}
+  .tools{grid-template-columns:1fr}
+}
+
+/* ---- the assignment's own picture ----
+   Small, at the top, against the right edge, and it opens when pressed. It
+   used to be a full-width plate under the dates, which put the biggest thing
+   on the page between the reader and the first instruction. His note of
+   09-09-2026. The title and the premise run beside it. */
+.cover{margin:26px 0 18px;float:right;width:clamp(150px,30%,250px);
+  margin-left:28px;shape-margin:20px}
+.cover .zoom{display:block;padding:0;border:1px solid var(--rule);background:#fff;
+  cursor:zoom-in;width:100%}
+.cover .zoom:hover{border-color:var(--ink)}
+.cover img{width:100%;height:auto;display:block}
+.cover figcaption{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--grey);margin-top:8px;text-align:right;
+  line-height:1.5}
+dl.spec{clear:both}
+.sec{clear:both}
+
+/* ---- ON PAPER ----
+   Export PDF is the browser's own print, aimed properly: the page is the
+   document, so the controls go, nothing is cut across a page break, and the
+   addresses behind the links are printed out since a printed link is dead.
+   A library that redraws the page into a canvas would lose the type and the
+   greys; this keeps both. */
+@media print{
+  @page{margin:14mm}
+  html,body{background:#fff}
+  .sheet{max-width:none;padding:0}
+  .top .pdf,#lb{display:none !important}
+  .top{border-bottom:1.5px solid #000}
+  .cover{float:right;width:36mm;margin-left:8mm}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-family:var(--mono);
+    font-size:8.5pt;color:#555;word-break:break-all}
+  .sec,figure,.warn,.tool,.gal figure,li{break-inside:avoid;page-break-inside:avoid}
+  .sec{break-before:auto}
+  .gal{grid-template-columns:repeat(3,1fr);gap:6mm}
+  .tools{grid-template-columns:repeat(2,1fr)}
+  .tool{border:1px solid #000}
+  .oneref img,.sh-plate img{max-height:none}
+  .show .sh-bar{display:none}
+  .sh-plate{display:block !important}
+  .foot{position:static}
+}
+
+/* every picture on the page opens at its own size */
+.zoom{appearance:none;padding:0;border:0;background:none;cursor:zoom-in;display:block}
+#lb{position:fixed;inset:0;z-index:50;background:rgba(11,12,12,.94);display:none;
+  align-items:center;justify-content:center;flex-direction:column;gap:16px;
+  padding:36px;cursor:zoom-out}
+#lb.on{display:flex}
+#lb img{max-width:100%;max-height:82vh;display:block}
+#lb p{margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:#B9BAB6;text-align:center}
+#lb .x{position:absolute;top:18px;right:22px;color:#B9BAB6;font-family:var(--mono);
+  font-size:11px;letter-spacing:.16em}
+
+/* ---- references, one plate at a time ---- */
+.show{margin:6px 0 0}
+.oneref{margin:6px 0 0;border:1px solid var(--rule);background:#fff;padding:18px}
+.oneref img{width:100%;height:auto;display:block}
+.oneref figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--grey);margin-top:12px;line-height:1.5}
+dl.reflist dt{font-style:italic}
+.reflink{margin:14px 0 0}
+.reflink a{font-family:var(--mono);font-size:12px;letter-spacing:.02em;
+  color:var(--signal);text-decoration:none;border-bottom:1px solid var(--rule);
+  word-break:break-all}
+.reflink a:hover{border-bottom-color:var(--signal)}
+/* a plate that is a picture of somewhere else opens that somewhere */
+.oneref .out{display:block;position:relative;text-decoration:none;color:inherit}
+.oneref .out img{display:block;width:100%;height:auto}
+.oneref .out .go{position:absolute;right:12px;bottom:12px;background:var(--ink);
+  color:var(--paper);font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;padding:8px 12px;display:inline-flex;gap:8px;
+  align-items:center}
+.oneref .out .go .ar{color:var(--marker,#E4FF1A)}
+.oneref .out:hover .go{background:var(--signal)}
+.sh-stage{position:relative;border:1px solid var(--rule);background:#fff;
+  padding:18px;display:flex;align-items:center;justify-content:center;
+  min-height:340px}
+.sh-plate{display:none;margin:0;width:100%;text-align:center}
+.sh-plate.on{display:block}
+.sh-plate img{max-width:100%;max-height:56vh;height:auto;display:block;margin:0 auto}
+.sh-plate figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--grey);margin-top:12px;line-height:1.5}
+.sh-bar{display:flex;align-items:center;gap:12px;margin-top:12px}
+.sh-go{appearance:none;border:1px solid var(--rule);background:transparent;
+  color:var(--ink);width:34px;height:34px;flex:0 0 auto;cursor:pointer;
+  font-size:11px;line-height:1;transition:background .12s,color .12s}
+.sh-go:hover{background:var(--ink);color:var(--paper)}
+.sh-thumbs{display:flex;gap:8px;overflow-x:auto;flex:1 1 auto;padding-bottom:2px}
+.sh-th{appearance:none;padding:0;border:1px solid var(--rule);background:#fff;
+  width:56px;height:56px;flex:0 0 auto;cursor:pointer;overflow:hidden;
+  filter:grayscale(1);opacity:.55;transition:opacity .12s,border-color .12s,filter .12s}
+.sh-th img{width:100%;height:100%;object-fit:cover;display:block}
+.sh-th.on,.sh-th:hover{opacity:1;filter:none;border-color:var(--ink)}
+.sh-n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--grey);
+  flex:0 0 auto}
+
+/* ---- what the years before handed in ---- */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:6px 0 0}
+.gal figure{margin:0}
+.gal img{width:100%;height:auto;display:block;background:#fff;
+  border:1px solid var(--rule)}
+.gal .zoom{width:100%;cursor:zoom-in}
+.gal figcaption{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--grey);margin-top:8px;line-height:1.6}
+.gal .yr{display:block;color:var(--signal);letter-spacing:.14em}
+.oneref .zoom,.sh-plate .zoom{cursor:zoom-in;margin:0 auto}
+
+/* ---- the instruments, at the foot ---- */
+.tools{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:6px 0 0}
+.tools.one{grid-template-columns:1fr;margin:6px 0 0}
+.tools.one + p.lbl,.gal + p.lbl{margin-top:26px}
+.tool-n .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey);border:1px solid var(--rule);
+  padding:3px 8px 4px;margin-left:11px;vertical-align:middle;
+  display:inline-block;line-height:1.5}
+.tool:hover .tool-n .kind{color:var(--paper);border-color:var(--paper)}
+.tool{display:flex;flex-direction:column;gap:7px;text-decoration:none;color:inherit;
+  border:1px solid var(--ink);padding:16px 18px;transition:background .12s,color .12s}
+.tool:hover{background:var(--ink);color:var(--paper)}
+.tool-n{font-family:var(--title);font-size:20px;letter-spacing:-.02em}
+.tool-l{font-size:14px;line-height:1.45;color:var(--body)}
+.tool:hover .tool-l{color:var(--paper)}
+.tool-go{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--signal)}
+.tool:hover .tool-go{color:#FFB199}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="top">
+    <a class="back" href="../../index.html"><span class="ar">&larr;</span>Technical Skills II</a>
+    <span class="what">Assignment brief</span>
+    <button type="button" id="pdf" class="pdf">Export PDF</button>
+    <img class="mark" src="../../_shared/assets/kabk-logo.jpg"
+         alt="Royal Academy of Art, The Hague">
+  </div>
+
+  <figure class="cover"><button type="button" class="zoom"
+      data-full="assets/brief-anti-self-portrait.jpg" data-cap="Photographer unknown"><img src="assets/brief-anti-self-portrait.jpg" alt="A figure in a tailcoat and sash, a raised hand giving the finger where the head should be"></button>
+    <figcaption>Photographer unknown</figcaption></figure>
+
+  <p class="no">Assignment #3</p>
+  <h1>Anti-Self Portrait</h1>
+  <p class="premise" data-gen="brief/03-anti-self-portrait/premise#24a1">A self-portrait usually says who you are. This one defines you by your anti-identity, by what you are not, in one photograph and one page that explains it.</p>
+  <p class="draft">Draft — not final. Do not build to this yet.</p>
+  <button type="button" class="gen-tick" data-gen="brief/03-anti-self-portrait/premise#24a1">Claude wrote the premise &middot; tick to approve</button>
+  <button type="button" class="gen-tick" data-gen="brief/03-anti-self-portrait/questions#8fc4">Claude wrote the questions &middot; tick to approve</button>
+  <button type="button" class="gen-tick" data-gen="brief/03-anti-self-portrait/process#d284">Claude wrote the process &middot; tick to approve</button>
+  <button type="button" class="gen-tick" data-gen="brief/03-anti-self-portrait/limits#c4dd">Claude wrote the limitations &middot; tick to approve</button>
+  <button type="button" class="gen-tick" data-gen="brief/03-anti-self-portrait/warning#9928">Claude wrote the warning &middot; tick to approve</button>
+  <button type="button" class="gen-tick" data-gen="brief/03-anti-self-portrait/learn#25fb">Claude wrote what they learn &middot; tick to approve</button>
+  <button type="button" class="gen-tick" data-gen="brief/03-anti-self-portrait/tips#2aca">Claude wrote the tips &middot; tick to approve</button>
+  <button type="button" class="gen-tick" data-gen="brief/03-anti-self-portrait/handInNote#5de8">Claude wrote the hand-in note &middot; tick to approve</button>
+  <button type="button" class="gen-tick" data-gen="brief/03-anti-self-portrait/referenceList#1055">Claude wrote the references &middot; tick to approve</button>
+  <ul class="qs"><li data-gen="brief/03-anti-self-portrait/questions#8fc4">What am I most not?</li><li data-gen="brief/03-anti-self-portrait/questions#8fc4">What is my exact opposite in character, in taste, in what I believe, in how I look or live?</li><li data-gen="brief/03-anti-self-portrait/questions#8fc4">What am I against, and what would I look like if I became it?</li><li data-gen="brief/03-anti-self-portrait/questions#8fc4">Which of these can a photograph show, and by what means?</li></ul>
+
+  <dl class="spec">
+    <div><dt>Given</dt><dd>Week #5</dd></div>
+    <div><dt>Due — full-time</dt><dd class="hot">15.10.2026 <span class="g">· Week #7</span></dd></div>
+    <div><dt>Due — part-time</dt><dd class="hot">26.10.2026 <span class="g">· Week #7</span></dd></div>
+    <div><dt>Hand in</dt><dd>1 photograph · 1 A4 text · one PDF on Teams</dd></div>
+  </dl>
+
+  <div class="sec"><span>01</span><span>The process</span><span class="ln"></span></div>
+  <ol class="steps">
+    <li data-gen="brief/03-anti-self-portrait/process#d284"><span class="k">01</span><span class="t">Write down what you are. Then write the opposite of each line, and mark what you are most not.</span></li>
+    <li data-gen="brief/03-anti-self-portrait/process#d284"><span class="k">02</span><span class="t">Ask two or three friends or classmates what you are really like. Their answers can show you an opposite you had not thought of.</span></li>
+    <li data-gen="brief/03-anti-self-portrait/process#d284"><span class="k">03</span><span class="t">Choose the angle of your anti-self. It can be conceptual or philosophical, as an opposite character, taste or belief, the thing you are against, or the person you would become if you turned into it. It can also be photographic or technical, as the opposite of how you usually photograph.</span></li>
+    <li data-gen="brief/03-anti-self-portrait/process#d284"><span class="k">04</span><span class="t">You are the director. Choose the place, bring the props and the wardrobe, and decide the light, the framing and the composition.</span></li>
+    <li data-gen="brief/03-anti-self-portrait/process#d284"><span class="k">05</span><span class="t">Make the photograph. Try the idea in more than one visual way and compare each attempt with what you want to say.</span></li>
+    <li data-gen="brief/03-anti-self-portrait/process#d284"><span class="k">06</span><span class="t">Choose one photograph, and write one A4 page about it.</span></li>
+  </ol>
+  <div class="sec"><span>02</span><span>Limitations</span><span class="ln"></span></div>
+  <div class="warn" data-gen="brief/03-anti-self-portrait/warning#9928"><span class="m">!</span>
+    <span><b>Less is more</b><p>Leave out knives, ketchup, masks and weapons. Say as much as you can as simply as you can, and what remains in the picture will say more.</p></span></div>
+  <dl class="limits">
+    <div data-gen="brief/03-anti-self-portrait/limits#c4dd"><dt>Photographs</dt><dd>One.</dd></div>
+    <div data-gen="brief/03-anti-self-portrait/limits#c4dd"><dt>Text</dt><dd>One A4 page about what you are not, in which respect the photograph is anti and against what, and how the picture shows it.</dd></div>
+    <div data-gen="brief/03-anti-self-portrait/limits#c4dd"><dt>Mise en scène</dt><dd>Place, props, wardrobe, light, framing and composition, all chosen by you.</dd></div>
+  </dl>
+  <div class="sec"><span>03</span><span>What you will learn</span><span class="ln"></span></div>
+  <ul class="plain">
+    <li data-gen="brief/03-anti-self-portrait/learn#25fb"><span class="m">+</span>Defining a concept before photographing it</li>
+    <li data-gen="brief/03-anti-self-portrait/learn#25fb"><span class="m">+</span>Directing a photograph through place, props, wardrobe, light and framing</li>
+    <li data-gen="brief/03-anti-self-portrait/learn#25fb"><span class="m">+</span>Matching a visual language to an idea, and judging how closely the two meet</li>
+    <li data-gen="brief/03-anti-self-portrait/learn#25fb"><span class="m">+</span>Writing about your own photograph clearly and briefly</li>
+  </ul>
+  <div class="sec"><span>04</span><span>Tips</span><span class="ln"></span></div>
+  <ul class="plain quiet">
+    <li data-gen="brief/03-anti-self-portrait/tips#2aca"><span class="m">·</span>Look at the photograph without the text. Ask what it says on its own.</li>
+    <li data-gen="brief/03-anti-self-portrait/tips#2aca"><span class="m">·</span>An opposite can be shown by one object, one gesture or one change of light.</li>
+  </ul>
+  <div class="sec"><span>05</span><span>What to hand in</span><span class="ln"></span></div>
+  <div class="dline">
+    <dl class="dl-dates">
+    <div><dt>Full-time</dt><dd class="when">15.10.2026<span class="wk">Week #7</span></dd></div>
+    <div><dt>Part-time</dt><dd class="when">26.10.2026<span class="wk">Week #7</span></dd></div>
+    </dl>
+    <p class="left"><span class="cd" data-due="2026-10-15"></span><span class="lb">left</span></p>
+  </div>
+  <div class="chips"><span class="chip">1 photograph</span><span class="chip">1 A4 text</span><span class="chip">a PDF</span></div>
+  <p class="body" data-gen="brief/03-anti-self-portrait/handInNote#5de8">In the review each of you says why you chose this photograph from the ones you made. We look at how closely the photograph and the text meet, and at the visual, photographic and communicative means you tried in order to make them meet.</p>
+  <dl class="limits">
+    <div><dt>The work</dt><dd>One photograph and one A4 page of text.</dd></div>
+    <div><dt>File format</dt><dd>PDF. One document, with the photograph and the text.</dd></div>
+    <div><dt>File size</dt><dd>No larger than 20 MB.</dd></div>
+    <div><dt>Naming</dt><dd>NameSurnameAssignment3.pdf — e.g. BatuhanKeskinerAssignment3.pdf.<span class="opt">Optional</span></dd></div>
+    <div><dt>Where</dt><dd>The class Teams channel: Files / Assignments / #3 / NameSurname</dd></div>
+  </dl>
+
+  <div class="sec"><span>06</span><span>References</span><span class="ln"></span></div>
+  <p class="sub-h">Where this assignment comes from</p>
+  <dl class="limits reflist">
+    <div><dt>Ber van de Rijdt</dt><dd>“Anti-Self-Portrait: Photograph Your Opposite”, the assignment this one comes from. In Emiel Heijnen and Melissa Bremmer (eds.), Wicked Arts Assignments: Practising Creativity in Contemporary Arts Education, Valiz, p. 154.</dd></div>
+  </dl>
+
+
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 952 · 01.10.2026 09:05</span></div>
+</div>
+<div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
+  <span class="x">Esc</span><img alt=""><p></p>
+</div>
+<script>
+/* PRESS A PICTURE AND IT OPENS AT ITS OWN SIZE. The plates on this page are
+   small on purpose - the brief is read, not looked at - so every one of them
+   is a door. Escape, or a press anywhere, closes it. */
+document.getElementById('pdf').addEventListener('click', function () {
+  window.print();
+});
+/* HOW LONG IS LEFT, worked out in the browser. A number written into the page
+   at build time is wrong by the next morning. */
+(function () {
+  var el = document.querySelector('.cd[data-due]');
+  if (!el || !el.dataset.due) return;
+  var t = new Date(); t.setHours(0, 0, 0, 0);
+  var due = new Date(el.dataset.due + 'T00:00:00');
+  var n = Math.round((due - t) / 86400000);
+  if (n > 1) el.textContent = n + ' days';
+  else if (n === 1) el.textContent = 'tomorrow';
+  else if (n === 0) el.textContent = 'today';
+  else if (n === -1) el.textContent = 'yesterday';
+  else el.textContent = (-n) + ' days ago';
+  if (n >= 0 && n <= 7) el.classList.add('soon');
+  if (n < 0) el.parentNode.querySelector('.lb').textContent = '';
+})();
+(function () {
+  var lb = document.getElementById('lb');
+  var im = lb.querySelector('img'), cap = lb.querySelector('p');
+  document.querySelectorAll('.zoom').forEach(function (z) {
+    z.addEventListener('click', function (e) {
+      e.stopPropagation();
+      im.src = z.dataset.full; im.alt = (z.querySelector('img') || {}).alt || '';
+      cap.innerHTML = z.dataset.cap || '';
+      lb.classList.add('on');
+    });
+  });
+  lb.addEventListener('click', function () { lb.classList.remove('on'); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') lb.classList.remove('on');
+  });
+})();
+/* One plate at a time. Arrows, thumbnails and the arrow keys all say the same
+   thing, and the count says where you are. No library: a brief is one file. */
+document.querySelectorAll('[data-show]').forEach(function (sh) {
+  var plates = [].slice.call(sh.querySelectorAll('.sh-plate'));
+  var thumbs = [].slice.call(sh.querySelectorAll('.sh-th'));
+  var num = sh.querySelector('.sh-n');
+  var at = 0;
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  function show(i) {
+    at = (i + plates.length) % plates.length;
+    plates.forEach(function (p, k) { p.classList.toggle('on', k === at); });
+    thumbs.forEach(function (t, k) { t.classList.toggle('on', k === at); });
+    if (num) num.innerHTML = pad(at + 1) + '&thinsp;/&thinsp;' + pad(plates.length);
+    thumbs[at] && thumbs[at].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+  thumbs.forEach(function (t, i) { t.addEventListener('click', function () { show(i); }); });
+  sh.querySelectorAll('.sh-go').forEach(function (g) {
+    g.addEventListener('click', function () { show(at + (+g.dataset.d)); });
+  });
+  sh.tabIndex = 0;
+  sh.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); show(at + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(at - 1); }
+  });
+  show(0);
+});
+/* W4 - THE TICK. Same contract as kit.js on the lecture pages: REVIEW.json
+   says which keys are approved, an approved line loses its orange and its
+   button, and pressing the button posts the key to /__approve, which only the
+   working copy answers. On the published site the fetch fails and nothing is
+   marked - by then the gate has already refused to publish it. */
+(function () {
+  var marks = [].slice.call(document.querySelectorAll('[data-gen]'));
+  if (!marks.length) return;
+  function settle(map) {
+    marks.forEach(function (el) {
+      var ok = !map || map[el.dataset.gen] === true;
+      if (el.tagName === 'BUTTON') el.hidden = ok;
+      else el.classList.toggle('gen-say', !ok);
+    });
+  }
+  fetch('/REVIEW.json', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) { settle(j && j.approved); })
+    .catch(function () { settle(null); });
+  marks.filter(function (el) { return el.tagName === 'BUTTON'; }).forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      fetch('/__approve', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: btn.dataset.gen })
+      }).then(function () {
+        btn.hidden = true;
+        var t = document.querySelector('p[data-gen="' + btn.dataset.gen + '"]');
+        if (t) t.classList.remove('gen-say');
+      }).catch(function () {});
+    });
+  });
+})();
+</script>
+</body>
+</html>

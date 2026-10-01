@@ -25,7 +25,7 @@ window.TS2_WEEK = {
   title: 'Camera I',
   standfirst: 'A box with a hole, and the two numbers on every camera: how wide the hole is, and how long it is open.',
   revision: 'draft v0.5',
-  next: { label: 'Camera II', href: '#' },
+  next: { label: 'Exercise: Copycat', href: '#' },
 
   chapters: [
     /* ================================================== 0 · Schedule */

@@ -1,6 +1,6 @@
 /* ============================================================
    Film stocks for the Pinhole Calculator's Exposure tab.
-   Batu's folder films_ilford_kodak_fuji/, 16-09-2026, added whole:
+   Batu's folder _sources/film-datasheets/, 16-09-2026, added whole:
    35 Ilford, Kodak and Fujifilm films, each with its speed, its
    reciprocity formula and the maker's data sheet. The product
    pictures are in art/films/, cut to 360 px from the folder's

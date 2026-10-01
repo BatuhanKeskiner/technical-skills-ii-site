@@ -794,9 +794,19 @@ function mountLightDiagram(fig) {
   const lightTop = el('div', 'ld-line');
   const stopSt = stepper(null, (d) => stepStop(d), true);
   const unitCh = chipRow(null, LD_UNITS.map((u) => u.name), (i) => {
+    const it = selected(), def = it && ldFind(gear, it.id);
+    const u = LD_UNITS[i];
+    if (!def || !def.beam) { state.unit = i; refresh(); return; }
     /* the pressed chip pressed again clears the light's value (audit F14) */
-    const it = selected();
-    if (it && i === state.unit && it[LD_UNITS[i].k] != null) delete it[LD_UNITS[i].k];
+    if (i === state.unit && it[u.k] != null) { delete it[u.k]; refresh(); return; }
+    /* ANOTHER UNIT RESTATES THE LIGHT IN IT, at that unit's start, and the
+       old unit goes: nothing is computed between them (Batu, 08-09). It used
+       to set the tool's unit only, and refresh() put the chip back on the
+       light's own unit with "—" beside it, so GN, power and fraction looked
+       dead on the site (Batu, 28-09: "power seçme ve fraction gibi
+       özelliklerin tam çalışmadığını fark ettim"). */
+    LD_UNITS.forEach((o) => { if (o !== u) delete it[o.k]; });
+    if (it[u.k] == null) it[u.k] = u.start;
     state.unit = i; refresh();
   });
   lightTop.append(stopSt.row, unitCh.row);

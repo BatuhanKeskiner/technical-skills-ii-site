@@ -486,6 +486,10 @@
        to move what is selected. Unmodified arrows still turn the page. */
     if (e.altKey || e.metaKey || e.ctrlKey) return;
     if (e.key === 'p' || e.key === 'P') { e.preventDefault(); e.stopImmediatePropagation(); return; }
+    /* Space on a focused button presses the button. Found 23-09-2026 when students
+       said some interactives "did not work": Space on an instrument's control turned
+       the page instead. Fixed 30-09 (machine work, no approval needed). */
+    if (e.key === ' ' && e.target.closest && e.target.closest('button, [role="button"], a[href], summary, label')) return;
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); e.stopImmediatePropagation(); go(1); }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); e.stopImmediatePropagation(); go(-1); }
     /* S reveals the content.js snippet behind each block — only present on

@@ -330,6 +330,10 @@ table.plan{border-collapse:collapse;margin:14px 0;font-size:16px}
 table.plan td{padding:6px 22px 6px 0;border-bottom:1px solid var(--rule)}
 table.plan td:first-child{font-family:var(--font-mono);font-size:12px;letter-spacing:.04em;color:var(--muted);white-space:nowrap}
 table.plan tr.brk td{color:var(--on-paper-quiet)}
+/* A sub-caption under a table entry — what an abbreviation stands for, set under
+   the name rather than in a sentence or a column of its own (his note, 30-09-2026).
+   Written in content as <span class="sub">…</span> inside the cell. */
+table.plan td .sub{display:block;margin-top:2px;font-family:var(--font-display);font-size:12px;letter-spacing:0;text-transform:none;color:var(--muted);white-space:normal}
 
 /* ---------- timetable ---------- */
 .timetable{display:grid;grid-template-columns:2fr 1fr;gap:0 40px;margin:18px 0 8px}
@@ -473,6 +477,14 @@ body.present figure.slide.gallery .strip,body.present figure.slide.trio .strip{g
 #lb button:hover{background:var(--ink-900);color:var(--paper-100)}
 #lb .lb-x{right:18px;top:18px} #lb .lb-p{left:18px;top:50%;margin-top:-19px} #lb .lb-nx{right:18px;top:50%;margin-top:-19px}
 #lb button[hidden]{display:none}
+/* 01-10-2026: a gallery with a reference opens the picture beside it, each named above */
+#lb .lb-ref,#lb .lb-name{display:none}
+#lb.pair img{max-width:calc(50vw - 84px);max-height:calc(100vh - 150px)}
+#lb.pair > img:not(.lb-ref){left:75%}
+#lb.pair .lb-ref{display:block;left:25%}
+#lb.pair .lb-name{display:block;position:absolute;top:26px;transform:translateX(-50%);font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-900)}
+#lb.pair .lb-name.a{left:25%} #lb.pair .lb-name.b{left:75%}
+.cell .cell-sub{margin:2px 0 0;font-size:.82em;line-height:1.3;color:var(--ink-500)}
 
 /* ---------- reveal ---------- */
 figure.slide.reveal{position:relative;cursor:pointer}
@@ -934,7 +946,9 @@ table.spec td.out{color:var(--on-paper-quiet)}
 ul.bul{list-style:none;margin:14px 0 18px;padding:0;max-width:64ch}
 ul.bul > li{position:relative;padding-left:15px;margin-bottom:7px;font-size:17px;line-height:1.5;text-wrap:pretty}
 ul.bul > li::before{content:"";position:absolute;left:2px;top:.52em;width:5px;height:5px;border-radius:50%;background:var(--signal-500)}
-ul.bul.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 32px;max-width:820px}
+/* 01-10-2026, his note: a two-column list reads down the first column, then the second (it read 1, 3, 5 across) */
+ul.bul.two{display:block;columns:2;column-gap:32px;max-width:820px}
+ul.bul.two > li{break-inside:avoid}
 ul.bul.big > li{font-size:22px;font-weight:500;letter-spacing:-.015em;line-height:1.35;padding-left:22px;margin-bottom:12px}
 ul.bul.big > li::before{width:7px;height:7px;top:.5em;left:2px;border-radius:50%;background:var(--ink-900)}
 ul.bul.tight > li{font-size:15px;margin-bottom:4px}
@@ -942,7 +956,7 @@ body.present ul.bul{max-width:none;text-align:left}
 body.present ul.bul > li{font-size:clamp(16px,2.4vh,26px);margin-bottom:1vh}
 body.present ul.bul.big > li{font-size:clamp(20px,4vh,44px);font-weight:500;letter-spacing:-.03em;padding-left:.7em;margin-bottom:1.4vh}
 body.present ul.bul.big > li::before{width:.22em;height:.22em;border-radius:50%;top:.46em}
-body.present ul.bul.two{grid-template-columns:repeat(2,minmax(0,1fr));gap:0 4vw}
+body.present ul.bul.two{column-gap:4vw}
 
 .dim{color:var(--text-muted)}
 
@@ -992,7 +1006,8 @@ body.present .step .line.desc{font-size:clamp(13px,2.1vh,22px);max-width:52ch;te
 table.plan th{text-align:left;font-family:var(--font-mono);font-weight:400;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);padding:0 22px 8px 0;border-bottom:1px solid var(--ink-900)}
 table.plan.scen{min-width:min(720px,100%)}
 table.plan.scen td:first-child{font-family:var(--font-display);font-size:16px;color:var(--ink-900);white-space:normal}
-table.plan.scen td:last-child{width:190px;font-family:var(--font-mono);font-size:13px;color:var(--signal-600)}
+/* 01-10-2026: the last column in ink - in the signal colour it read as generated text awaiting approval (orange), and the signal is kept for one thing that matters */
+table.plan.scen td:last-child{width:190px;font-family:var(--font-mono);font-size:13px;color:var(--ink-900)}
 table.plan.sem td:first-child{width:46px;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--on-paper-quiet)}
 table.plan.sem td:nth-child(2){font-family:var(--font-mono);font-size:12px;color:var(--text-muted);white-space:nowrap;width:74px}
 table.plan.sem td:nth-child(3){font-family:var(--font-display);font-size:16px;color:var(--ink-900)}
@@ -2028,6 +2043,8 @@ em.term,.step .line em,.step h3 em,.step .line.big em{background:var(--marker-50
    LISTS — the dash becomes a bar
    ============================================================ */
 ul.bul > li::before{width:14px;height:2px;background:var(--signal-500)}
+/* 01-10-2026: the dash is 14px from 2px, so the words start clear of it (they began at 15px and touched it) */
+ul.bul > li{padding-left:26px}
 ul.bul.big > li::before{background:var(--ink-900);height:3px}
 
 /* ============================================================
@@ -2305,13 +2322,15 @@ body.pages .step.active figure.slide.carousel .car-plate.on{display:block}
    his round of 09-09-2026: "01/03 put this under the image, aligned to
    right of the image." */
 body.pages .step.active figure.slide.carousel .car-count{position:absolute;right:0;bottom:0;transform:translateY(115%);font-family:var(--font-mono);font-size:clamp(9px,1.3vh,12px);letter-spacing:.14em;color:var(--on-paper-quiet);pointer-events:none}
+body.pages .step.active figure.slide.carousel .car-name{position:absolute;left:0;bottom:0;transform:translateY(115%);font-family:var(--font-mono);font-size:clamp(9px,1.3vh,12px);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-900);pointer-events:none}
 /* THE THUMBNAILS SIT ON THE PICTURE'S OWN CENTRE LINE. They were ranged left
    while the picture above them was centred, so the two had two different
    middles and every photograph appeared to shift as it came up. His note of
    09-09-2026: "Su thumbnailler goruntuyu ortalasin ... her fotografin ortasi
    o bulundugu yerin ortasindan degissin." One centre for both, so the
    pictures change on the spot instead of sliding. */
-body.pages .step.active figure.slide.carousel .car-rail{flex:0 0 auto;display:flex;justify-content:center;gap:.6vw;margin-top:1.2vh;width:100%}
+/* 30-09: the rail starts below the 01 / 05 count, which sits under the picture's right edge; when the rail was as wide as the picture the count lay on its last thumbnail */
+body.pages .step.active figure.slide.carousel .car-rail{flex:0 0 auto;display:flex;justify-content:center;gap:.6vw;margin-top:calc(1.2vh + clamp(9px,1.3vh,12px) * 1.8);width:100%}
 body.pages .step.active figure.slide.carousel .car-thumb{flex:0 0 auto;width:clamp(38px,6.4vh,64px);height:clamp(26px,4.4vh,44px);padding:0;border:1px solid var(--rule-hairline);background:transparent;cursor:pointer;overflow:hidden;transition:var(--transition-control)}
 body.pages .step.active figure.slide.carousel .car-thumb img{width:100%;height:100%;object-fit:cover;opacity:.45;transition:opacity var(--dur-fast) var(--ease-mech)}
 body.pages .step.active figure.slide.carousel .car-thumb:hover img{opacity:.8}
@@ -6918,6 +6937,23 @@ span.get-d1 .get-face{border-style:dashed}
 .pdfdoc .pd-mark[data-kind="ZIP"]{color:var(--k-zip)}
 .pdfdoc .pd-mark[data-kind="DNG"]{color:var(--k-dng)}
 .pdfdoc .pd-mark[data-kind="FOLDER"]{color:var(--k-folder)}
+/* 01-10-2026: the same mark, large, on a format's own page (block fileicon). Raw data takes DNG's grey,
+   so the marks sort into the families the week teaches: raw data grey, layered blue, a document red,
+   finished images in the accent. */
+:root{--k-raw:var(--k-dng)}
+.pdfdoc .pd-mark[data-kind="RAW"]{color:var(--k-raw)}
+.fileicons{display:flex;gap:14px;align-items:flex-end}
+.fileicons .pd-mark{position:relative;display:block;width:clamp(64px,10vh,104px);aspect-ratio:26 / 32;color:var(--signal-600)}
+.fileicons .pd-mark svg{display:block;width:100%;height:100%;overflow:visible}
+.fileicons .pd-mark svg path{vector-effect:non-scaling-stroke;stroke-width:2}
+.fileicons .pd-mark-t{position:absolute;left:0;right:0;bottom:16%;text-align:center;font-family:var(--font-mono);
+  font-size:clamp(12px,1.9vh,19px);letter-spacing:.06em;line-height:1;color:currentColor}
+.fileicons .pd-mark.long .pd-mark-t{font-size:clamp(10px,1.55vh,16px);letter-spacing:0}
+.fileicons .pd-mark[data-kind="PDF"]{color:var(--k-pdf)}
+.fileicons .pd-mark[data-kind="PSD"],.fileicons .pd-mark[data-kind="PSB"]{color:var(--k-psd)}
+.fileicons .pd-mark[data-kind="DNG"]{color:var(--k-dng)}
+.fileicons .pd-mark[data-kind="RAW"]{color:var(--k-raw)}
+.fileicons .pd-mark[data-kind="ZIP"]{color:var(--k-zip)}
 /* the proof's stamp on the first page agrees with the mark */
 .pdfdoc.pd-b .pd-badge[data-kind="PDF"]{background:var(--k-pdf)}
 .pdfdoc.pd-b .pd-badge[data-kind="PSD"],
@@ -8132,7 +8168,9 @@ body.pages .step.active[data-layout=criteria] .pg-item[data-card] > *{
    more than one row, no row grows, and the rows box divides the
    emptiness between them as `centred` says it should.
    ============================================================ */
-body.pages .step.active.arranged.centred .pg-rows:has(> .pg-row ~ .pg-row) > .pg-row:not([data-hgt]){flex:0 0 auto}
+/* 30-09-2026: a centred page with ONE row (a lone diagram) stretched that row to the full height, so the drawing
+   hung under the title; every row of a centred page now keeps its own height and the set is centred */
+body.pages .step.active.arranged.centred.centred .pg-rows.pg-rows > .pg-row.pg-row:not([data-hgt]):not([data-rgrow]){flex:0 0 auto} /* specific enough to beat the last-row-grows rule further down */
 
 
 /* ============================================================
@@ -9187,6 +9225,20 @@ figure.demo .readout .v.gen-say{color:var(--signal-500)}
   transition:var(--transition-control)}
 .gen-tick:hover{background:var(--signal-500);color:var(--ink-900)}
 .gen-tick .tk{font-size:11px;line-height:1}
+.gen-review{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:6px}
+.gen-review .gen-tick{margin-top:0}
+.gen-x,.gen-other,.gen-save{display:inline-flex;align-items:center;padding:2px 7px 3px;
+  border:1px solid var(--signal-500);background:transparent;color:var(--signal-500);
+  font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;
+  transition:var(--transition-control)}
+.gen-x{font-size:11px;letter-spacing:0;padding:1px 7px 2px}
+.gen-x:hover,.gen-other:hover,.gen-save:hover{background:var(--signal-500);color:var(--ink-900)}
+.gen-note{display:inline-flex;gap:4px}
+.gen-note[hidden]{display:none}
+.gen-field{font-family:var(--font-mono);font-size:11px;padding:2px 6px;border:1px solid var(--signal-500);
+  background:var(--paper-000);color:var(--ink-900);min-width:22ch}
+.gen-said{font-family:var(--font-mono);font-size:10px;color:var(--signal-600)}
+@media print{.gen-review{display:none !important}}
 
 /* ============================================================
    A DATA ROW WHOSE VALUE IS A SENTENCE READS FROM THE LEFT
@@ -9289,3 +9341,137 @@ body.present .step.active table.spec.stops tr.arrows td,body.pages .step.active 
    dead until its press turns it on, so no cell beside it moves (S18). */
 .controls .ctl .ctl.folded{margin-top:8px;padding:0}
 .controls .ctl .ctl.folded.away{visibility:hidden}
+
+/* ---- diagram block (Design v2 library, 30-09-2026) --------------------------
+   The figure is the page column wide, top-anchored under the lede; the library draws
+   into it at the page's own scale (see diagrams/idl-mount.js). No frame, no border. */
+figure.slide.diagram{border:0;background:none;width:100%;max-width:none;margin:48px 0 0;padding:0}
+figure.slide.diagram::before{content:none}
+figure.slide.diagram .diagram-host{width:100%}
+/* the arranged layouts size a lone figure to its content and centre it; a diagram is the
+   column wide and hangs from the top (the library measures the width it is given) */
+.step.arranged .pg-item figure.slide.diagram,
+body.pages .step.active.arranged .pg-col > .pg-item.pg-solo > figure.slide.diagram,
+body.pages .step.active.arranged .pg-col[data-fillh] > .pg-item:not([data-fit]) > figure.slide.diagram{width:100% !important;max-width:none !important;height:auto;display:block;margin:0;justify-content:flex-start;align-items:stretch}
+
+/* a placeholder asked to be "full" is the page column wide, never wider (30-09: the checker
+   found it running 54 px off the side of the column on two week 5 pages) */
+body.pages .step figure.demo.ph-spec[data-size=full]{--w:100%;width:100%;margin-left:0}
+
+/* ?fit in the address previews an open question (30-09-2026): a two-column table's stub column
+   as wide as its longest label, and the table as wide as its content (his space rule), instead
+   of a fixed 30 % stub across the full column. Default unchanged until he decides. */
+html.fitspec body.pages .step.active table.spec{width:auto;min-width:50%;max-width:100%}
+html.fitspec table.spec td:first-child{width:1%;white-space:nowrap;padding-right:2vw}
+
+/* ============================================================
+   TWO STATES OF A PICTURE, AND TABS (30-09-2026)
+   ------------------------------------------------------------
+   Negative / Print: every picture of a gallery (or a tab) has a
+   second state; the switch says what it will do next and prints
+   its key. Tabs: one fault at a time out of thirteen, on one page
+   ("tab olarak gösterebiliriz"); the tab row is set like the
+   overlay buttons, the pane is picture left, rows right.
+   ============================================================ */
+[data-flip="a"] .flip-b, [data-flip="b"] .flip-a{display:none!important}
+.flip-btn{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  padding:6px 11px;border:1px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;
+  border-radius:0;-webkit-appearance:none;appearance:none;margin-top:9px;align-self:flex-start}
+.flip-btn .flip-key{color:var(--muted);margin-left:.4em}
+figure.slide.gallery > .flip-btn{display:block}
+
+/* 01-10-2026, his notes on Developing Errors: "Filmi kutucuğunun ortasına al ve filmin boyutunu büyüt. Tabları daha
+   görünür yap." The tabs are a list down the left, larger and in ink, so the picture takes the whole height of the
+   block; the picture is centred in its column. */
+/* scoped to the block: an instrument's own control row is also called .tabs (the Pinhole Calculator's) */
+div.tabs:not(.ctl){display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:0 2vw;min-height:0;height:100%}
+.tabs-bar{grid-column:1;grid-row:1 / span 2;display:flex;flex-direction:column;gap:3px;min-height:0;overflow:auto;margin:0}
+.tabs-t{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-align:left;white-space:nowrap;
+  line-height:1;padding:clamp(4px,.55vh,7px) 12px;border:1px solid var(--ink-400, #7E8280);background:transparent;color:var(--ink-900, #0B0C0C);
+  cursor:pointer;border-radius:0;-webkit-appearance:none;appearance:none}
+.tabs-t:hover{border-color:var(--ink-900, #0B0C0C)}
+.tabs-t.on{color:var(--paper-000);background:var(--ink-900, #0B0C0C);border-color:var(--ink-900, #0B0C0C)}
+.tabs-panes{grid-column:2;grid-row:1;min-height:0;display:flex}
+.tabs-p{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:0 2vw;align-items:start}
+.tabs-p[hidden]{display:none}
+.tabs-pic{display:flex;flex-direction:column;min-height:0;height:100%}
+.tabs-pic > img, .tabs-pic > .ph{flex:1 1 auto;min-height:0;width:100%;object-fit:contain;object-position:center top}
+.tabs-cap{flex:0 0 auto;margin-top:.7vh;font-family:var(--font-mono);font-size:var(--t-label);letter-spacing:.12em;color:var(--muted);text-align:center}
+.tabs-foot{grid-column:2;grid-row:2;flex:0 0 auto;display:flex;gap:18px;align-items:center;margin-top:1.2vh}
+.tabs-keys{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.tabs-foot .flip-btn{margin-top:0}
+
+/* ============================================================
+   SCANNER COMPARISON (30-09-2026) - one negative, two scans, a
+   curtain. The canvas fills the stage on the page, on a bench and
+   in full screen alike (G1): the picture is fitted and centred by
+   the drawing, never letterboxed by the stylesheet. The view bar
+   is the light diagram's: the same shapes, top right of the stage.
+   ============================================================ */
+figure.demo .stage.sc-stage{padding:0;position:relative}
+figure.demo .stage.sc-stage canvas,
+body.pages .step.active figure.demo .stage.sc-stage canvas,
+figure.demo.sc:fullscreen .stage.sc-stage canvas,
+figure.demo.sc.fs-on .stage.sc-stage canvas{position:absolute;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;cursor:ew-resize;touch-action:none;outline:0}
+figure.demo.sc .viewbar{position:absolute;top:0;right:0;z-index:3;display:flex;align-items:stretch;gap:0}
+figure.demo.sc .viewbar .fs,figure.demo.sc .viewbar .vw{position:static;height:26px;box-sizing:border-box;border:1px solid var(--stage-rule-2);border-top:0;border-right:0;text-align:center}
+figure.demo.sc .vw{font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--stage-fg);background:rgba(8,10,9,.82);padding:5px 9px;cursor:pointer;line-height:1.25}
+figure.demo.sc .vw:hover{background:var(--signal-500);border-color:var(--signal-500);color:var(--on-signal)}
+figure.demo.sc .vw:focus-visible{outline:2px solid var(--signal-500);outline-offset:-3px}
+figure.demo.sc .vw.off{color:var(--ink-400);cursor:default;pointer-events:none}
+/* ON A LECTURE PAGE THE STAGE STARTS FROM NOTHING AND TAKES WHAT IS LEFT. From
+   its 16:9 shape it asked for more height than the page had, the page shrank
+   the rows under it to pay, and the credit line under the instrument was
+   squeezed into half its height. An instrument's own bench page has no page
+   height to divide (its figure is as tall as its contents), so it keeps the
+   shape: the rule is for a figure standing in a page's container. */
+body.pages .step.active .pg-item > figure.demo .stage.sc-stage{aspect-ratio:auto;flex:1 1 0;min-height:0}
+/* THE STAGE IS THREE COLUMNS: the list for the left side, the picture, the
+   list for the right side. The lists are as wide as a name, pinned to the
+   stage's own edges, set on the stage with no panel of their own, and centred
+   on the picture's middle (the canvas keeps 12 px above the picture and 34 px
+   under it for the keys, so the lists do too). */
+figure.demo .sc-row{position:absolute;inset:0;display:flex;align-items:stretch}
+figure.demo .sc-pic{flex:1 1 auto;min-width:0;position:relative}
+figure.demo .sc-bench{flex:0 0 136px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:12px 0 34px 18px;box-sizing:border-box}
+figure.demo .sc-bench.r{align-items:flex-end;padding:12px 18px 34px 0}
+figure.demo .sc-h{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--stage-muted);margin-bottom:8px}
+/* a column of names is one width, the widest name's, so it reads as a column */
+figure.demo .chips.sc-list{flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:5px}
+figure.demo .sc-list .chip{font-size:10px;padding:6px 10px;text-align:left}
+figure.demo .sc-bench.r .sc-list .chip{text-align:right}
+figure.demo .sc-list .chip[aria-pressed=true]{cursor:default}
+figure.demo .sc-list .chip.off{opacity:.3;cursor:default;pointer-events:none}
+/* the strip holds one cell, the film, in the middle of its bar (S20) */
+figure.demo .controls:has(> .sc-cell:only-child){justify-content:center}
+figure.demo .controls > .ctl.sc-cell{flex:0 0 auto}
+figure.demo .sc-cell .chips{flex-wrap:nowrap}
+/* EXPOSURE AND DEVELOPMENT (01-10-2026) wears the Scanner Comparison's stage,
+   view bar and benches (.sc). Its bench holds two lists, exposure over
+   development: one column, as wide as its widest name, one list-gap apart,
+   under the name of the side they set. */
+figure.demo.dc .dc-lists{display:flex;flex-direction:column;align-items:stretch;gap:16px}
+figure.demo.dc .sc-bench.r .dc-grp{text-align:right}
+figure.demo.dc .sc-h.dc-side{color:var(--stage-fg);margin-bottom:14px}
+
+/* Sequence (30-09-2026): the steps of one picture on a slider; the picture and its detail side by side, the
+   bar pinned under them, as small as it needs to be */
+figure.slide.sequence{display:flex;flex-direction:column;min-height:0;height:100%}
+.seq-stage{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);gap:0 2vw}
+.seq-stage.has-detail{grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
+.seq-stage > img{width:100%;height:100%;min-height:0;object-fit:contain;object-position:left top}
+.seq-bar{flex:0 0 auto;display:flex;align-items:center;gap:18px;margin-top:1.2vh}
+.seq-name{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);min-width:9em}
+.seq-range{flex:1 1 auto;accent-color:var(--signal, #C42D00)}
+.seq-bar{align-self:stretch;width:100%}
+.seq-bar .tabs-keys, .seq-name{white-space:nowrap}
+.tabs-foot .tabs-keys{white-space:nowrap}
+
+/* 01-10-2026: the banner a working-copy page shows when content.js has changed since it was opened (shell.js) */
+.ts2-file-moved{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:9999;display:flex;gap:14px;align-items:center;
+  padding:10px 14px;background:var(--ink-900);color:var(--paper-100);font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.ts2-file-moved button{font:inherit;padding:6px 10px;border:0;background:var(--marker-500);color:var(--ink-900);cursor:pointer}
+
+/* 01-10-2026: a highlighted term in a big line has a box taller than the line height (1.06), so it stood 7 px below
+   the line (week 3 p35 at 1920, check-pages CLIPPED); the line keeps room for it */
+body.pages .step.active .line.big:has(em.term){padding-bottom:.14em}
