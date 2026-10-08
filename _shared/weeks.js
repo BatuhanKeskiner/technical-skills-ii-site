@@ -60,13 +60,25 @@ window.TS2_WEEKS = [
     n: '5',
     slug: '05-camera-ii',
     title: 'Camera II',
-    desc: 'Workflow: files, naming and storage, the analog and the digital route, tethered shooting and Capture One.',
+    desc: 'Workflow: the analog and the digital route, negatives and scanning, file formats, files and folders.',
+    status: 'done',
+  },
+  /* MADE 07-10-2026 at his word: week 5 was not finished in the lecture, so
+     its pages from 45 on (Lightroom, Storage, Tethered Shooting) open week 6,
+     which he widened. Released 08-10-2026 on his word: "sonrasında da publish". */
+  {
+    n: '6',
+    slug: '06-camera-iii',
+    title: 'Camera III',
+    desc: 'Storage and backup, the Lightroom catalogue, RAW editing in Lightroom and Camera Raw, Negative Lab Pro, export, and tethered shooting with Capture One.',
     status: 'done',
   },
   /* DRAFTED 30-09-2026 from the plan table (06-light-i/notes/PLAN.md), for
-     Batu to review. 'todo' until he says otherwise. */
+     Batu to review. 'todo' until he says otherwise. Week 6 became Camera III on
+     07-10-2026; Light I moves after the Mid-Term Review (week 7). Week 8 is
+     PROVISIONAL - his number to confirm. The folder keeps its old name. */
   {
-    n: '6',
+    n: '8',
     slug: '06-light-i',
     title: 'Light I',
     desc: 'What light is, hard and soft light, power and distance, metering, exposure value, the guide number and the lighting ratio.',

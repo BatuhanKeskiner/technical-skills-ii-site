@@ -185,6 +185,61 @@ function getBar(b, cls, design) {
   a.append(el('span', 'get-m', m));
   return a;
 }
+/* VIEW — a PDF read over the page without saving it (07-10-2026). The reader is
+   the browser's own, in a frame; Escape or Close puts the page back, and the
+   keys the deck answers are held while it is open, so an arrow pressed in the
+   reader does not turn the lecture page behind it. */
+function viewPress(b) {
+  const btn = el('button', 'pd-get pd-view get-d1');
+  btn.type = 'button';
+  const face = el('span', 'get-face');
+  face.append(viewMark(), el('span', 'get-n', 'View'));
+  btn.append(face);
+  btn.addEventListener('click', () => pdfViewer(b));
+  return btn;
+}
+function viewMark() {
+  const s = svg(16, 16);
+  s.setAttribute('class', 'get-arrow');
+  s.innerHTML = '<path d="M1.2 8s2.6-4.6 6.8-4.6S14.8 8 14.8 8s-2.6 4.6-6.8 4.6S1.2 8 1.2 8z" fill="none" stroke="currentColor" stroke-width="1.5"/>'
+    + '<circle cx="8" cy="8" r="2.1" fill="currentColor"/>';
+  return s;
+}
+function pdfViewer(b) {
+  if (document.querySelector('.pdfview')) return;
+  const back = el('div', 'pdfview');
+  back.setAttribute('role', 'dialog');
+  back.setAttribute('aria-modal', 'true');
+  back.setAttribute('aria-label', b.name || 'Document');
+  const panel = el('div', 'pv-panel');
+  const bar = el('div', 'pv-bar');
+  bar.append(el('span', 'pv-name', b.name || b.title || 'Document'));
+  const acts = el('span', 'pv-acts');
+  acts.append(getBar(b, 'pd-get', 1));
+  const shut = el('button', 'pd-get pv-close');
+  shut.type = 'button';
+  shut.append(el('span', 'get-n', 'Close'), el('span', 'pv-key', 'Esc'));
+  acts.append(shut);
+  bar.append(acts);
+  const frame = el('iframe', 'pv-frame');
+  frame.src = b.file;
+  frame.title = b.name || 'Document';
+  panel.append(bar, frame);
+  back.append(panel);
+  const keys = (e) => {
+    e.stopPropagation();
+    if (e.key === 'Escape') { e.preventDefault(); close(); }
+  };
+  const close = () => {
+    window.removeEventListener('keydown', keys, true);
+    back.remove();
+  };
+  shut.addEventListener('click', close);
+  back.addEventListener('click', (e) => { if (e.target === back) close(); });
+  window.addEventListener('keydown', keys, true);
+  document.body.append(back);
+  shut.focus();
+}
 /* An arrow leaving a box: this one goes somewhere rather than saving. */
 function awayMark() {
   const s = svg(16, 16);
@@ -466,6 +521,7 @@ function wireCarousel(fig) {
     thumbs.forEach((t, k) => t.classList.toggle('on', k === at));
     if (count) count.textContent = pad(at + 1) + ' / ' + pad(plates.length);
     const nm = fig.querySelector('.car-name'); if (nm) nm.textContent = plates[at].dataset.cap || '';
+    fig.querySelectorAll('.car-note').forEach((n, k) => n.classList.toggle('on', k === at));
     alignCount(); kick();
   }
   /* 01 / 03 SITS UNDER THE PICTURE, AT THE PICTURE'S RIGHT EDGE - not at the
@@ -727,7 +783,18 @@ const BLOCK = {
     const meta = [b.pages ? b.pages + ' pp' : '', b.size, b.note].filter(Boolean).join(' · ');
     if (meta) body.append(el('p', 'pd-meta', meta));
     box.append(body);
-    box.append(getBar(b, 'pd-get', design));
+    /* 07-10-2026, his word: "can we also browse manual pdfs without downloading? ... as a popup window?"
+       A PDF carried in the week gets a second press, View, that opens it over the page in the
+       browser's own reader. Only the press opens it: a click on the page itself is a presenter's hand
+       resting, and opening a reader there took the arrow keys from the deck. Download is unchanged. */
+    const viewable = b.file && !/^data:/.test(b.file) && fileExt(b) === 'pdf';
+    if (viewable) {
+      const gets = el('div', 'pd-gets');
+      gets.append(viewPress(b), getBar(b, 'pd-get', design));
+      box.append(gets);
+    } else {
+      box.append(getBar(b, 'pd-get', design));
+    }
     if (b.caption) box.append(el('p', 'pd-cap', b.caption));
     return box;
   },
@@ -1107,7 +1174,10 @@ const BLOCK = {
      developing faults: "tek tek sayfa sayfa göstermektense tab olarak gösterebiliriz"). Each tab is a
      picture and its rows (spec); b.flip gives every picture a second state, as in a gallery. ---- */
   tabs: (b) => {
-    const box = el('div', 'tabs' + (b.flip ? ' has-flip' : ''));
+    /* 08-10-2026, his note on Storage Types: tabs instead of a slideshow, the picture and the words in
+       fixed places, on a white ground. A tab that carries `pros` / `cons` gets the + / − panel. */
+    const notes = (b.items || []).some((i) => (i.pros && i.pros.length) || (i.cons && i.cons.length));
+    const box = el('div', 'tabs' + (b.flip ? ' has-flip' : '') + (notes ? ' tabs-notes' : ''));
     const bar = el('div', 'tabs-bar');
     const panes = el('div', 'tabs-panes');
     const items = b.items || [];
@@ -1127,13 +1197,30 @@ const BLOCK = {
       const pic = el('div', 'tabs-pic');
       const a = it.src ? img(it.src, it.alt) : phBox(it.label || it.tab || '', '');
       a.classList.add('flip-a'); pic.append(a);
+      /* 08-10-2026, his note on Scanning Errors: "Görseller çok küçük kalıyor." A landscape picture beside its
+         words is held to half the pane's width and leaves the lower half empty; the pane turns to picture on
+         top, words beneath, as soon as the picture is known to be wider than it is tall. */
+      if (a.tagName === 'IMG' && !notes) {
+        const shape = () => { if (a.naturalWidth) pane.classList.toggle('wide', a.naturalWidth / a.naturalHeight > 1.25); };
+        if (a.complete) shape(); else a.addEventListener('load', shape, { once: true });
+      }
       if (b.flip) {
         const z = it.flip ? img(it.flip, it.alt) : phBox((it.label || it.tab || '') + ' \u2014 ' + b.flip[1], '');
         z.classList.add('flip-b'); pic.append(z);
       }
-      if (it.cap) pic.append(el('span', 'tabs-cap', it.cap));
+      if (it.cap && !notes) pic.append(el('span', 'tabs-cap', it.cap));
       pane.append(pic);
       if (it.rows) pane.append(BLOCK.spec({ rows: it.rows }));
+      if (notes) {
+        const n = el('div', 'car-note on tabs-note');
+        n.append(el('p', 'car-note-name', it.cap || it.tab || ''));
+        if (it.use) { const u = el('p', 'car-note-use'); u.append(el('span', 'k', 'Use for'), document.createTextNode(it.use)); n.append(u); }
+        const ul = el('ul', 'pc');
+        (it.pros || []).forEach((t) => ul.append(el('li', 'plus', t)));
+        (it.cons || []).forEach((t) => ul.append(el('li', 'minus', t)));
+        n.append(ul);
+        pane.append(n);
+      }
       panes.append(pane); ps.push(pane);
     });
     box.append(bar, panes);
@@ -1190,9 +1277,32 @@ const BLOCK = {
     });
     const count = el('span', 'car-count', '01 / ' + String(b.images.length).padStart(2, '0'));
     stage.append(count);
+    /* 08-10-2026, his note on Storage Types: each kind's name under it, and its advantages and drawbacks
+       as green + and red − lines. A slide that carries `pros` / `cons` puts them in a panel beside the
+       picture, which changes with the slide; the pictures sit on a white ground so a product shot's own
+       white edge does not show as a box. */
+    const notes = b.images.some((i) => (i.pros && i.pros.length) || (i.cons && i.cons.length));
+    if (notes) {
+      f.classList.add('with-notes');
+      const panel = el('div', 'car-panel');
+      b.images.forEach((i, k) => {
+        const n = el('div', 'car-note' + (k === 0 ? ' on' : ''));
+        n.append(el('p', 'car-note-name', i.cap || ''));
+        if (i.use) { const u = el('p', 'car-note-use'); u.append(el('span', 'k', 'Use for'), document.createTextNode(i.use)); n.append(u); }
+        const ul = el('ul', 'pc');
+        (i.pros || []).forEach((t) => ul.append(el('li', 'plus', t)));
+        (i.cons || []).forEach((t) => ul.append(el('li', 'minus', t)));
+        n.append(ul);
+        panel.append(n);
+      });
+      const body = el('div', 'car-body');
+      body.append(stage, panel);
+      f.append(body, rail);
+    } else {
     /* 01-10-2026: a slide may carry its own name (`cap`), under the picture's left edge, opposite the count */
     if (b.images.some((i) => i.cap)) stage.append(el('span', 'car-name', b.images[0].cap || ''));
     f.append(stage, rail);
+    }
     if (b.caption) f.append(capEl(b));
     return wireCarousel(f);
   },
@@ -1596,6 +1706,7 @@ function videoId(url) {
   return null;
 }
 
+function n0IsNotes(b) { return (b.items || []).some((i) => (i.pros && i.pros.length) || (i.cons && i.cons.length)); }
 function phBox(label, cls) {
   return el('div', 'ph' + (cls ? ' ' + cls : ''), label);
 }
@@ -1630,6 +1741,8 @@ function planTable(b, cls) {
     t.append(tr);
   });
   if (b.reveal) t.classList.add('reveal');
+  /* 08-10-2026: `dense: false` keeps a long comparison at its own size when the page has the room (pages.js) */
+  if (b.dense === false) t.classList.add('tbl-free');
   return t;
 }
 
@@ -2387,7 +2500,7 @@ function renderStep(st, ch) {
         && typeof pending === 'function') {
       const marks = [];
       /* a gallery's generated words are its reading lines, not the names of its pictures */
-      const only = b.type === 'gallery' ? 'p.cell-sub' : 'p';
+      const only = b.type === 'gallery' ? 'p.cell-sub' : b.type === 'carousel' ? '.car-panel' : (b.type === 'tabs' && n0IsNotes(b)) ? '.tabs-panes' : 'p';
       parts.forEach((n) => {
         if (n.matches && n.matches(only)) { marks.push(n); return; }
         const ps = n.querySelectorAll ? [...n.querySelectorAll(only)] : [];

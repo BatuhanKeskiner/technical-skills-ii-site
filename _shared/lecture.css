@@ -3047,7 +3047,10 @@ body.pages #pagebar .count{
    The clock beside it stays mono, because that IS a measurement. */
 body.pages .step.active table.plan.sem td:nth-child(3),
 body.pages .step.active table.plan.scen td:first-child,
-body.pages .step.active table.plan:not(.sc-plan) td:nth-child(2){
+body.pages .step.active table.plan:not(.sc-plan) td:nth-child(2),
+/* 07-10-2026: a plan of three or more columns is a comparison; every value after the row's
+   label takes the same face, so the columns do not alternate between mono and the title face */
+body.pages .step.active table.plan:not(.sc-plan):not(.scen):not(.sem) td:nth-child(n+3){
   font-family:var(--font-title);
   font-size:calc(var(--t-body) * var(--sz,1));
   letter-spacing:0;
@@ -3322,9 +3325,13 @@ nav.chapters .design-panel .cnt .d-say{display:block;margin-top:6px;color:var(--
 body.editing #ed-outline{display:block;flex:1 1 auto;min-height:0;overflow:auto;padding:0 10px 10px;font-family:var(--font-mono);font-size:9.5px;line-height:1.4}
 body.editing nav.chapters #chapter-list{display:none}
 #ed-outline .eo-head{margin:10px 0 8px;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-#ed-outline .eo-part{margin:12px 0 4px;padding:4px 6px;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-100);background:var(--ink-900)}
-#ed-outline .eo-ch{display:grid;grid-template-columns:26px 1fr auto;gap:6px;align-items:center;padding:5px 4px 5px 6px;margin-top:4px;border:1px solid var(--rule);background:var(--paper-100);cursor:grab;letter-spacing:.1em;text-transform:uppercase}
-#ed-outline .eo-pg{display:grid;grid-template-columns:26px 1fr;gap:6px;align-items:baseline;padding:5px 6px 5px 14px;border-bottom:1px solid var(--rule-hairline,var(--rule));cursor:grab;color:var(--ink)}
+/* The part bar carries its gap ABOVE it, inside its own row: the bar sits
+   tight on the chapter it names and apart from the page it follows. Glued to
+   the page above, it read as that page's footer. */
+#ed-outline .eo-part{display:flex;align-items:flex-end;margin:0;padding:0;background:transparent}
+#ed-outline .eo-part-t{display:block;width:100%;box-sizing:border-box;padding:3px 6px;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-100);background:var(--ink-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ed-outline .eo-ch{display:grid;grid-template-columns:34px 1fr auto;gap:6px;align-items:center;padding:5px 4px 5px 6px;margin-top:4px;border:1px solid var(--rule);background:var(--paper-100);cursor:grab;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-900)}
+#ed-outline .eo-pg{display:grid;grid-template-columns:34px 1fr;gap:6px;align-items:baseline;padding:5px 6px 5px 14px;border-bottom:1px solid var(--rule-hairline,var(--rule));cursor:grab;color:var(--ink)}
 #ed-outline .eo-pg:hover{background:var(--paper-200)}
 #ed-outline .eo-pg.on{background:var(--signal-500);color:var(--on-signal)}
 /* WHAT HE HAS TOUCHED, IN HIS OWN COLOUR. His word, 16-09-2026: "şuraya edit
@@ -3346,10 +3353,24 @@ body.editing nav.chapters #chapter-list{display:none}
 #ed-outline .eo-ch.edited .eo-t{color:var(--signal-600)}
 #ed-outline .eo-pg.proof .eo-i{color:#2f6fd0}
 #ed-outline .eo-pg.on .eo-i{color:inherit}
-#ed-outline .eo-n,#ed-outline .eo-i{color:var(--muted);text-align:right}
-#ed-outline .eo-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:none;letter-spacing:0}
-#ed-outline .eo-ch .eo-t{letter-spacing:.08em}
-#ed-outline .eo-over{outline:2px solid var(--signal-500);outline-offset:-2px}
+/* Numbers are read, so they are set in ink, not in the muted grey that made
+   them disappear beside the titles. The title is in the text face at a size
+   that can be read without leaning in; the number keeps the mono. */
+#ed-outline .eo-n,#ed-outline .eo-i{color:var(--ink-700);text-align:right;font-family:var(--font-mono);font-size:10px;letter-spacing:0;font-variant-numeric:tabular-nums}
+#ed-outline .eo-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-transform:none;letter-spacing:0;font-family:var(--font-text);font-size:11.5px}
+#ed-outline .eo-ch .eo-t{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase}
+#ed-outline .eo-ch .eo-n{font-size:9px}
+/* ---- carrying a row ---- */
+#ed-outline{position:relative}
+#ed-outline .eo-lift{opacity:.35}
+/* the one insertion line: where the drop will land, between two rows */
+#ed-outline .eo-ins{position:absolute;left:0;right:0;height:2px;background:var(--signal-500);pointer-events:none;z-index:3}
+#ed-outline .eo-ins::before{content:"";position:absolute;left:0;top:-3px;width:8px;height:8px;background:var(--signal-500)}
+/* the chip under the pointer: the row's number and title, legible */
+.eo-ghost{position:fixed;top:-200px;left:0;display:flex;align-items:center;gap:8px;max-width:280px;padding:5px 10px;
+  background:var(--ink-900);color:var(--paper-100);border:1px solid var(--ink-900);box-shadow:0 2px 8px rgba(0,0,0,.25);pointer-events:none;z-index:99}
+.eo-ghost-n{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em}
+.eo-ghost-t{font-family:var(--font-text);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #ed-outline .eo-plus{font-family:var(--font-mono);font-size:12px;line-height:1;color:var(--muted);background:transparent;border:1px solid var(--rule);padding:1px 6px 3px;cursor:pointer;border-radius:0}
 #ed-outline .eo-plus:hover{color:var(--paper-100);background:var(--ink-900);border-color:var(--ink-900)}
 #ed-outline .eo-add{padding:4px 0 8px 14px}
@@ -7881,13 +7902,18 @@ body.editing .step.active.arranged.free .pg-fitem.pg-sel:hover{box-shadow:none}
    whole number of them. The rows also snap, so scrolling leaves
    the top edge on a row rather than halfway up one.
    ============================================================ */
-#tsedit #ed-outline{--eo-row:24px;scroll-snap-type:y proximity;scroll-padding-top:var(--eo-row)}
+#tsedit #ed-outline{--eo-row:26px;scroll-snap-type:y proximity;scroll-padding-top:var(--eo-row)}
+/* while a row is carried the list must scroll freely under the pointer:
+   snapping to a row moved a different row under the drop */
+#tsedit #ed-outline.eo-dragging{scroll-snap-type:none}
 #tsedit .eo-head{height:var(--eo-row);box-sizing:border-box;padding-top:0;padding-bottom:0}
 #tsedit #ed-outline .eo-pg,
 #tsedit #ed-outline .eo-ch,
 #tsedit #ed-outline .eo-part{height:var(--eo-row);box-sizing:border-box;
   padding-top:0;padding-bottom:0;margin-top:0;margin-bottom:0;
   align-items:center;scroll-snap-align:start}
+#tsedit #ed-outline .eo-part{align-items:flex-end}
+#tsedit #ed-outline .eo-part-t{height:20px;line-height:14px}
 /* The "+" that adds a page to a chapter has to sit inside the row
    it belongs to rather than set the row's height. */
 #tsedit #ed-outline .eo-plus{padding:0 6px;line-height:16px;height:18px}
@@ -9475,3 +9501,84 @@ figure.slide.sequence{display:flex;flex-direction:column;min-height:0;height:100
 /* 01-10-2026: a highlighted term in a big line has a box taller than the line height (1.06), so it stood 7 px below
    the line (week 3 p35 at 1920, check-pages CLIPPED); the line keeps room for it */
 body.pages .step.active .line.big:has(em.term){padding-bottom:.14em}
+
+/* ---------- VIEW — a PDF read over the page (07-10-2026) ----------
+   View and Download side by side, one height. The reader is the browser's own,
+   in a frame over a dimmed page. */
+.pdfdoc .pd-gets{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.pdfdoc.pd-stack .pd-gets{grid-column:1/-1;grid-row:2;margin-top:5px}
+.pdfdoc.pd-stack .pd-gets .pd-get{width:auto;margin-top:0}
+.pdfdoc.pd-a .pd-gets{flex:0 0 auto;margin-left:auto}
+.pdfdoc.pd-a .pd-gets .pd-get{margin-left:0}
+button.pd-get{font:inherit;cursor:pointer}
+button.pd-get:hover{background:var(--ink-900);color:var(--paper-000)}
+.pd-get .get-face{display:inline-flex;align-items:center;gap:10px}
+.pdfview{position:fixed;inset:0;z-index:9000;background:rgba(17,17,17,.72);
+  display:flex;align-items:center;justify-content:center;padding:3vh 3vw}
+.pdfview .pv-panel{width:min(100%,1200px);height:100%;display:flex;flex-direction:column;
+  background:var(--paper-000);border:1px solid var(--ink-900)}
+.pdfview .pv-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:10px 12px 10px 16px;border-bottom:1px solid var(--ink-200)}
+.pdfview .pv-name{font-size:17px;letter-spacing:-.015em;color:var(--ink-900)}
+.pdfview .pv-acts{display:flex;gap:8px;align-items:stretch}
+.pdfview .pv-key{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;
+  border:1px solid currentColor;padding:2px 5px;margin-left:10px;line-height:1}
+.pdfview .pv-frame{flex:1;width:100%;border:0;background:var(--paper-200)}
+
+/* ---------- A SLIDESHOW WITH NOTES (08-10-2026) ----------
+   The picture on a white ground at the left, its name and its + / − lines at the
+   right; both change with the slide. + is the state colour for good, − the signal. */
+body.pages .step.active figure.slide.carousel.with-notes .car-body{display:flex;gap:3vw;align-items:stretch;flex:1 1 auto;min-height:0;width:100%}
+body.pages .step.active figure.slide.carousel.with-notes .car-stage{flex:1 1 60%;background:#fff;padding:3vh 2vw}
+body.pages .step.active figure.slide.carousel.with-notes .car-count{bottom:-1px}
+body.pages .step.active figure.slide.carousel.with-notes .car-thumb{background:#fff}
+body.pages .step.active figure.slide.carousel.with-notes .car-thumb img{object-fit:contain}
+.carousel .car-panel{flex:0 0 36%;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.carousel .car-note{display:none}
+.carousel .car-note.on{display:block}
+.carousel .car-note-name{font-family:var(--font-title);font-size:calc(var(--t-body, 18px) * 1.6);line-height:1.1;letter-spacing:-.015em;color:var(--ink-900);margin:0 0 1.6vh}
+.carousel ul.pc{list-style:none;margin:0;padding:0}
+.carousel ul.pc li{position:relative;padding-left:1.5em;margin:0 0 .9vh;font-size:var(--t-body, 18px);line-height:1.3;color:var(--ink-900)}
+.carousel ul.pc li::before{position:absolute;left:0;top:0;font-family:var(--font-mono);font-weight:700}
+.carousel ul.pc li.plus::before{content:"+";color:var(--state-ok, #1F7A4D)}
+.carousel ul.pc li.minus::before{content:"\2212";color:var(--signal-600, #C42D00)}
+
+/* a comparison's row label is what the row is about, so it is the strongest cell
+   in the row, never the quietest (his note 08-10-2026 on Workfiles: "Working from
+   kısmının en belirgin olması gerekirken en soluk ... olması çok saçma") */
+body.pages .step.active table.plan:not(.sc-plan):not(.scen):not(.sem):has(td:nth-child(3)) td:first-child{
+  font-family:var(--font-title);font-size:calc(var(--t-body) * var(--sz,1));letter-spacing:0;
+  text-transform:none;color:var(--ink-900);font-weight:600;white-space:normal}
+.carousel .car-note-use{font-family:var(--font-mono);font-size:clamp(10px,1.4vh,13px);letter-spacing:.06em;color:var(--ink-500);margin:-.8vh 0 1.6vh}
+.carousel .car-note-use .k{color:var(--ink-900);text-transform:uppercase;letter-spacing:.14em;margin-right:.8em}
+/* a long comparison kept at its own type size gives up row padding first (08-10-2026) */
+body.pages .step.active table.plan.tbl-free td,body.pages .step.active table.plan.tbl-free th{padding-top:.45vh;padding-bottom:.45vh}
+/* a landscape picture in a tab takes the pane's width, its words beneath (08-10-2026) */
+.tabs-p.wide{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;gap:1.6vh 0;align-items:stretch}
+.tabs-p.wide .tabs-pic > img{object-position:center center}
+/* tabs with + / − notes (08-10-2026): the picture and the words keep their places from tab to tab,
+   on one white ground, so the tab changes and nothing else moves */
+div.tabs.tabs-notes .tabs-panes{background:#fff;padding:3vh 2.5vw}
+div.tabs.tabs-notes .tabs-p{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:0 3vw;align-items:center;height:100%}
+div.tabs.tabs-notes .tabs-pic{height:100%;justify-content:center}
+div.tabs.tabs-notes .tabs-pic > img{object-position:center center}
+div.tabs.tabs-notes .car-note{display:block}
+div.tabs.tabs-notes .car-note-name{font-family:var(--font-title);font-size:calc(var(--t-body, 18px) * 1.6);line-height:1.1;letter-spacing:-.015em;color:var(--ink-900);margin:0 0 1.6vh}
+div.tabs.tabs-notes .car-note-use{font-family:var(--font-mono);font-size:clamp(10px,1.4vh,13px);letter-spacing:.06em;color:var(--ink-500);margin:-.8vh 0 1.6vh}
+div.tabs.tabs-notes .car-note-use .k{color:var(--ink-900);text-transform:uppercase;letter-spacing:.14em;margin-right:.8em}
+div.tabs.tabs-notes ul.pc{list-style:none;margin:0;padding:0}
+div.tabs.tabs-notes ul.pc li{position:relative;padding-left:1.5em;margin:0 0 .9vh;font-size:var(--t-body, 18px);line-height:1.3;color:var(--ink-900)}
+div.tabs.tabs-notes ul.pc li::before{position:absolute;left:0;top:0;font-family:var(--font-mono);font-weight:700}
+div.tabs.tabs-notes ul.pc li.plus::before{content:"+";color:var(--state-ok, #1F7A4D)}
+div.tabs.tabs-notes ul.pc li.minus::before{content:"\2212";color:var(--signal-600, #C42D00)}
+/* a gallery of equal cells centres each name under its picture (08-10-2026, Cable Types) */
+body.pages .step.active figure.slide.gallery[data-layout=grid] .cell-cap{text-align:center}
+/* a large checklist (08-10-2026, Demo): the box is as tall as the line it ticks and sits on its middle;
+   a step's number is set apart in the mono face, in grey, so the action reads first */
+body.pages .step.active ul.bul.big[data-marker=check] > li.tick label{align-items:center}
+body.pages .step.active ul.bul.big[data-marker=check] .ck-box{width:.78em;height:.78em;transform:none}
+body.pages .step.active ul.bul.big[data-marker=check] .ck-box:checked::after{left:30%;top:8%;width:28%;height:55%}
+.bul .ck-n{font-family:var(--font-mono);font-size:.55em;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-500, #6B6F6D);margin-right:1em;vertical-align:.18em}
+/* his note 08-10-2026 on Storage Types: the name and its lines start at the top, in the same place on every tab */
+div.tabs.tabs-notes .tabs-p{align-items:stretch}
+div.tabs.tabs-notes .tabs-note{align-self:start;padding-top:1vh}

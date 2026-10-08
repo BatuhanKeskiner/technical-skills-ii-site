@@ -151,6 +151,12 @@ R.steps = (d, c) => {
     names[i].forEach((t, k) => { q += tx(x, nameB + k * nameLH, t, { z: Z.item, c: T.ink }); });
     if (s.warn) q += label(x, lineB, 'Note', c, { c: T.ink });
     q += IDL.lines(x, lineB + (s.warn ? 24 : 0), IDL.wrapPretty(s.warn || s.line, C.w, Z.body), { f: 't', w: 400, z: Z.body, c: T.ink }, G.LH.body);
+    /* 08-10-2026, his note on SD Card Cycle: "adımlar arasında oklar olmalı". `arrows: true` draws one
+       arrow in the gutter between a step's rule and the next one's, on the rule's line */
+    if (d.arrows && i < n - 1) {
+      const a0 = x + C.w + 6, a1 = C.x(i + 1) - 6;
+      if (a1 - a0 > 8) q += ln(a0, ruleY, a1, ruleY, col, INK) + '<path d="M' + r(a1 - 7) + ' ' + r(ruleY - 4.5) + 'L' + r(a1) + ' ' + r(ruleY) + 'L' + r(a1 - 7) + ' ' + r(ruleY + 4.5) + '" fill="none" stroke="' + col + '" stroke-width="' + INK + '"/>';
+    }
     out += vis(i, c, q);
   });
   return out;

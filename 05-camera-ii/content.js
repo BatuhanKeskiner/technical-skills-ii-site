@@ -32,7 +32,7 @@ window.TS2_WEEK = {
   title: 'Camera II',
   standfirst: '',
   revision: 'draft v0.1',
-  next: { label: 'Light I', href: '#' },
+  next: { label: 'Camera III', href: '../06-camera-iii/' },
 
   chapters: [
     /* ================================================== 0 · Schedule */
@@ -120,42 +120,10 @@ window.TS2_WEEK = {
         {
           id: 's-signal',
           layout: 'stacked',
-          title: 'Analog and Digital',
+          title: 'Analog and Digital Signals',
           blocks: [
             { type: 'line', gen: 'w5-sig-say-2', html: 'On a negative, density changes continuously across the frame, so film records an <em class="term">analog</em> signal. A sensor measures the light at each pixel, and the camera converts each measurement to a number, so it records a <em class="term">digital</em> signal.' },
             { type: 'diagram', gen: 'w5-sig-dia-2', form: 'signal', data: {"samples":12,"levels":8,"panels":[{"name":"Analog","line":"Film records light as a continuous range of silver or dye density."},{"name":"Sampling","line":"A sensor measures light at each pixel."},{"name":"Quantisation","line":"Each reading is rounded to one of a fixed number of levels; bit depth sets how many."}]} },
-          ],
-        },
-        {
-          id: 's-b17',
-          layout: 'stacked',
-          title: 'Pixels and DPI',
-          blocks: [
-            { type: 'line', gen: 'w5-b17-say', html: 'Image size is measured in pixels. The ppi value stored in the file, often labelled dpi, is used only when the file is printed.' },
-            { type: 'diagram', gen: 'w5-b17-dia', form: 'formula', data: {"terms": [{"t": "Print size", "u": "inches", "key": 1}, {"t": "=", "op": 1}, {"t": "Pixels", "u": "along one side"}, {"t": "÷", "op": 1}, {"t": "Resolution", "u": "ppi"}], "example": ["20 in", "=", "6,000 px", "÷", "300 ppi"], "note": "20 inches is 50.8 cm."} },
-            { type: 'text', gen: 'w5-b17-text', paras: ['A digital image has a fixed number of pixels. Resolution is given as ppi, pixels per inch, for a file and as dpi, dots per inch, for a printer; the two terms are often used for the same value. The ppi value stored in the file tells a printer how many pixels to place in an inch, so changing it without resampling changes the print size while the pixels stay the same. A screen ignores the value and draws the image pixel by pixel.'] },
-            { type: 'figure', src: 'b17-image-size.jpg', alt: 'Photoshop’s Image Size dialog: 7000 × 4667 px at 300 pixels per inch, 59.27 × 39.51 cm', caption: 'Photoshop · Image Size. 7,000 px ÷ 300 ppi = 23.3 in = 59.27 cm. Screenshot: Batuhan Keskiner.' },
-          ],
-        },
-        {
-          id: 's-b15',
-          layout: 'stacked',
-          title: 'Bit Depth',
-          blocks: [
-            { type: 'line', gen: 'w5-b15-say', html: 'Bit depth is the number of bits that store each colour channel of a pixel. Each added bit doubles the number of tones.' },
-            /* 30-09, his pick in the Comparative Review: Design's 11C, each bit depth drawn as its own grey ramp */
-            { type: 'diagram', gen: 'w5-b15-dia', form: 'alt', data: { topic: 10, key: 'C' } },
-            { type: 'text', gen: 'w5-b15-text-3', paras: ['An 8-bit channel holds 256 tones and a 16-bit channel 65,536. On a screen the two look the same, because most screens show 8 bits per channel. The difference appears in editing. When a curve or a white-balance change stretches part of the tonal range, the 256 tones of an 8-bit file are spread apart and show as bands, and the 65,536 of a 16-bit file stay smooth. Most raw files are recorded at 12 or 14 bits, and some medium-format cameras record 16. They are edited at 16 bits, and the 8-bit JPEG is made last.'] },
-          ],
-        },
-        {
-          id: 's-b15e',
-          /* 30-09: the Bit Depth instrument on its own page; under the ramps and the paragraph it had no room */
-          layout: 'stacked',
-          title: 'Bit Depth',
-          blocks: [
-            { type: 'line', gen: 'w5-b15e-say-2', html: 'Set the curve to Hard, then switch between 16 and 8 bit and look at the sky. Even though it doesn’t feel like there is a difference between 8 and 16 bit with your eyes, the effect gets dramatic when you start editing and modifying colours or tones of the original photo.' },
-            { type: 'demo', id: 'bitdepth', size: 'full' },
           ],
         },
 /* His own diagram, 29-09: "zamanında şöyle bir şey yapmışım bunu direkt uyarlayalım."
@@ -355,6 +323,27 @@ window.TS2_WEEK = {
           ],
         },
         {
+          id: 's-b15',
+          layout: 'stacked',
+          title: 'Bit Depth',
+          blocks: [
+            { type: 'line', gen: 'w5-b15-say', html: 'Bit depth is the number of bits that store each colour channel of a pixel. Each added bit doubles the number of tones.' },
+            /* 30-09, his pick in the Comparative Review: Design's 11C, each bit depth drawn as its own grey ramp */
+            { type: 'diagram', gen: 'w5-b15-dia', form: 'alt', data: { topic: 10, key: 'C' } },
+            { type: 'text', gen: 'w5-b15-text-3', paras: ['An 8-bit channel holds 256 tones and a 16-bit channel 65,536. On a screen the two look the same, because most screens show 8 bits per channel. The difference appears in editing. When a curve or a white-balance change stretches part of the tonal range, the 256 tones of an 8-bit file are spread apart and show as bands, and the 65,536 of a 16-bit file stay smooth. Most raw files are recorded at 12 or 14 bits, and some medium-format cameras record 16. They are edited at 16 bits, and the 8-bit JPEG is made last.'] },
+          ],
+        },
+        {
+          id: 's-b15e',
+          /* 30-09: the Bit Depth instrument on its own page; under the ramps and the paragraph it had no room */
+          layout: 'stacked',
+          title: 'Bit Depth',
+          blocks: [
+            { type: 'line', gen: 'w5-b15e-say-2', html: 'Set the curve to Hard, then switch between 16 and 8 bit and look at the sky. Even though it doesn’t feel like there is a difference between 8 and 16 bit with your eyes, the effect gets dramatic when you start editing and modifying colours or tones of the original photo.' },
+            { type: 'demo', id: 'bitdepth', size: 'full' },
+          ],
+        },
+        {
           id: 's-a5',
           /* 30-09: as tabs, like Developing Faults; text after _notes/research/SCANNING-FAULTS.md, pictures he saved */
           layout: 'stacked',
@@ -406,14 +395,22 @@ window.TS2_WEEK = {
           ],
         },
         {
-          id: 's-b12',
+          id: 's-b17n',
           layout: 'stacked',
-          title: 'File Formats',
+          title: 'Non-Destructive Editing',
           blocks: [
-            { type: 'line', gen: 'w5-b12-say-2', html: 'Each format has its own use cases and functions. Raw is used at capture, PSD while editing, DNG and PSD in the archive, JPEG for online and screens, and TIFF or PDF for print.' },
-            /* 01-10, his yes in the doc: Digital Workflow keeps the flow; here the formats by stage, archive DNG + PSD as there */
-            { type: 'diagram', gen: 'w5-b12-dia-2', form: 'table', data: {"head": "Stage", "cols": ["Format", "Why"], "mark": {"col": 0}, "rows": [{"name": "Capture", "v": ["RAW", "All the sensor data, kept for editing"]}, {"name": "Scan", "v": ["TIFF", "The scan, saved without loss"]}, {"name": "Edit", "v": ["PSD, TIFF", "Layers and adjustments stay editable"]}, {"name": "Archive", "v": ["DNG, PSD", "Raw data in an open format; the layered master"]}, {"name": "Screen", "v": ["JPEG", "Small files for the web and screens"]}, {"name": "Print", "v": ["TIFF, PDF", "Full quality for the printer"]}]} },
-            { type: 'text', gen: 'w5-b12-text', paras: ['A raw file is the sensor data with the camera settings attached, before it has been turned into an image; it is read by raw-processing software. PSD stores the layers and adjustments made while editing. For the archive, DNG keeps raw data in an open, documented format, and TIFF keeps a finished image without loss. The copies for screen and print are exported last.'] },
+            { type: 'define', gen: 'w5-nd-def', term: 'Non-destructive editing', kind: 'process',
+              short: 'Editing that leaves the original file unchanged.',
+              mid: 'Editing in which the changes are stored as instructions or as separate layers, so the original pixels stay as they were and every change can be undone or adjusted later.',
+              show: 'mid' },
+            { type: 'scen', gen: 'w5-nd-table',
+              head: ['Where', 'Non-destructive', 'Destructive'],
+              rows: [
+                ['Lightroom · Capture One', 'Edits stored as instructions in the catalogue, the session or an XMP file; Export writes a new file', 'Editing the exported JPEG and saving over it'],
+                ['Photoshop', 'Adjustment layers, masks, Smart Objects', 'Image → Adjustments on a pixel layer; the Eraser'],
+                ['Saving', 'PSD or TIFF with its layers', 'Flattening; saving a JPEG again'],
+              ] },
+            { type: 'text', gen: 'w5-nd-text', paras: ['A destructive edit rewrites the pixel values, and the earlier values are lost when the file is saved. A non-destructive edit is stored as a description of the change, such as exposure +0.5, and the program applies it to the original each time the image is shown or exported. An XMP file is a small text file, saved beside the raw file, that holds these instructions.'] },
           ],
         },
         {
@@ -435,56 +432,18 @@ window.TS2_WEEK = {
           ],
         },
         {
-          id: 's-b13c',
+          id: 's-b12',
           layout: 'stacked',
-          title: 'Compression and Resize',
+          title: 'File Formats',
           blocks: [
-            { type: 'demo', id: 'compression', size: 'full', place: { row: 1, col: 1, w: 'full', rgrow: true } },
-            { type: 'text', gen: 'w5-b13c-text-2', paras: ['Lossless compression, such as ZIP or LZW in a TIFF, writes repeated patterns in the data more briefly, and opening the file restores every pixel. JPEG divides the image into blocks of 8 × 8 pixels and discards the fine detail and colour variation the eye notices least. The quality setting decides how much is discarded.'], place: { row: 2, col: 1, w: 'full' } },
-          ],
-        },
-        {
-          id: 's-b13g',
-          /* 30-09, his word: "Multiple Compression gösterimi için de bir asset üret … Bir görseli adım adım slider ile
-             dönüşümünü görelim." Frames made by _shared/tools/make-generations.py */
-          layout: 'stacked',
-          title: 'Generation Loss',
-          blocks: [
-            { type: 'line', gen: 'w5-b13g-say', html: 'Every save of an edited JPEG compresses it again, and the losses add up. This is generation loss.' },
-            { type: 'sequence', title: 'Saves', frames: [
-              { src: 'assets/generations/gen-000.jpg', detail: 'assets/generations/gen-000-detail.png', label: 'Original', alt: 'The alley photograph after original' },
-              { src: 'assets/generations/gen-001.jpg', detail: 'assets/generations/gen-001-detail.png', label: '1 save', alt: 'The alley photograph after 1 save' },
-              { src: 'assets/generations/gen-002.jpg', detail: 'assets/generations/gen-002-detail.png', label: '2 saves', alt: 'The alley photograph after 2 saves' },
-              { src: 'assets/generations/gen-005.jpg', detail: 'assets/generations/gen-005-detail.png', label: '5 saves', alt: 'The alley photograph after 5 saves' },
-              { src: 'assets/generations/gen-010.jpg', detail: 'assets/generations/gen-010-detail.png', label: '10 saves', alt: 'The alley photograph after 10 saves' },
-              { src: 'assets/generations/gen-020.jpg', detail: 'assets/generations/gen-020-detail.png', label: '20 saves', alt: 'The alley photograph after 20 saves' },
-              { src: 'assets/generations/gen-050.jpg', detail: 'assets/generations/gen-050-detail.png', label: '50 saves', alt: 'The alley photograph after 50 saves' },
-              { src: 'assets/generations/gen-100.jpg', detail: 'assets/generations/gen-100-detail.png', label: '100 saves', alt: 'The alley photograph after 100 saves' },
-            ] },
-            { type: 'note', gen: 'w5-b13g-note-2', html: 'The photograph was saved 100 times. Each save used another quality setting between 30 and 80, as different apps and platforms do, and was made with the picture moved by up to two pixels, as a crop does. Saved again unchanged at one quality, a JPEG barely changes after the first save. Photo: Batuhan Keskiner.' },
+            { type: 'line', gen: 'w5-b12-say-2', html: 'Each format has its own use cases and functions. Raw is used at capture, PSD while editing, DNG and PSD in the archive, JPEG for online and screens, and TIFF or PDF for print.' },
+            /* 01-10, his yes in the doc: Digital Workflow keeps the flow; here the formats by stage, archive DNG + PSD as there */
+            { type: 'diagram', gen: 'w5-b12-dia-2', form: 'table', data: {"head": "Stage", "cols": ["Format", "Why"], "mark": {"col": 0}, "rows": [{"name": "Capture", "v": ["RAW", "All the sensor data, kept for editing"]}, {"name": "Scan", "v": ["TIFF", "The scan, saved without loss"]}, {"name": "Edit", "v": ["PSD, TIFF", "Layers and adjustments stay editable"]}, {"name": "Archive", "v": ["DNG, PSD", "Raw data in an open format; the layered master"]}, {"name": "Screen", "v": ["JPEG", "Small files for the web and screens"]}, {"name": "Print", "v": ["TIFF, PDF", "Full quality for the printer"]}]} },
+            { type: 'text', gen: 'w5-b12-text', paras: ['A raw file is the sensor data with the camera settings attached, before it has been turned into an image; it is read by raw-processing software. PSD stores the layers and adjustments made while editing. For the archive, DNG keeps raw data in an open, documented format, and TIFF keeps a finished image without loss. The copies for screen and print are exported last.'] },
           ],
         },
         /* His request 30-09: non-destructive editing, as its own slide. First in
            this chapter so the term is known before the catalogue page uses it. */
-        {
-          id: 's-b17n',
-          layout: 'stacked',
-          title: 'Non-Destructive Editing',
-          blocks: [
-            { type: 'define', gen: 'w5-nd-def', term: 'Non-destructive editing', kind: 'process',
-              short: 'Editing that leaves the original file unchanged.',
-              mid: 'Editing in which the changes are stored as instructions or as separate layers, so the original pixels stay as they were and every change can be undone or adjusted later.',
-              show: 'mid' },
-            { type: 'scen', gen: 'w5-nd-table',
-              head: ['Where', 'Non-destructive', 'Destructive'],
-              rows: [
-                ['Lightroom · Capture One', 'Edits stored as instructions in the catalogue, the session or an XMP file; Export writes a new file', 'Editing the exported JPEG and saving over it'],
-                ['Photoshop', 'Adjustment layers, masks, Smart Objects', 'Image → Adjustments on a pixel layer; the Eraser'],
-                ['Saving', 'PSD or TIFF with its layers', 'Flattening; saving a JPEG again'],
-              ] },
-            { type: 'text', gen: 'w5-nd-text', paras: ['A destructive edit rewrites the pixel values, and the earlier values are lost when the file is saved. A non-destructive edit is stored as a description of the change, such as exposure +0.5, and the program applies it to the original each time the image is shown or exported. An XMP file is a small text file, saved beside the raw file, that holds these instructions.'] },
-          ],
-        },
         {
           id: 's-b13',
           layout: 'stacked',
@@ -576,6 +535,36 @@ window.TS2_WEEK = {
           ],
         },
         {
+          id: 's-b13c',
+          layout: 'stacked',
+          title: 'Compression and Resize',
+          blocks: [
+            { type: 'demo', id: 'compression', size: 'full', place: { row: 1, col: 1, w: 'full', rgrow: true } },
+            { type: 'text', gen: 'w5-b13c-text-2', paras: ['Lossless compression, such as ZIP or LZW in a TIFF, writes repeated patterns in the data more briefly, and opening the file restores every pixel. JPEG divides the image into blocks of 8 × 8 pixels and discards the fine detail and colour variation the eye notices least. The quality setting decides how much is discarded.'], place: { row: 2, col: 1, w: 'full' } },
+          ],
+        },
+        {
+          id: 's-b13g',
+          /* 30-09, his word: "Multiple Compression gösterimi için de bir asset üret … Bir görseli adım adım slider ile
+             dönüşümünü görelim." Frames made by _shared/tools/make-generations.py */
+          layout: 'stacked',
+          title: 'Generation Loss',
+          blocks: [
+            { type: 'line', gen: 'w5-b13g-say', html: 'Every save of an edited JPEG compresses it again, and the losses add up. This is generation loss.' },
+            { type: 'sequence', title: 'Saves', frames: [
+              { src: 'assets/generations/gen-000.jpg', detail: 'assets/generations/gen-000-detail.png', label: 'Original', alt: 'The alley photograph after original' },
+              { src: 'assets/generations/gen-001.jpg', detail: 'assets/generations/gen-001-detail.png', label: '1 save', alt: 'The alley photograph after 1 save' },
+              { src: 'assets/generations/gen-002.jpg', detail: 'assets/generations/gen-002-detail.png', label: '2 saves', alt: 'The alley photograph after 2 saves' },
+              { src: 'assets/generations/gen-005.jpg', detail: 'assets/generations/gen-005-detail.png', label: '5 saves', alt: 'The alley photograph after 5 saves' },
+              { src: 'assets/generations/gen-010.jpg', detail: 'assets/generations/gen-010-detail.png', label: '10 saves', alt: 'The alley photograph after 10 saves' },
+              { src: 'assets/generations/gen-020.jpg', detail: 'assets/generations/gen-020-detail.png', label: '20 saves', alt: 'The alley photograph after 20 saves' },
+              { src: 'assets/generations/gen-050.jpg', detail: 'assets/generations/gen-050-detail.png', label: '50 saves', alt: 'The alley photograph after 50 saves' },
+              { src: 'assets/generations/gen-100.jpg', detail: 'assets/generations/gen-100-detail.png', label: '100 saves', alt: 'The alley photograph after 100 saves' },
+            ] },
+            { type: 'note', gen: 'w5-b13g-note-2', html: 'The photograph was saved 100 times. Each save used another quality setting between 30 and 80, as different apps and platforms do, and was made with the picture moved by up to two pixels, as a crop does. Saved again unchanged at one quality, a JPEG barely changes after the first save. Photo: Batuhan Keskiner.' },
+          ],
+        },
+        {
           id: 's-b13png',
           /* Round 30-09 23:48, his word: "swap this with PNG, nobody needs BMP" */
           layout: 'stacked',
@@ -642,6 +631,17 @@ window.TS2_WEEK = {
             { type: 'note', gen: 'w5-pdfr-after', html: 'For a PDF that is already made, use Acrobat’s Reduce File Size or PDF Optimizer. In Preview, File → Export → Quartz Filter → Reduce File Size makes the file much smaller and visibly lowers image quality.' },
             { type: 'note', gen: 'w5-pdfr-eg', html: 'An A4 page at 300 ppi needs 2,480 × 3,508 px. A 6,000 × 9,000 px image placed on it carries about six times the pixels the page can print.' },
             { type: 'todo', html: 'Batu: the upload limit of the school’s hand-in portal, if there is one.' },
+          ],
+        },
+        {
+          id: 's-b17',
+          layout: 'stacked',
+          title: 'Pixels and DPI',
+          blocks: [
+            { type: 'line', gen: 'w5-b17-say', html: 'Image size is measured in pixels. The ppi value stored in the file, often labelled dpi, is used only when the file is printed.' },
+            { type: 'diagram', gen: 'w5-b17-dia', form: 'formula', data: {"terms": [{"t": "Print size", "u": "inches", "key": 1}, {"t": "=", "op": 1}, {"t": "Pixels", "u": "along one side"}, {"t": "÷", "op": 1}, {"t": "Resolution", "u": "ppi"}], "example": ["20 in", "=", "6,000 px", "÷", "300 ppi"], "note": "20 inches is 50.8 cm."} },
+            { type: 'text', gen: 'w5-b17-text', paras: ['A digital image has a fixed number of pixels. Resolution is given as ppi, pixels per inch, for a file and as dpi, dots per inch, for a printer; the two terms are often used for the same value. The ppi value stored in the file tells a printer how many pixels to place in an inch, so changing it without resampling changes the print size while the pixels stay the same. A screen ignores the value and draws the image pixel by pixel.'] },
+            { type: 'figure', src: 'b17-image-size.jpg', alt: 'Photoshop’s Image Size dialog: 7000 × 4667 px at 300 pixels per inch, 59.27 × 39.51 cm', caption: 'Photoshop · Image Size. 7,000 px ÷ 300 ppi = 23.3 in = 59.27 cm. Screenshot: Batuhan Keskiner.' },
           ],
         },
       ],
@@ -745,300 +745,6 @@ window.TS2_WEEK = {
           title: 'AI Tools for Organisation',
           blocks: [
             { type: 'line', gen: 'w5-b24-say-2', html: 'Live demo: Claude Cowork renames the files of a Downloads folder to the naming convention and sorts them into the folder structure.' },
-          ],
-        },
-      ],
-    },
-
-    /* ================================================== B4 · Lightroom */
-    {
-      id: 'c-lightroom',
-      title: 'Lightroom Classic',
-      part: 'b',
-      steps: [
-        {
-          id: 's-b18',
-          layout: 'stacked',
-          title: 'Lightroom Catalogue',
-          blocks: [
-            { type: 'line', gen: 'w5-b18-say', html: 'The Lightroom catalogue is a database of edits and file locations, with its previews stored beside it. The photographs stay in their folders on the drive.' },
-            { type: 'diagram', gen: 'w5-b18-b-dia', form: 'flow', data: {"icons": false, "chipStyle": "text", "stages": [
-              {"id": "cat", "name": "Catalogue (.lrcat)", "col": 0, "tags": ["Previews beside it"], "key": true},
-              {"id": "ph", "name": "Photographs", "col": 1, "tags": ["Folders on the drive"]}],
-              "links": [{"from": "cat", "to": "ph", "label": "Path · breaks if moved in Finder"}]} },
-            { type: 'bul', gen: 'w5-b18-b-bul', items: [
-              'Files are moved and renamed inside Lightroom.',
-              'The catalogue is backed up with the photographs.',
-            ] },
-            { type: 'text', gen: 'w5-b18-b-text', paras: ['The edits are stored in the catalogue file (.lrcat), so a lost catalogue loses the edits while the photographs survive, unless the edits were also written to XMP files.'] },
-            { type: 'figure', src: 'b18-missing.jpg', alt: 'Lightroom Classic folders marked with a question mark and thumbnails with the missing-file badge', caption: 'Lightroom Classic · missing folders and files. Image: Adobe.' },
-          ],
-        },
-        {
-          id: 's-b19',
-          layout: 'stacked',
-          title: 'Import Settings',
-          blocks: [
-            { type: 'line', gen: 'w5-b19-say', html: 'The Import window decides where the files are copied to, what they are called and in which format they are stored.' },
-            { type: 'diagram', gen: 'w5-b19-b-dia', form: 'options', data: {"items": [
-              {"name": "Copy as DNG", "role": "Card or drive", "line": "Copies and converts to DNG."},
-              {"name": "Copy", "role": "Card or drive", "line": "Copies to a new location; the originals stay."},
-              {"name": "Move", "role": "Drive only", "line": "Moves the files; the originals are removed."},
-              {"name": "Add", "role": "Drive only", "line": "Leaves the files where they are."}]} },
-            { type: 'text', gen: 'w5-b19-b-text', paras: ['Copy and Move place the files in the destination folder chosen in the Import window; Add registers files that are already in place. From a memory card the files remain on the card until it is formatted.'] },
-            { type: 'figure', src: 'b19-import.jpg', alt: 'The Lightroom Classic Import window with File Handling, File Renaming and Destination open', caption: 'Lightroom Classic · Import. Image: The Lens Lounge.' },
-          ],
-        },
-        {
-          id: 's-b20',
-          layout: 'stacked',
-          title: 'Export Settings',
-          blocks: [
-            { type: 'line', gen: 'w5-b20-say', html: 'Export writes a new file from the original and its edits, in the format, colour space and size the destination needs.' },
-            { type: 'scen', gen: 'w5-b20-table',
-              head: ['Preset', 'Format', 'Colour space', 'Size, pixels'],
-              rows: [
-                ['Web', 'JPEG', 'sRGB', 'Long edge in pixels'],
-                ['Print', 'TIFF, 16 bit', 'Adobe RGB', 'Full size'],
-                ['Archive', 'DNG or TIFF', '—', 'Full size'],
-              ] },
-            { type: 'text', gen: 'w5-b20-text', paras: ['The Export window groups its settings into panels: Export Location, File Naming, File Settings (format, colour space, bit depth, quality), Image Sizing, Output Sharpening and Metadata. A preset saves all of them under one name, so each destination receives the same settings every time.'] },
-            { type: 'figure', src: 'b20-export.jpg', alt: 'The Lightroom Classic Export dialog', caption: 'Lightroom Classic · Export. Image: Adobe.' },
-          ],
-        },
-        {
-          id: 's-b21',
-          layout: 'duo',
-          title: 'Contact Sheets',
-          blocks: [
-            { type: 'line', gen: 'w5-b21-say', html: 'A contact sheet shows a whole shoot on one page. Lightroom and Photoshop each make one.' },
-            { type: 'figure', src: 'b21-lr-contact.jpg', alt: 'The Lightroom Classic Print module laying out a contact sheet', caption: 'Lightroom Classic · Print · Contact Sheet / Grid. Image: ExpertPhotography.' },
-            { type: 'figure', src: 'b21-ps-contact.jpg', alt: 'The Photoshop Contact Sheet II dialog', caption: 'Photoshop · File → Automate → Contact Sheet II. Image: Adobe Community.' },
-            { type: 'text', gen: 'w5-b21-text', paras: ['The name comes from the darkroom, where strips of negatives were laid on photographic paper and printed at their own size. The sheet is used to compare frames, choose selects and find a picture later.'] },
-          ],
-        },
-        {
-          id: 's-b22',
-          layout: 'stacked',
-          title: 'Batch Processing',
-          blocks: [
-            { type: 'line', gen: 'w5-b22-say', html: 'Batch processing applies one set of settings to many files in a single operation, such as the same edit, name pattern or export size for a whole shoot.' },
-            { type: 'diagram', gen: 'w5-b22-b-dia', form: 'table', data: {"head": "Task", "cols": ["Program", "Command"], "rows": [
-              {"name": "Same edit on many photos", "v": ["Lightroom Classic", "Develop → Sync Settings"]},
-              {"name": "Rename a shoot", "v": ["Lightroom Classic", "Library → Rename Photos"]},
-              {"name": "Export many at once", "v": ["Lightroom Classic", "Select all → File → Export"]},
-              {"name": "Convert and resize a folder", "v": ["Photoshop", "File → Scripts → Image Processor"]},
-              {"name": "Repeat a recorded Action", "v": ["Photoshop", "File → Automate → Batch"]}]} },
-            { type: 'text', gen: 'w5-b22-b-text', paras: ['Rename Photos, Export and Image Processor write every file with the same settings, and Batch plays a recorded Action (a saved sequence of Photoshop steps) on every file in a folder. An error in the settings is repeated on every file, so the settings are tested on one photograph before the batch runs.'] },
-            { type: 'figure', src: 'b22-image-processor.jpg', alt: 'The Photoshop Image Processor dialog, sections 1 to 4', caption: 'Photoshop · File → Scripts → Image Processor. Image: Helen Bradley, Digital Photography School.' },
-          ],
-        },
-      ],
-    },
-
-    /* ================================================== B2 · Storage */
-    {
-      id: 'c-storage',
-      title: 'Storage',
-      part: 'b',
-      steps: [
-        {
-          id: 's-b6',
-          layout: 'stacked',
-          title: 'Storage Pricing',
-          blocks: [
-            { type: 'line', gen: 'w5-b6-say', html: 'Storage types differ in capacity, speed and cost per terabyte. Hard drives cost the least per terabyte, which is why archives are kept on them; however, they are slow for transferring data, unsuited to working files and vulnerable to impact.' },
-            { type: 'diagram', gen: 'w5-b6-c-dia-2', form: 'keys', data: {"items": [{"fig": "€25", "unit": "/TB", "label": "HDD", "line": "Archive and backup copies.", "key": 1}, {"fig": "€60", "unit": "/TB", "label": "NAS", "line": "An archive shared by several computers. The price is for a two-bay box with two drives; mirrored, each usable terabyte costs about €120."},
-    {"fig": "€100", "unit": "/TB", "label": "SSD, SATA", "line": "Working drive for current projects."}, {"fig": "€110", "unit": "/TB", "label": "SSD, NVMe", "line": "Editing large files and catalogues."}]} },
-            { type: 'text', gen: 'w5-b6-text-2', paras: ['A hard disk drive (HDD) stores data on spinning magnetic platters read by a moving head. A solid-state drive (SSD) stores it in flash memory chips with no moving parts, which makes it faster and less sensitive to knocks. A platter holds more data for its cost than flash memory, so the price per terabyte of a hard drive is the lowest. A NAS (network-attached storage) is a box of hard drives on the network, shared by several computers. Prices are the lowest per terabyte in late September 2026 and change each year. The hard drive price holds for drives of 16 TB and more; a 4–8 TB drive costs about €30–40 per terabyte.'] },
-          ],
-        },
-        {
-          id: 's-b8',
-          layout: 'stacked',
-          title: 'Drives',
-          blocks: [
-            /* 30-09, his note: no text, a caption under each picture; two rows, hard disks and SSDs,
-               so the pictures take the page instead of one small row */
-            { type: 'stack', rows: [
-              { caption: 'Hard disk drives · Images: amazon.com, coolblue.nl, backmarket.nl', images: [
-                { src: 'b8-hdd-35-open.jpg', alt: 'A 3.5-inch hard drive with its cover off, platters and head visible', cap: '3.5″ HDD, opened · platters and head' },
-                { src: 'b8-hdd-35-desktop.jpg', alt: 'A desktop external hard drive', cap: '3.5″ HDD · desktop, mains power' },
-                { src: 'b8-hdd-25-portable.jpg', alt: 'A rugged portable hard drive', cap: '2.5″ HDD · portable, bus-powered' },
-                { src: 'b8-nas.jpg', alt: 'A two-bay network-attached storage box', cap: 'NAS · drives on the network' },
-              ] },
-              { caption: 'Solid-state drives · Images: ebay.com, elyamamastore.com, via Google Images', images: [
-                { src: 'b8-ssd-sata.jpg', alt: 'A 2.5-inch SATA solid-state drive', cap: '2.5″ SATA SSD' },
-                { src: 'b8-ssd-nvme.jpg', alt: 'An NVMe M.2 solid-state drive', cap: 'NVMe M.2 SSD' },
-                { src: 'b8-ssd-portable.jpg', alt: 'A portable solid-state drive', cap: 'Portable SSD' },
-              ] },
-            ] },
-          ],
-        },
-        {
-          id: 's-b9',
-          layout: 'stacked',
-          title: 'Cable Types & Transfer Speeds',
-          blocks: [
-            { type: 'line', gen: 'w5-b9-say', html: 'USB-C is a connector type. Its transfer rate depends on the standard it supports, from 480 Mb/s to 120 Gb/s.' },
-            { type: 'gallery', layout: 'grid', caption: 'Images: kabelshop.nl (USB 2.0), 1worldsync.com (USB-C 10Gbps), CalDigit (Thunderbolt 4 and 5).', images: [
-              { src: 'b9-usb2.jpg', alt: 'A USB 2.0 cable, USB-A to mini-B', ar: 1.6, cap: 'USB 2.0 · USB-A to mini-B' },
-              { src: 'b9-usb10.jpg', alt: 'A USB-C 10Gbps cable', ar: 1.6, cap: 'USB 10Gbps · USB-C' },
-              { src: 'b9-tb4.jpg', alt: 'A Thunderbolt 4 cable, its plug marked with a bolt and a 4', ar: 1.6, cap: 'Thunderbolt 4 · USB-C' },
-              { src: 'b9-tb5.jpg', alt: 'A Thunderbolt 5 cable, its plug marked with a bolt and a 5', ar: 1.6, cap: 'Thunderbolt 5 · USB-C' },
-            ] },
-            { type: 'diagram', gen: 'w5-b9-c-dia-3', form: 'keys', data: {"items": [{"fig": "0.48", "unit": "Gb/s", "label": "Maximum Transfer Speed", "line": "USB 2.0 (480 Mb/s). A drive reads and writes about 40 MB/s over it.", "key": 1}, {"fig": "10", "unit": "Gb/s", "label": "Maximum Transfer Speed", "line": "USB 10Gbps (3.2 Gen 2). A portable SSD reads about 1,050 MB/s and writes about 1,000 MB/s."}, {"fig": "40", "unit": "Gb/s", "label": "Maximum Transfer Speed", "line": "USB4 40Gbps and Thunderbolt 4. An SSD reads and writes about 3,000 MB/s."}, {"fig": "80", "unit": "Gb/s", "label": "Maximum Transfer Speed", "line": "Thunderbolt 5; up to 120 Gb/s in one direction for displays. An SSD reads over 6,000 MB/s; a long write slows to about 1,500 MB/s."}]} },
-            { type: 'note', gen: 'w5-b9-note-3', html: 'Gb/s is gigabits per second and MB/s is megabytes per second; one byte is eight bits. A copy runs at the speed of its slowest part, which may be the card, card reader, cable, port or drive. A charging cable is often USB 2.0, whose 480 Mb/s (megabits per second) is 60 MB/s; at that rate 100 GB takes about 28 minutes, and at the 40 MB/s a drive reaches in practice about 42 minutes. Read and write speeds after Samsung (T7) and OWC (Express 1M2, Envoy Ultra).' },
-          ],
-        },
-        {
-          id: 's-b10',
-          layout: 'stacked',
-          title: 'Scratch Disks',
-          blocks: [
-            { type: 'line', gen: 'w5-b10-say-2', html: 'When Photoshop runs out of memory, it writes temporary data to a scratch disk. Unless you change it, that is your startup disk. If your computer’s internal storage does not have enough space, the scratch disk can fill up, and Photoshop slows down or stops editing. Lightroom Classic has no scratch disk, but it needs free space for its catalogue, previews and cache. Your computer’s photo and video editing performance can be affected by the space left on its internal drive.' },
-            { type: 'diagram', gen: 'w5-b10-b-dia-2', form: 'table', data: {"head": "Program", "cols": ["Keeps", "Set in"], "mark": {"row": 0}, "rows": [
-              {"name": "Photoshop", "v": ["Scratch disk, for temporary data", "Settings → Scratch Disks"]},
-              {"name": "Lightroom Classic", "v": ["Camera Raw cache, so photos open faster in Develop", "Preferences → Performance"]}]} },
-            { type: 'note', gen: 'w5-b10-b-note', kind: 'warning', html: 'If your startup disk is full, Photoshop stops with “scratch disks are full”. Choose a fast drive with free space.' },
-            { type: 'figure', src: 'b10-scratch-full.jpg', alt: 'Photoshop’s message: Could not initialize Photoshop because the scratch disks are full', caption: 'The message Photoshop shows when the scratch disk is full. Image: MacPaw.' },
-          ],
-        },
-        {
-          id: 's-b4',
-          layout: 'stacked',
-          title: 'Archive and Naming Drives',
-          blocks: [
-            { type: 'line', gen: 'w5-b4-say', html: 'Name each drive by what it is, its number and which copy it holds. Archive 02A stays at home, and Archive 02B holds the same files somewhere else. Archive 02 and Archive 03’s contents are different because their numbers are different, and it’s important to write down on the drive physically which projects are stored inside for quick browsing.' },
-            { type: 'diagram', gen: 'w5-b4-dia', form: 'anat', data: {"parts": [{"t": "Archive", "label": "What", "note": "THE DRIVE"}, {"t": " ", "sep": 1}, {"t": "02", "label": "Number", "note": "IN ORDER BOUGHT"}, {"t": "A", "label": "Copy", "note": "A HOME · B AWAY", "key": 1}]} },
-            { type: 'figure', src: 'b4-archive-02a-03a.jpg', alt: 'Two desktop hard drives labelled Archive 02A and Archive 03A, each with a handwritten list of the projects on it', caption: 'Archive 02A and Archive 03A, each labelled with the projects on it. Drive image: coolblue.nl; labels added.' },
-          ],
-        },
-        {
-          id: 's-b11',
-          layout: 'stacked',
-          title: 'Backup and Redundancy',
-          blocks: [
-            { type: 'line', gen: 'w5-b11-say-2', html: 'Ideal scenario for keeping your files safe: Keep three copies of every file, on two kinds of storage, with one copy in another place. This is the <b>3-2-1</b> rule.' },
-            { type: 'diagram', gen: 'w5-b11-dia', form: 'keys', data: {"items":[{"fig":"3","label":"Copies","line":"Your original and two backups."},{"fig":"2","label":"Media","line":"For example a hard drive and a cloud service."},{"fig":"1","label":"Off site","line":"One copy away from home, such as Archive 02B.","key":1}]} },
-              { type: 'note', gen: 'w5-b11-raid', kind: 'warning', html: 'A mirrored drive (RAID) and a sync folder repeat every change on all copies, including deletions. They protect you against a failed drive. To recover a deleted file you need a separate backup, or the sync service’s file history if it keeps one.' },
-          ],
-        },
-        {
-          id: 's-b7',
-          /* 30-09, his note: no picture of a card - everybody knows what one looks like */
-          layout: 'stacked',
-          title: 'SD Card Cycle',
-          blocks: [
-            { type: 'line', gen: 'w5-b7-say', html: 'A memory card is temporary storage. Its contents are copied to a drive after every shoot.' },
-            /* 01-10: seven steps with Back up; drawn across the page, the list ran over the title at 1440 */
-            { type: 'diagram', gen: 'w5-b7-steps', form: 'steps', data: {"orient": "h", "steps": [{"t": "Capture", "line": "Take photos with your camera."}, {"t": "Import", "line": "Transfer your RAW images to your computer."}, {"t": "Convert and Rename", "line": "RAW files to DNG."}, {"t": "Check", "line": "Transfer completed without an issue."}, {"t": "Back up", "line": "A second copy on another drive."}, {"t": "Format", "line": "Delete all the files on the SD card."}, {"t": "Capture Again", "line": "Start the shoot with an empty card."}]} },
-          ],
-        },
-      ],
-    },
-
-    /* ================================================== C · Tethered Shooting & Capture One
-       His structure, 29-09: one page on tethering and its benefits; Capture One
-       download (the free trial); what Capture One is and how the industry uses
-       it; the live demo; tutorials for later. Plus, 30-09: a page on mobile
-       wireless tethering apps. Facts from notes/RESOURCES.md, checked 29-09. */
-    {
-      id: 'c-tether',
-      title: 'Tethered Shooting',
-      part: 'c',
-      partTitle: 'Tethered Shooting & Capture One',
-      head: { kicker: 'Part C · Tethered Shooting & Capture One' },
-      steps: [
-        {
-          id: 's-c1',
-          layout: 'split',
-          title: 'Tethered Shooting',
-          blocks: [
-            { type: 'line', gen: 'w5-c1-say', html: 'In tethered shooting the camera sends each photograph to a computer as it is taken, over a cable or a wireless connection.' },
-            { type: 'bul', gen: 'w5-c1-plus', items: [
-              'Each frame appears large on screen within seconds.',
-              'Focus and light are checked at 100 %.',
-              'Files are named and saved on the computer as they arrive.',
-              'Adjustments can be applied to the next frames automatically.',
-            ] },
-            { type: 'text', gen: 'w5-c1-text', paras: ['Over the connection the software receives each file and also sends commands to the camera, so shutter speed, aperture, ISO and the release can be set from the computer. The files are written to the computer’s drive. With no card in the camera, the computer holds the only copy until it is backed up.'] },
-            { type: 'note', gen: 'w5-c1-minus', html: 'The cable limits movement and can be pulled out. The camera battery drains faster, and the session depends on the computer. Use dedicated tethering cables for better performance.' },
-            { type: 'figure', src: 'c1-tethered-set.jpg', alt: 'A tethered set: camera on a tripod, cable, laptop on a stand', caption: 'A tethered set. Image: Tether Tools.' },
-          ],
-        },
-        {
-          id: 's-c2',
-          layout: 'split',
-          title: 'Capture One',
-          blocks: [
-            { type: 'line', gen: 'w5-c2-say', html: 'Capture One is raw-processing and tethering software, used for tethered work in commercial studios.' },
-            { type: 'bul', gen: 'w5-c2-bul', items: [
-              'On set, the photographer, the digital technician, the client and the retoucher work from the same screen.',
-              'A session is one folder per shoot, with Capture, Selects, Output and Trash folders inside it.',
-              'It tethers cameras from Canon, Nikon, Sony, Fujifilm, Leica and Phase One.',
-            ] },
-            { type: 'text', gen: 'w5-c2-text', paras: ['Raw processing turns the sensor data into an image. Capture One was first developed by Phase One, a Danish maker of medium-format digital backs.'] },
-            { type: 'todo', html: 'Batu: your own words on how Capture One is used in the industry.' },
-            { type: 'figure', src: 'c2-capture-one.jpg', alt: 'Capture One tethered to a camera, with the Camera tool and the last capture', caption: 'Capture One · tethered capture. Image: Capture One.' },
-          ],
-        },
-        {
-          id: 's-c3',
-          /* 01-10, his round: "Click for download Capture One and the link underneath would be better. Also use an online image of Capture One's website" */
-          layout: 'stacked',
-          title: 'Download Capture One',
-          align: 'ml',
-          blocks: [
-            { type: 'link', href: 'https://www.captureone.com/en/try-for-free?intent=trial-pro', kicker: 'Capture One Pro · 7-day free trial', text: 'Click to download Capture One', note: 'captureone.com/en/try-for-free', away: true, place: { row: 1, col: 1, w: 'full' } },
-            { type: 'note', gen: 'w5-c3-warn', kind: 'warning', html: 'The trial lasts 7 days, asks for payment details and continues as a paid subscription unless you cancel it. Start it on the day you will use it and cancel it afterwards.', place: { row: 2, col: 1, w: '1/2' } },
-            { type: 'figure', src: 'c3-captureone-site.jpg', alt: 'The Capture One free-trial page', caption: 'captureone.com, the free-trial page.', place: { row: 2, col: 2, w: '1/2' } },
-          ],
-        },
-        {
-          id: 's-c4',
-          layout: 'stacked',
-          title: 'Demo: Tethered Shooting',
-          blocks: [
-            /* 01-10, his note: "make a logical order yourself" - the session first, then the camera, then the shoot */
-            { type: 'bul', gen: 'w5-c4-check-2', marker: 'check', two: true, items: [
-              { check: '1 · Capture One: File → New Session, named with the date first' },
-              { check: '2 · Check the Capture, Selects, Output and Trash folders' },
-              { check: '3 · Connect the cable to a data port on the computer' },
-              { check: '4 · Camera on, set to raw, Release without card switched on' },
-              { check: '5 · Confirm the camera appears in the Camera tool' },
-              { check: '6 · Set capture naming' },
-              { check: '7 · Open Live View' },
-              { check: '8 · Take a test frame and check it at 100 %' },
-              { check: '9 · Adjust, then set Next Capture Adjustments' },
-              { check: '10 · Rate the frames and move the selects' },
-              { check: '11 · Export to the Output folder' },
-            ] },
-          ],
-        },
-        {
-          id: 's-c5',
-          layout: 'stacked',
-          title: 'Tutorials',
-          blocks: [
-            { type: 'video', url: 'https://www.youtube.com/watch?v=I1ThgivAoB8', title: 'How to Use Tethered Capture in Capture One | Getting Started', caption: 'Capture One, 3:44.' },
-          ],
-        },
-        {
-          id: 's-c3b',
-          layout: 'stacked',
-          title: 'Mobile Wireless Tethering',
-          blocks: [
-            { type: 'line', gen: 'w5-c3b-say', html: 'Your camera maker publishes a free app that connects a phone or tablet to the camera over Wi-Fi or Bluetooth, for remote control, live view and image transfer.' },
-            { type: 'diagram', gen: 'w5-c3b-b-dia', form: 'table', data: {"head": "Maker", "cols": ["App", "Note"], "rows": [
-              {"name": "Canon", "v": ["Camera Connect", "Remote Live View Shooting"]},
-              {"name": "Nikon", "v": ["SnapBridge", "NX MobileAir for FTP upload from pro bodies"]},
-              {"name": "Sony", "v": ["Creators’ App", "Replaced Imaging Edge Mobile in 2023"]},
-              {"name": "Fujifilm", "v": ["XApp", "Older bodies: Camera Remote"]},
-              {"name": "Panasonic", "v": ["LUMIX Lab", "Older bodies: LUMIX Sync"]},
-              {"name": "OM System", "v": ["OM Image Share (OI.Share)", "Live View and Remote Shutter modes"]},
-              {"name": "Capture One mobile", "v": ["Capture One", "iPhone, iPad; wired, or wireless with Canon, Nikon, Sony, Fujifilm"]}]} },
-            { type: 'note', gen: 'w5-c3b-note', html: 'Support differs by camera model. Check the maker’s list for your camera before the shoot.' },
           ],
         },
       ],

@@ -268,7 +268,7 @@
      CSS cannot count rows, so mark the dense ones here and let compose.css
      step their density down. */
   function markDense(step) {
-    step.querySelectorAll('table').forEach((t) => {
+    step.querySelectorAll('table:not(.tbl-free)').forEach((t) => {
       const rows = t.querySelectorAll('tr').length;
       t.classList.toggle('tbl-dense', rows > 8);
       t.classList.toggle('tbl-denser', rows > 12);
