@@ -77,7 +77,25 @@ h2.yr .c{color:var(--faint)}
   background:#EDEAE4;cursor:zoom-in;line-height:0;transition:border-color .12s}
 .grid button:hover{border-color:var(--ink)}
 .grid img{display:block;width:100%;height:190px;object-fit:contain}
-.who[hidden],.grid figure[hidden],.yblock[hidden]{display:none}
+.who[hidden],.grid figure[hidden],.yblock[hidden],.part[hidden]{display:none}
+/* AN ARCHIVE OF A PROCESS. reMAKE keeps what each student looked at, what they
+   proposed and what they made, so a student's block is three labelled parts in
+   that order, and a reference stands beside the picture made from it. */
+.part{margin:14px 0 0}
+.part .ph{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey);margin:0 0 7px}
+.grid figcaption,.pairs figcaption{font-family:var(--mono);font-size:9.5px;
+  line-height:1.45;letter-spacing:.02em;color:var(--grey);margin:5px 0 0;
+  overflow-wrap:anywhere}
+.pairs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pairs figure{margin:0}
+.pairs button{display:block;width:100%;padding:0;border:1px solid var(--rule);
+  background:transparent;cursor:zoom-in}
+.pairs button:hover{border-color:var(--ink)}
+.pairs img{display:block;width:100%;height:240px;object-fit:contain}
+.pairs .role{display:block;color:var(--ink)}
+.cn{font-family:var(--mono);font-size:10px;line-height:1.55;color:var(--grey);margin:8px 0 0;max-width:90ch}
+@media(max-width:620px){.pairs{grid-template-columns:repeat(2,1fr)}}
 
 .note{margin:56px 0 0;padding-top:16px;border-top:1px solid var(--ink)}
 p.body{font-size:15px;line-height:1.6;color:var(--body);margin:0;max-width:64ch}
@@ -92,11 +110,6 @@ p.lbl{font-family:var(--mono);font-size:10px;letter-spacing:.2em;
 a.mail{color:inherit;text-decoration:underline;text-decoration-thickness:1px;
   text-underline-offset:3px;text-decoration-color:var(--rule)}
 a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
-.gen-tick{display:inline-flex;align-items:center;gap:6px;margin-top:10px;
-  padding:2px 8px 3px;border:1px solid var(--signal);background:transparent;
-  color:var(--signal);font-family:var(--mono);font-size:9px;letter-spacing:.16em;
-  text-transform:uppercase;cursor:pointer;line-height:1.6}
-.gen-tick[hidden]{display:none}
 .foot{display:flex;justify-content:space-between;gap:20px;margin:26px 0 0;
   font-family:var(--mono);font-size:10px;letter-spacing:.13em;
   text-transform:uppercase;color:var(--faint)}
@@ -106,7 +119,15 @@ a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
   align-items:center;justify-content:center;flex-direction:column;gap:16px;
   padding:5vh 5vw;z-index:50;cursor:zoom-out}
 #lb.on{display:flex}
-#lb img{max-width:100%;max-height:82vh;object-fit:contain}
+/* One picture at its own size; a pair at one shared height, as wide as the two need. */
+.lbs{display:flex;justify-content:center;align-items:flex-start;gap:12px;min-height:0;max-width:100%}
+.lbs figure{margin:0;min-width:0}
+.lbs.one img{display:block;max-width:100%;max-height:82vh;object-fit:contain}
+.lbs.side{width:min(100%,calc(var(--sum) * 72vh + (var(--count) - 1) * 12px))}
+.lbs.side img{display:block;width:100%;height:auto}
+.lbs figcaption{font-family:var(--mono);font-size:10px;letter-spacing:.12em;line-height:1.5;
+  text-transform:uppercase;color:#9A9A96;margin-top:8px}
+.lbs figcaption b{display:block;font-weight:400;color:#EDEAE4}
 #lb p{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
   text-transform:uppercase;color:#EDEAE4;margin:0;text-align:center}
 #lb .x{position:absolute;top:20px;right:26px;font-family:var(--mono);
@@ -114,7 +135,7 @@ a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
 .empty{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
   text-transform:uppercase;color:var(--faint);margin:40px 0 0}
 .empty[hidden]{display:none}
-@media print{.bar,#lb,.gen-tick{display:none !important}}
+@media print{.bar,#lb{display:none !important}}
 </style>
 </head>
 <body>
@@ -656,14 +677,13 @@ a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
   <div class="note">
   <p class="lbl">Disclaimer</p>
   <p class="body notice gen-say" data-gen="brief/01-photogram/archiveNote#a57f">These prints were made by students on this course. If one of them is yours and you would rather it were not shown here, write to <a class="mail" href="mailto:b.keskiner@kabk.nl">b.keskiner@kabk.nl</a> and it comes down.</p>
-  <button type="button" class="gen-tick" data-gen="brief/01-photogram/archiveNote#a57f">Claude wrote this &middot; tick to approve</button>
 
   </div>
-  <div class="foot"><span>Batuhan Keskiner &middot; Royal Academy of Art &middot; Bachelor Photography</span><span>build 1010 &middot; 16.10.2026 08:39</span></div>
+  <div class="foot"><span>Batuhan Keskiner &middot; Royal Academy of Art &middot; Bachelor Photography</span><span>build 1032 &middot; 17.11.2026 13:47</span></div>
 </div>
 
-<div id="lb" role="dialog" aria-modal="true" aria-label="Photogram, full size">
-  <span class="x">Esc</span><img alt=""><p></p>
+<div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
+  <span class="x">Esc</span><div class="lbs"></div><p></p>
 </div>
 
 <script>
@@ -681,23 +701,47 @@ a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
   var chips = [].slice.call(document.querySelectorAll('.chip'));
   var tally = document.getElementById('tn');
   var none  = document.getElementById('none');
-  var year  = 'all';
+  /* A chip belongs to one filter: y, class or part. A press on the lit chip
+     takes that filter off. */
+  var want = { y: 'all', c: 'all', p: 'all' };
 
   function run() {
     var shown = 0;
     [].slice.call(document.querySelectorAll('.yblock')).forEach(function (yb) {
-      var ok = (year === 'all' || yb.dataset.y === year);
-      yb.hidden = !ok;
-      if (ok) shown += +yb.dataset.n;
+      var ok = (want.y === 'all' || yb.dataset.y === want.y);
+      var here = 0;
+      [].slice.call(yb.querySelectorAll('.who')).forEach(function (w) {
+        var n = 0;
+        var parts = [].slice.call(w.querySelectorAll('.part'));
+        if (want.c === 'all' || w.dataset.c === want.c) {
+          if (parts.length) {
+            parts.forEach(function (p) {
+              var on = (want.p === 'all' || p.dataset.p === want.p);
+              p.hidden = !on;
+              if (on) n += +p.dataset.n;
+            });
+          } else {
+            n = +w.dataset.n;
+          }
+        }
+        w.hidden = !n;
+        here += n;
+      });
+      yb.hidden = !(ok && here);
+      if (ok) shown += here;
     });
     tally.textContent = shown;
     none.hidden = shown > 0;
   }
 
   chips.forEach(function (c) {
+    var k = c.dataset.k || 'y';
     c.addEventListener('click', function () {
-      year = (year === c.dataset.v) ? 'all' : c.dataset.v;
-      chips.forEach(function (o) { o.classList.toggle('on', year === o.dataset.v); });
+      want[k] = (want[k] === c.dataset.v) ? 'all' : c.dataset.v;
+      chips.forEach(function (o) {
+        var ok = o.dataset.k || 'y';
+        o.classList.toggle('on', want[ok] === o.dataset.v);
+      });
       run();
     });
   });
@@ -705,50 +749,198 @@ a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
   /* THE PLATE, FULL SIZE. The grid carries the small file; the button knows
      where the big one is and only then does the browser fetch it. */
   var lb = document.getElementById('lb');
-  var lbi = lb.querySelector('img');
+  var lbs = lb.querySelector('.lbs');
   var lbp = lb.querySelector('p');
+  function shut() { lb.classList.remove('on'); lbs.innerHTML = ''; }
+  function plate(b) {
+    var f = document.createElement('figure');
+    var im = document.createElement('img');
+    im.src = b.dataset.full;
+    im.alt = b.dataset.cap;
+    f.appendChild(im);
+    if (b.dataset.pair !== undefined) {
+      f.style.flex = b.dataset.ar + ' 1 0';
+      var c = document.createElement('figcaption');
+      var r = document.createElement('b');
+      r.textContent = b.dataset.role;
+      c.appendChild(r);
+      c.appendChild(document.createTextNode(b.dataset.credit));
+      f.appendChild(c);
+    }
+    return f;
+  }
   document.addEventListener('click', function (e) {
-    var b = e.target.closest && e.target.closest('.grid button');
-    if (b) { lbi.src = b.dataset.full; lbp.textContent = b.dataset.cap; lb.classList.add('on'); return; }
-    if (lb.classList.contains('on')) { lb.classList.remove('on'); lbi.src = ''; }
+    var b = e.target.closest && e.target.closest('.grid button,.pairs button');
+    if (b) {
+      var set = [b], sum = 0;
+      if (b.dataset.pair !== undefined) {
+        set = [].slice.call(b.closest('.pairs').querySelectorAll('button[data-pair="' + b.dataset.pair + '"]'));
+        set.forEach(function (x) { sum += parseFloat(x.dataset.ar); });
+      }
+      lbs.innerHTML = '';
+      lbs.className = 'lbs ' + (sum ? 'side' : 'one');
+      lbs.style.setProperty('--sum', sum);
+      lbs.style.setProperty('--count', set.length);
+      set.forEach(function (x) { lbs.appendChild(plate(x)); });
+      lbp.textContent = sum ? b.dataset.who : b.dataset.cap;
+      lb.classList.add('on');
+      return;
+    }
+    if (lb.classList.contains('on')) shut();
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && lb.classList.contains('on')) {
-      lb.classList.remove('on'); lbi.src = '';
-    }
+    if (e.key === 'Escape' && lb.classList.contains('on')) shut();
   });
-
-  /* W4, same contract as the brief: orange until he has ticked it, and the
-     same key, so one tick settles the line in both places. */
-  var marks = [].slice.call(document.querySelectorAll('[data-gen]'));
-  function settle(map) {
-    marks.forEach(function (el) {
-      var ok = !map || map[el.dataset.gen] === true;
-      if (el.tagName === 'BUTTON') el.hidden = ok;
-      else el.classList.toggle('gen-say', !ok);
-    });
-  }
-  if (marks.length) {
-    fetch('/REVIEW.json', { cache: 'no-store' })
-      .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (j) { settle(j && j.approved); })
-      .catch(function () { settle(null); });
-    marks.filter(function (el) { return el.tagName === 'BUTTON'; }).forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        fetch('/__approve', { method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key: btn.dataset.gen }) })
-          .then(function () {
-            btn.hidden = true;
-            [].forEach.call(document.querySelectorAll('[data-gen="' + btn.dataset.gen + '"]:not(button)'),
-              function (t) { t.classList.remove('gen-say'); });
-          }).catch(function () {});
-      });
-    });
-  }
 
   run();
 })();
+/* THE REVIEW ROW. Same contract as kit.js on the lecture pages: REVIEW.json says
+   which keys are approved; an unapproved line is orange and carries its own
+   approve, reject and correct directly under it. Off the working copy there is
+   no REVIEW.json and nothing is drawn. */
+(function () {
+  var marks = [].slice.call(document.querySelectorAll('[data-gen]'));
+  if (!marks.length) return;
+  function plain() { marks.forEach(function (el) { el.classList.remove('gen-say'); }); }
+  if (/[?&]clean\b/.test(location.search)) { plain(); return; }
+
+  function hostOf(el) {
+    if (el.classList.contains('warn')) return el.lastElementChild;
+    return el.querySelector(':scope > .t, :scope > dd') || el;
+  }
+  function textOf(el) {
+    var c = hostOf(el).cloneNode(true);
+    [].forEach.call(c.querySelectorAll('.m,.k,.gen-review'), function (n) { n.remove(); });
+    [].forEach.call(c.querySelectorAll('b'), function (n) { n.after('\n'); });
+    return c.textContent.trim();
+  }
+  function button(cls, label, title) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = cls; b.textContent = label; b.title = title;
+    return b;
+  }
+  function saidOf(item) {
+    return (item.verdict === 'reject' ? '\u2717 Rejected' : 'Correction saved') + (item.note ? ': ' + item.note : '');
+  }
+  function settleKey(key) {
+    marks.forEach(function (el) {
+      if (el.dataset.gen !== key) return;
+      el.classList.remove('gen-say');
+      var r = el.__row; if (r) { r.remove(); el.__row = null; }
+    });
+  }
+  function draw(el, last) {
+    var key = el.dataset.gen, text = textOf(el), verdict = 'other';
+    var row = document.createElement('div'); row.className = 'gen-review';
+    var yes = button('gen-yes', '\u2713 Approve', 'Approve this line');
+    var no = button('gen-no', '\u2717 Reject', 'Reject this line, with a reason');
+    var fix = button('gen-fix', 'Correct', 'Correct this line');
+    var form = document.createElement('div'); form.className = 'gen-form'; form.hidden = true;
+    var box = document.createElement('textarea'); box.rows = 2;
+    var save = button('gen-save', 'Save', 'Save it for the next round');
+    var cancel = button('gen-cancel', 'Cancel', 'Close without saving');
+    var said = document.createElement('p'); said.className = 'gen-said';
+    if (last) said.textContent = saidOf(last);
+    form.append(box, save, cancel);
+    row.append(yes, no, fix, form, said);
+
+    function ready() {
+      var v = box.value.trim();
+      save.disabled = !v || (verdict === 'other' && v === text);
+    }
+    function open(v) {
+      verdict = v; form.hidden = false;
+      box.value = v === 'other' ? text : '';
+      box.placeholder = v === 'reject' ? 'Why is it wrong?' : '';
+      box.style.height = 'auto'; box.style.height = (box.scrollHeight + 2) + 'px';
+      ready(); box.focus();
+    }
+    no.addEventListener('click', function () { open('reject'); });
+    fix.addEventListener('click', function () { open('other'); });
+    cancel.addEventListener('click', function () { form.hidden = true; });
+    box.addEventListener('input', ready);
+    box.addEventListener('keydown', function (e) { e.stopPropagation(); });
+    yes.addEventListener('click', function () {
+      fetch('/__approve', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: key }) })
+        .then(function (r) {
+          if (!r.ok) throw new Error('refused');
+          settleKey(key);
+        })
+        .catch(function () { said.textContent = 'Not approved: the lecture server did not answer.'; });
+    });
+    save.addEventListener('click', function () {
+      var item = { key: key, verdict: verdict, note: box.value.trim(), text: text,
+                   page: location.pathname, title: document.title };
+      form.hidden = true;
+      fetch('/__review', { method: 'POST', body: JSON.stringify(item) })
+        .then(function (r) {
+          if (!r.ok) throw new Error('refused');
+          said.textContent = saidOf(item);
+        })
+        .catch(function () {
+          try {
+            var q = JSON.parse(localStorage.getItem('ts2-review-queue') || '[]');
+            q.push(item); localStorage.setItem('ts2-review-queue', JSON.stringify(q));
+            said.textContent = 'Not sent yet, kept in this browser: ' + item.note;
+          } catch (e) { said.textContent = 'Not saved: the lecture server did not answer.'; }
+        });
+    });
+    if (el.tagName === 'P' || el.classList.contains('chip')) el.insertAdjacentElement('afterend', row);
+    else hostOf(el).appendChild(row);
+    el.__row = row;
+  }
+  function style() {
+    var s = document.createElement('style');
+    s.textContent =
+      '.gen-review{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 2px}' +
+      'ul.plain li>.gen-review{grid-column:2}' +
+      '.gen-review button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;' +
+        'line-height:1.5;padding:3px 9px;border:1px solid var(--signal);background:transparent;color:var(--signal);cursor:pointer}' +
+      '.gen-review button:hover:not(:disabled){background:var(--signal);color:var(--paper) !important}' +
+      '.gen-review button:disabled{opacity:.35;cursor:default}' +
+      '.gen-form{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}' +
+      '.gen-form[hidden]{display:none}' +
+      '.gen-form textarea{flex:1 0 100%;box-sizing:border-box;font-family:var(--sans);font-size:15px;line-height:1.5;' +
+        'padding:7px 9px;border:1px solid var(--signal);background:var(--paper);color:var(--ink) !important;resize:vertical}' +
+      '.gen-said{flex:1 0 100%;margin:2px 0 0;font-family:var(--mono);font-size:10px;line-height:1.55;letter-spacing:.02em;white-space:pre-line}' +
+      '.gen-said:empty{display:none}' +
+      '@media print{.gen-review{display:none !important}}';
+    document.head.appendChild(s);
+  }
+  function flush() {
+    try {
+      var q = JSON.parse(localStorage.getItem('ts2-review-queue') || '[]');
+      if (!q.length) return;
+      Promise.all(q.map(function (it) {
+        return fetch('/__review', { method: 'POST', body: JSON.stringify(it) })
+          .then(function (r) { return r.ok; }).catch(function () { return false; });
+      })).then(function (ok) {
+        localStorage.setItem('ts2-review-queue', JSON.stringify(q.filter(function (_, i) { return !ok[i]; })));
+      });
+    } catch (e) {}
+  }
+  var register = fetch('/REVIEW.json', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+  var notes = fetch('/_notes/TONE-FEEDBACK.jsonl', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.text() : ''; }).catch(function () { return ''; });
+  Promise.all([register, notes]).then(function (got) {
+    var map = got[0] && got[0].approved;
+    if (!map) { plain(); return; }
+    var latest = {};
+    got[1].split('\n').forEach(function (l) {
+      if (!l.trim()) return;
+      try { var j = JSON.parse(l); latest[j.key] = j; } catch (e) {}
+    });
+    style(); flush();
+    marks.forEach(function (el) {
+      var ok = map[el.dataset.gen] === true;
+      el.classList.toggle('gen-say', !ok);
+      if (!ok) draw(el, latest[el.dataset.gen]);
+    });
+  });
+})();
+
 </script>
 </body>
 </html>
