@@ -112,6 +112,10 @@ ul.plain{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
 ul.plain li{display:grid;grid-template-columns:16px 1fr;gap:9px;font-size:15px;
   line-height:1.5;color:var(--body)}
 ul.plain .m{font-family:var(--mono);color:var(--signal)}
+/* the checklist: a box to tick on paper, one rule between items, like the hand-in rows */
+ul.plain.check{gap:0;border-top:1px solid var(--rule)}
+ul.plain.check li{grid-template-columns:22px 1fr;padding:9px 0;border-bottom:1px solid var(--rule)}
+ul.plain.check .box{color:var(--ink);font-size:17px;line-height:1.1}
 ul.plain.quiet .m{color:var(--faint)}
 
 /* ---- the deadline, where the work is handed over ---- */
@@ -222,6 +226,10 @@ dl.spec{clear:both}
     font-size:8.5pt;color:#555;word-break:break-all}
   .sec,figure,.warn,.tool,.gal figure,li{break-inside:avoid;page-break-inside:avoid}
   .sec{break-before:auto}
+  /* a heading stays with what it heads (17-11-2026: "What to hand in" and "PDF submission" were
+     left alone at the foot of page 3 of the #5 PDF, the dates on page 4) */
+  .sec,.sub-h{break-after:avoid;page-break-after:avoid}
+  .dline,.chips,dl.limits > div{break-inside:avoid;page-break-inside:avoid}
   .gal{grid-template-columns:repeat(3,1fr);gap:6mm}
   .tools{grid-template-columns:repeat(2,1fr)}
   .tool{border:1px solid #000}
@@ -410,7 +418,7 @@ dl.reflist dt{font-style:italic}
     <li><span class="m">+</span>The camera: photographs of it, and what it is made of. The size of the hole and the distance to the material, if you measured them.</li>
     <li><span class="m">+</span>References and inspirations — what you looked at, and who made it.</li>
     <li><span class="m">·</span>The process: the drawings, the build, the tests that failed, the exposure notes.<span class="opt">Recommended</span></li>
-    <li><span class="m">·</span>Backstage images of your making process.<span class="opt">Optional · recommended for the Logbook</span></li>
+    <li><span class="m">·</span>Backstage images of your making process.<span class="opt">Optional · recommended for the Workbook</span></li>
   </ul>
   <div class="sec"><span>06</span><span>References</span><span class="ln"></span></div>
   <p class="sub-h">Photographers to look at</p>
@@ -474,7 +482,7 @@ dl.reflist dt{font-style:italic}
   </div>
 
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 1041 · 17.11.2026 15:33</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 1051 · 25.11.2026 17:13</span></div>
 </div>
 <div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
   <span class="x">Esc</span><img alt=""><p></p>
@@ -486,6 +494,11 @@ dl.reflist dt{font-style:italic}
 document.getElementById('pdf').addEventListener('click', function () {
   window.print();
 });
+/* THE PART-TIME COPY (?pt): what only full-time does is left out (the CA3 page, 25-11-2026). */
+(function () {
+  var away = /[?&]pt(&|$)/.test(location.search) ? 'ft' : 'pt';
+  document.querySelectorAll('[data-only="' + away + '"]').forEach(function (el) { el.remove(); });
+})();
 /* HOW LONG IS LEFT, worked out in the browser. A number written into the page
    at build time is wrong by the next morning. */
 (function () {

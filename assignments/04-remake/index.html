@@ -112,6 +112,10 @@ ul.plain{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
 ul.plain li{display:grid;grid-template-columns:16px 1fr;gap:9px;font-size:15px;
   line-height:1.5;color:var(--body)}
 ul.plain .m{font-family:var(--mono);color:var(--signal)}
+/* the checklist: a box to tick on paper, one rule between items, like the hand-in rows */
+ul.plain.check{gap:0;border-top:1px solid var(--rule)}
+ul.plain.check li{grid-template-columns:22px 1fr;padding:9px 0;border-bottom:1px solid var(--rule)}
+ul.plain.check .box{color:var(--ink);font-size:17px;line-height:1.1}
 ul.plain.quiet .m{color:var(--faint)}
 
 /* ---- the deadline, where the work is handed over ---- */
@@ -222,6 +226,10 @@ dl.spec{clear:both}
     font-size:8.5pt;color:#555;word-break:break-all}
   .sec,figure,.warn,.tool,.gal figure,li{break-inside:avoid;page-break-inside:avoid}
   .sec{break-before:auto}
+  /* a heading stays with what it heads (17-11-2026: "What to hand in" and "PDF submission" were
+     left alone at the foot of page 3 of the #5 PDF, the dates on page 4) */
+  .sec,.sub-h{break-after:avoid;page-break-after:avoid}
+  .dline,.chips,dl.limits > div{break-inside:avoid;page-break-inside:avoid}
   .gal{grid-template-columns:repeat(3,1fr);gap:6mm}
   .tools{grid-template-columns:repeat(2,1fr)}
   .tool{border:1px solid #000}
@@ -358,7 +366,7 @@ dl.reflist dt{font-style:italic}
   <ol class="steps">
     <li data-gen="brief/04-remake/process#1a33"><span class="k">06</span><span class="t">Reproduce the light and the required conditions of each reference, in the studio or on location. For natural light, match the place, hour and weather. Try to match the subject&#x27;s facial features and clothing as close as you can for better visual coherence.</span></li>
     <li data-gen="brief/04-remake/process#262b"><span class="k">07</span><span class="t">Edit each photograph towards its reference, including the colour grading. Upload your contact sheets, the unedited RAW files or analog scans, and the edited JPEGs to Teams.</span></li>
-    <li data-gen="brief/04-remake/process#f9a9"><span class="k">08</span><span class="t">For the collectives, each reference and each of your photographs is printed at A3 or larger as a high-quality C-print and presented side by side at Collective Assessment 3.</span></li>
+    <li data-gen="brief/04-remake/process#c002"><span class="k">08</span><span class="t">For the collectives, each reference and each of your photographs is printed at A3 or larger as an inkjet print and presented side by side at Collective Assessment 3.</span></li>
   </ol>
   <div class="sec"><span>02</span><span>Limitations</span><span class="ln"></span></div>
   <dl class="limits">
@@ -379,7 +387,7 @@ dl.reflist dt{font-style:italic}
     <li data-gen="brief/04-remake/tips#b5d1"><span class="m">·</span>Set your light setup and make prior tests before you photograph your actual subjects.</li>
     <li data-gen="brief/04-remake/tips#e83b"><span class="m">·</span>If possible, research behind-the-scenes material or interviews of the photographer about their making process.</li>
     <li data-gen="brief/04-remake/tips#4c4f"><span class="m">·</span>Choose your proposed images based on your proficiency level or a method you want to try out. Choose difficult light setups if you are comfortable with lighting and the studio already.</li>
-    <li data-gen="brief/04-remake/tips#b1b0"><span class="m">·</span>Document your light setups, backstage, behind the scenes and the settings of your camera and lights for your Logbook and for better feedback, such as camera settings, light modifiers, light positions and intensity.</li>
+    <li data-gen="brief/04-remake/tips#666a"><span class="m">·</span>Document your light setups, backstage, behind the scenes and the settings of your camera and lights for your Workbook and for better feedback, such as camera settings, light modifiers, light positions and intensity.</li>
     <li data-gen="brief/04-remake/tips#d6e8"><span class="m">·</span>Step out of your comfort zone. If your reference shows a person, reach out to someone you are not familiar with and ask them to take part instead of photographing your classmate.</li>
   </ul>
   <div class="sec"><span>05</span><span>What to hand in</span><span class="ln"></span></div>
@@ -408,7 +416,7 @@ dl.reflist dt{font-style:italic}
     <div data-gen="brief/04-remake/handInRows#aa04"><dt>File size</dt><dd>No larger than 20 MB, for the PDF.</dd></div>
     <div data-gen="brief/04-remake/handInRows#0dcb"><dt>Naming</dt><dd>NameSurnameAssignment4.pdf — e.g. BatuhanKeskinerAssignment4.pdf.<span class="opt">Optional</span></dd></div>
     <div data-gen="brief/04-remake/handInRows#b88a"><dt>Where</dt><dd>The class Teams channel: Files / Assignments / #4 / NameSurname</dd></div>
-    <div data-gen="brief/04-remake/handInRows#798e"><dt>Collective Assessment 3</dt><dd>Each reference and each of your photographs at A3 or larger as a high-quality C-print, side by side, with each reference credited by the photographer.</dd></div>
+    <div data-gen="brief/04-remake/handInRows#9bd1"><dt>Collective Assessment 3</dt><dd>Each reference and each of your photographs at A3 or larger as an inkjet print, side by side, with each reference credited by the photographer.</dd></div>
   </dl>
   <p class="sub-h">What goes in the PDF</p>
   <ul class="plain">
@@ -424,7 +432,7 @@ dl.reflist dt{font-style:italic}
   </div>
 
 
-  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 1041 · 17.11.2026 15:33</span></div>
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 1051 · 25.11.2026 17:13</span></div>
 </div>
 <div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
   <span class="x">Esc</span><img alt=""><p></p>
@@ -436,6 +444,11 @@ dl.reflist dt{font-style:italic}
 document.getElementById('pdf').addEventListener('click', function () {
   window.print();
 });
+/* THE PART-TIME COPY (?pt): what only full-time does is left out (the CA3 page, 25-11-2026). */
+(function () {
+  var away = /[?&]pt(&|$)/.test(location.search) ? 'ft' : 'pt';
+  document.querySelectorAll('[data-only="' + away + '"]').forEach(function (el) { el.remove(); });
+})();
 /* HOW LONG IS LEFT, worked out in the browser. A number written into the page
    at build time is wrong by the next morning. */
 (function () {

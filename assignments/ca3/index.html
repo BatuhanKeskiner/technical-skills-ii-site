@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="../../_shared/favicon.svg" type="image/svg+xml">
+<title>Technical Skills II — Collective Assessment 3</title>
+<link rel="stylesheet" href="../../_shared/tokens/fonts.css">
+<style>
+:root{
+  --paper:#F7F5F0; --ink:#0B0C0C; --body:#1A1C1B; --grey:#5C605E;
+  --faint:#606060; --rule:#C9CAC4; --signal:#C42D00;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --sans:'Archivo','Helvetica Neue',Helvetica,sans-serif;
+  --title:'Instrument Sans','Archivo',sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased}
+.sheet{max-width:840px;margin:0 auto;padding:5vh 40px 7vh}
+
+.top{display:flex;justify-content:space-between;align-items:center;gap:24px;
+  padding-bottom:11px;border-bottom:2px solid var(--ink)}
+.top a,.top span{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey);text-decoration:none}
+.top a:hover{color:var(--signal)}
+/* A WAY BACK AND A WAY TO TAKE IT AWAY. The bar used to be a label and a
+   crest: nothing on the page said how to get home, and a student who wanted
+   the brief on paper had to know the browser's own print menu. His note of
+   09-09-2026. */
+.top .back{display:inline-flex;align-items:center;gap:8px;color:var(--ink)}
+.top .back .ar{color:var(--signal)}
+.top .what{margin-right:auto}
+.pdf{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;border:1px solid var(--ink);background:transparent;
+  color:var(--ink);padding:7px 12px;cursor:pointer;
+  transition:background .12s,color .12s}
+.pdf:hover{background:var(--ink);color:var(--paper)}
+.mark{height:44px;width:auto;mix-blend-mode:multiply;flex:0 0 auto}
+.no{font-family:var(--mono);font-size:13px;letter-spacing:.16em;
+  color:var(--signal);margin:24px 0 0}
+h1{font-family:var(--title);font-size:46px;font-weight:500;letter-spacing:-.03em;
+  line-height:1.02;margin:8px 0 0}
+.premise{font-size:18px;line-height:1.5;color:var(--body);margin:14px 0 0;max-width:56ch}
+.draft{font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--signal);border:1px solid var(--signal);
+  padding:8px 12px;margin:18px 0 0;display:inline-block}
+.link{margin:16px 0 0}
+.link a{font-family:var(--mono);font-size:15px;letter-spacing:.04em;
+  color:var(--ink);text-decoration:underline;text-underline-offset:4px;
+  text-decoration-color:var(--faint)}
+.link a:hover{color:var(--signal);text-decoration-color:var(--signal)}
+ul.qs{list-style:none;margin:18px 0 0;padding:0;border-top:1px solid var(--rule)}
+ul.qs li{padding:10px 0;border-bottom:1px solid var(--rule);font-size:16px;
+  line-height:1.5;color:var(--body)}
+
+.spec{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:26px;
+  padding-top:13px;border-top:1px solid var(--ink)}
+.spec dt{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint)}
+.spec dd{font-family:var(--mono);font-size:13px;margin:5px 0 0}
+.spec dd.hot{color:var(--signal)}
+.spec dd.tbc{color:var(--faint)}
+.spec dd .g{color:var(--faint)}
+.spec.with-proposal .tall{grid-row:span 2}
+
+.sec{display:flex;align-items:center;gap:12px;margin:38px 0 0}
+.sec span:first-child,.sec span:nth-child(2){font-family:var(--mono);font-size:12px;
+  letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink)}
+.sec .ln{flex:1;border-top:1px solid var(--ink)}
+p.body{font-size:16px;line-height:1.6;color:var(--body);margin:14px 0 0;max-width:64ch}
+
+/* W4 - A LINE CLAUDE WROTE IS ORANGE UNTIL BATU HAS TICKED IT. The lectures
+   had this and the briefs did not, so a paragraph generated into a brief went
+   out looking exactly like one he wrote. Same colour, same tick, same key. */
+.gen-say, .gen-say *{color:var(--signal) !important}
+/* HIS NOTE, 10-09-2026: mono, and spread onto a second line. A disclaimer is
+   not prose - it is a notice, so it is set like one and given a measure that
+   breaks it rather than running it out as one long sentence. */
+p.body.notice{font-family:var(--mono);font-size:11.5px;line-height:1.75;
+  letter-spacing:.045em;max-width:100ch}
+p.lbl{font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--grey);margin:0 0 7px}
+a.mail{color:inherit;text-decoration:underline;text-decoration-thickness:1px;
+  text-underline-offset:3px;text-decoration-color:var(--rule)}
+a.mail:hover{color:var(--signal);text-decoration-color:var(--signal)}
+@media print{p.body.gen-say{color:var(--body)}}
+
+ol.steps{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--rule)}
+ol.steps li{display:grid;grid-template-columns:40px 1fr;gap:14px;padding:13px 0;
+  border-bottom:1px solid var(--rule)}
+ol.steps .k{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--faint)}
+ol.steps .t{font-size:16px;line-height:1.5;color:var(--body)}
+
+dl.limits{margin:16px 0 0;padding:0;border-top:1px solid var(--rule)}
+dl.limits > div{display:grid;grid-template-columns:150px 1fr;gap:16px;padding:11px 0;
+  border-bottom:1px solid var(--rule)}
+dl.limits dt{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+dl.limits dd{margin:0;font-size:15px;line-height:1.5;color:var(--body)}
+
+.warn{display:grid;grid-template-columns:auto 1fr;gap:14px;margin-top:18px;
+  padding:14px 16px;border:1px solid var(--ink);border-left:3px solid var(--signal)}
+.warn .m{font-family:var(--mono);font-size:15px;color:var(--signal);line-height:1}
+.warn b{font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint);font-weight:400;display:block}
+.warn p{margin:5px 0 0;font-size:15px;line-height:1.55;color:var(--body)}
+
+ul.plain{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px}
+ul.plain li{display:grid;grid-template-columns:16px 1fr;gap:9px;font-size:15px;
+  line-height:1.5;color:var(--body)}
+ul.plain .m{font-family:var(--mono);color:var(--signal)}
+/* the checklist: a box to tick on paper, one rule between items, like the hand-in rows */
+ul.plain.check{gap:0;border-top:1px solid var(--rule)}
+ul.plain.check li{grid-template-columns:22px 1fr;padding:9px 0;border-bottom:1px solid var(--rule)}
+ul.plain.check .box{color:var(--ink);font-size:17px;line-height:1.1}
+ul.plain.quiet .m{color:var(--faint)}
+
+/* ---- the deadline, where the work is handed over ---- */
+.dline{display:flex;align-items:center;justify-content:space-between;gap:24px;
+  flex-wrap:wrap;border:1px solid var(--ink);padding:16px 20px;margin:6px 0 22px}
+.dl-dates{display:flex;gap:34px;margin:0;flex-wrap:wrap}
+.dl-dates > div{display:flex;flex-direction:column;gap:5px}
+.dl-dates dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey)}
+.dl-dates dd{margin:0}
+.dl-dates .when{font-family:var(--mono);font-size:16px;letter-spacing:.02em;
+  color:var(--signal);display:flex;align-items:baseline;gap:10px}
+.dl-dates .wk{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--grey)}
+.left{margin:0;display:flex;align-items:baseline;gap:8px}
+.left .cd{font-family:var(--mono);font-size:20px;color:var(--ink)}
+.left .cd.soon{color:var(--signal)}
+.left .lb{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey)}
+.left:empty,.left .cd:empty + .lb{display:none}
+/* AND IT IS NOT PRINTED. A PDF is read on a day nobody can know, so a
+   countdown in it is a lie with a number on it. The dates stay. */
+@media print{.left{display:none !important}}
+/* A CHIP IS A BOX AROUND ITS WORDS. Inline, the border wrapped only the
+   fragment that fitted the line - "OPTIONAL" showed a box around its O and
+   the rest ran out of it. inline-block keeps the box and the words together;
+   it drops to its own line under the item rather than breaking across two. */
+.opt{display:inline-block;font-family:var(--mono);font-size:9px;
+  letter-spacing:.14em;line-height:1.5;
+  text-transform:uppercase;color:var(--grey);border:1px solid var(--rule);
+  padding:3px 8px 4px;margin-left:9px;white-space:nowrap;vertical-align:middle}
+ul.plain .opt{margin:6px 0 0 0;display:table}
+.sub-h{font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--grey);margin:26px 0 10px}
+.sub-h + ol.steps{margin-top:0}
+/* ---- where to look: an address you can read, not a press you have to trust ---- */
+ul.reads{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+ul.reads li{padding:11px 0;border-bottom:1px solid var(--rule);display:grid;gap:3px}
+ul.reads a{font-size:15px;line-height:1.45;color:var(--ink);text-decoration:underline;
+  text-underline-offset:3px;text-decoration-color:var(--rule)}
+ul.reads a:hover{color:var(--signal);text-decoration-color:var(--signal)}
+ul.reads .who{font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--faint)}
+ul.reads .what{font-size:13.5px;line-height:1.5;color:var(--body)}
+@media print{ul.reads a{text-decoration:none}}
+dl.reflist dt a{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+dl.reflist dt a:hover{color:var(--signal)}
+dl.reflist .reflist-host{display:block;margin-top:3px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--quiet,#777)}
+.reads-fold .reads-body{display:none}
+.reads-fold.open .reads-body{display:block}
+.reads-open{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  background:none;border:1px solid var(--ink);color:var(--ink);padding:8px 12px;cursor:pointer}
+.reads-open:hover{background:var(--ink);color:var(--paper,#fff)}
+.reads-fold.open .reads-open{margin-bottom:14px}
+@media print{.reads-fold .reads-body{display:block!important}.reads-open{display:none!important}}
+ul.reads-heads{list-style:none;margin:10px 0 14px;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px}
+ul.reads-heads li{font-size:15px;color:var(--ink)}
+ul.reads-heads li span{margin-left:6px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--signal)}
+@media print{ul.reads-heads{display:none}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;padding:4px 8px;border:1px solid var(--rule);color:var(--grey)}
+
+.foot{margin-top:44px;padding-top:12px;border-top:1px solid var(--rule);
+  display:flex;justify-content:space-between;gap:16px;font-family:var(--mono);
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+@media(max-width:620px){
+  .sheet{padding:4vh 20px 7vh}
+  .spec{grid-template-columns:repeat(2,1fr)}
+  dl.limits > div{grid-template-columns:1fr;gap:4px}
+  .sh-thumbs{gap:5px}
+  .sh-th{width:44px;height:44px}
+  .gal{grid-template-columns:repeat(2,1fr)}
+  .tools{grid-template-columns:1fr}
+}
+
+/* ---- the assignment's own picture ----
+   Small, at the top, against the right edge, and it opens when pressed. It
+   used to be a full-width plate under the dates, which put the biggest thing
+   on the page between the reader and the first instruction. His note of
+   09-09-2026. The title and the premise run beside it. */
+.cover{margin:26px 0 18px;float:right;width:clamp(150px,30%,250px);
+  margin-left:28px;shape-margin:20px}
+.cover .zoom{display:block;padding:0;border:1px solid var(--rule);background:#fff;
+  cursor:zoom-in;width:100%}
+.cover .zoom:hover{border-color:var(--ink)}
+.cover img{width:100%;height:auto;display:block}
+.cover figcaption{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--grey);margin-top:8px;text-align:right;
+  line-height:1.5}
+dl.spec{clear:both}
+.sec{clear:both}
+
+/* ---- ON PAPER ----
+   Export PDF is the browser's own print, aimed properly: the page is the
+   document, so the controls go, nothing is cut across a page break, and the
+   addresses behind the links are printed out since a printed link is dead.
+   A library that redraws the page into a canvas would lose the type and the
+   greys; this keeps both. */
+@media print{
+  @page{margin:14mm}
+  html,body{background:#fff}
+  .sheet{max-width:none;padding:0}
+  .top .pdf,#lb{display:none !important}
+  .top{border-bottom:1.5px solid #000}
+  .cover{float:right;width:36mm;margin-left:8mm}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-family:var(--mono);
+    font-size:8.5pt;color:#555;word-break:break-all}
+  .sec,figure,.warn,.tool,.gal figure,li{break-inside:avoid;page-break-inside:avoid}
+  .sec{break-before:auto}
+  /* a heading stays with what it heads (17-11-2026: "What to hand in" and "PDF submission" were
+     left alone at the foot of page 3 of the #5 PDF, the dates on page 4) */
+  .sec,.sub-h{break-after:avoid;page-break-after:avoid}
+  .dline,.chips,dl.limits > div{break-inside:avoid;page-break-inside:avoid}
+  .gal{grid-template-columns:repeat(3,1fr);gap:6mm}
+  .tools{grid-template-columns:repeat(2,1fr)}
+  .tool{border:1px solid #000}
+  .oneref img,.sh-plate img{max-height:none}
+  .show .sh-bar{display:none}
+  .sh-plate{display:block !important}
+  .foot{position:static}
+}
+
+/* every picture on the page opens at its own size */
+.zoom{appearance:none;padding:0;border:0;background:none;cursor:zoom-in;display:block}
+#lb{position:fixed;inset:0;z-index:50;background:rgba(11,12,12,.94);display:none;
+  align-items:center;justify-content:center;flex-direction:column;gap:16px;
+  padding:36px;cursor:zoom-out}
+#lb.on{display:flex}
+#lb img{max-width:100%;max-height:82vh;display:block}
+#lb p{margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:#B9BAB6;text-align:center}
+#lb .x{position:absolute;top:18px;right:22px;color:#B9BAB6;font-family:var(--mono);
+  font-size:11px;letter-spacing:.16em}
+
+/* ---- references, one plate at a time ---- */
+.show{margin:6px 0 0}
+.oneref{margin:6px 0 0;border:1px solid var(--rule);background:#fff;padding:18px}
+.oneref img{width:100%;height:auto;display:block}
+.oneref figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--grey);margin-top:12px;line-height:1.5}
+dl.reflist dt{font-style:italic}
+.reflink{margin:14px 0 0}
+.reflink a{font-family:var(--mono);font-size:12px;letter-spacing:.02em;
+  color:var(--signal);text-decoration:none;border-bottom:1px solid var(--rule);
+  word-break:break-all}
+.reflink a:hover{border-bottom-color:var(--signal)}
+/* a plate that is a picture of somewhere else opens that somewhere */
+.oneref .out{display:block;position:relative;text-decoration:none;color:inherit}
+.oneref .out img{display:block;width:100%;height:auto}
+.oneref .out .go{position:absolute;right:12px;bottom:12px;background:var(--ink);
+  color:var(--paper);font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;padding:8px 12px;display:inline-flex;gap:8px;
+  align-items:center}
+.oneref .out .go .ar{color:var(--marker,#E4FF1A)}
+.oneref .out:hover .go{background:var(--signal)}
+.sh-stage{position:relative;border:1px solid var(--rule);background:#fff;
+  padding:18px;display:flex;align-items:center;justify-content:center;
+  min-height:340px}
+.sh-plate{display:none;margin:0;width:100%;text-align:center}
+.sh-plate.on{display:block}
+.sh-plate img{max-width:100%;max-height:56vh;height:auto;display:block;margin:0 auto}
+.sh-plate figcaption{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--grey);margin-top:12px;line-height:1.5}
+.sh-bar{display:flex;align-items:center;gap:12px;margin-top:12px}
+.sh-go{appearance:none;border:1px solid var(--rule);background:transparent;
+  color:var(--ink);width:34px;height:34px;flex:0 0 auto;cursor:pointer;
+  font-size:11px;line-height:1;transition:background .12s,color .12s}
+.sh-go:hover{background:var(--ink);color:var(--paper)}
+.sh-thumbs{display:flex;gap:8px;overflow-x:auto;flex:1 1 auto;padding-bottom:2px}
+.sh-th{appearance:none;padding:0;border:1px solid var(--rule);background:#fff;
+  width:56px;height:56px;flex:0 0 auto;cursor:pointer;overflow:hidden;
+  filter:grayscale(1);opacity:.55;transition:opacity .12s,border-color .12s,filter .12s}
+.sh-th img{width:100%;height:100%;object-fit:cover;display:block}
+.sh-th.on,.sh-th:hover{opacity:1;filter:none;border-color:var(--ink)}
+.sh-n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--grey);
+  flex:0 0 auto}
+
+/* ---- what the years before handed in ---- */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:6px 0 0}
+.gal figure{margin:0}
+.gal img{width:100%;height:auto;display:block;background:#fff;
+  border:1px solid var(--rule)}
+.gal .zoom{width:100%;cursor:zoom-in}
+.gal figcaption{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--grey);margin-top:8px;line-height:1.6}
+.gal .yr{display:block;color:var(--signal);letter-spacing:.14em}
+.oneref .zoom,.sh-plate .zoom{cursor:zoom-in;margin:0 auto}
+
+/* ---- the instruments, at the foot ---- */
+.tools{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin:6px 0 0}
+.tools.one{grid-template-columns:1fr;margin:6px 0 0}
+.tools.one + p.lbl,.gal + p.lbl{margin-top:26px}
+.tool-n .kind{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--grey);border:1px solid var(--rule);
+  padding:3px 8px 4px;margin-left:11px;vertical-align:middle;
+  display:inline-block;line-height:1.5}
+.tool:hover .tool-n .kind{color:var(--paper);border-color:var(--paper)}
+.tool{display:flex;flex-direction:column;gap:7px;text-decoration:none;color:inherit;
+  border:1px solid var(--ink);padding:16px 18px;transition:background .12s,color .12s}
+.tool:hover{background:var(--ink);color:var(--paper)}
+.tool-n{font-family:var(--title);font-size:20px;letter-spacing:-.02em}
+.tool-l{font-size:14px;line-height:1.45;color:var(--body)}
+.tool:hover .tool-l{color:var(--paper)}
+.tool-go{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--signal)}
+.tool:hover .tool-go{color:#FFB199}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="top">
+    <a class="back" href="../../index.html"><span class="ar">&larr;</span>Technical Skills II</a>
+    <span class="what">Submission requirements</span>
+    <button type="button" id="pdf" class="pdf">Export PDF</button>
+    <img class="mark" src="../../_shared/assets/kabk-logo.jpg"
+         alt="Royal Academy of Art, The Hague">
+  </div>
+
+
+  <p class="no">Technical Skills II</p>
+  <h1>Collective Assessment 3</h1>
+  <p class="premise"></p>
+
+  <dl class="spec">
+    <div><dt>Workbook PDF</dt><dd class="hot">10.12.2026</dd></div>
+    <div data-only="ft"><dt>Feedback — full-time</dt><dd class="hot">26.11.2026 <span class="g">· Week #12</span></dd></div>
+    <div><dt>Collective Assessment 3</dt><dd class="hot">14–16.12.2026</dd></div>
+    <div><dt>Where</dt><dd>Teams → Files → Workbooks → Your Name</dd></div>
+  </dl>
+
+  <div class="sec"><span>01</span><span>Workbook</span><span class="ln"></span></div>
+  <p class="body">Your Workbook is a structured collection of your work, research, and development throughout the semester. It may include visual references, reflections, notes, contact sheets, documentation of your process, and supporting materials that show how your work developed.</p>
+  <div class="grp" data-only="ft">
+  <p class="sub-h">Individual Assignments (#1 to #5)</p>
+  <ul class="plain">
+    <li><span class="m">+</span>Visual references</li>
+    <li><span class="m">+</span>Reflections</li>
+    <li><span class="m">+</span>Contact sheets</li>
+    <li><span class="m">+</span>Final selection</li>
+  </ul>
+  </div>
+  <div class="grp" data-only="pt">
+  <p class="sub-h">Individual Assignments (#1 to #4)</p>
+  <ul class="plain">
+    <li><span class="m">+</span>Visual references</li>
+    <li><span class="m">+</span>Reflections</li>
+    <li><span class="m">+</span>Contact sheets</li>
+    <li><span class="m">+</span>Final selection</li>
+  </ul>
+  </div>
+  <div class="grp">
+  <p class="sub-h">Group Assignment (GA#1: Copycat)</p>
+  <ul class="plain">
+    <li><span class="m">+</span>Contact sheets</li>
+    <li><span class="m">+</span>Documentation of the process (behind the scenes)</li>
+    <li><span class="m">+</span>Reflections</li>
+  </ul>
+  </div>
+  <div class="grp">
+  <p class="sub-h">Class Exercises</p>
+  <ul class="plain">
+    <li><span class="m">+</span>Exercise results</li>
+    <li><span class="m">+</span>Quick tests or trials</li>
+    <li><span class="m">+</span>In-class practice images</li>
+  </ul>
+  </div>
+  <div class="grp">
+  <p class="sub-h">Class Notes &amp; Personal Notes</p>
+  <ul class="plain">
+    <li><span class="m">+</span>Visual and artist research</li>
+    <li><span class="m">+</span>Personal observations</li>
+    <li><span class="m">+</span>Technical notes or reminders</li>
+    <li><span class="m">+</span>Inspirational images</li>
+    <li><span class="m">+</span>Moodboards</li>
+  </ul>
+  </div>
+  <div class="grp">
+  <p class="sub-h">Documentation of Your Process</p>
+  <ul class="plain">
+    <li><span class="m">+</span>Light setups</li>
+    <li><span class="m">+</span>Failed attempts</li>
+    <li><span class="m">+</span>Test prints</li>
+    <li><span class="m">+</span>Behind-the-scenes images</li>
+  </ul>
+  </div>
+
+  <div class="sec"><span>02</span><span>Before CA3</span><span class="ln"></span></div>
+  <p class="body">Please upload your Workbook as one single PDF to Teams. The file must be under 200 MB, clearly readable, and presented in the correct orientation. If you are scanning your Workbook, ensure that the scans are not too dark, low-resolution, or crooked, and that all pages are fully visible.</p>
+  <div class="dline">
+    <dl class="dl-dates">
+    <div><dt>All groups</dt><dd class="when">10.12.2026<span class="wk">Workbook PDF</span></dd></div>
+    </dl>
+    <p class="left"><span class="cd" data-due="2026-12-10"></span><span class="lb">left</span></p>
+  </div>
+  <dl class="limits">
+    <div><dt>Upload location</dt><dd>Teams → Files → Workbooks → Your Name</dd></div>
+  </dl>
+
+  <div class="sec"><span>03</span><span>For the physical presentation</span><span class="ln"></span></div>
+  <p class="body">These materials will form part of your physical visual presentation of printed work during the CA. Prepare and bring the following printed work:</p>
+  <p class="sub-h">Important reminder</p>
+  <ul class="plain">
+    <li><span class="m">!</span>Use wall space to present printed work, tables to show process.</li>
+    <li><span class="m">!</span>The presentation needs to be accessible to people that have never seen your work before. e.g., make clear tags/title plates to go with the work.</li>
+  </ul>
+  <div class="grp">
+  <p class="sub-h">#1 Photogram</p>
+  <ul class="plain">
+    <li><span class="m">+</span>Bring the original photograms</li>
+    <li><span class="m">+</span>Select a minimum of three to present</li>
+  </ul>
+  </div>
+  <div class="grp">
+  <p class="sub-h">#2 Pinhole</p>
+  <ul class="plain">
+    <li><span class="m">+</span>The camera itself, and the images — prints, scans or the paper negatives, whichever the work is.</li>
+    <li><span class="m">+</span>3 to 5 images that belong together.</li>
+  </ul>
+  </div>
+  <div class="grp">
+  <p class="sub-h">#3 Anti-Self Portrait (optional)</p>
+  <ul class="plain">
+    <li><span class="m">+</span>1 photograph</li>
+    <li><span class="m">+</span>1 A4 text</li>
+  </ul>
+  </div>
+  <div class="grp">
+  <p class="sub-h">#4 reMAKE</p>
+  <ul class="plain">
+    <li><span class="m">+</span>Two original reference images</li>
+    <li><span class="m">+</span>Two remakes</li>
+    <li><span class="m">+</span>Format: 4 prints in total, minimum A3, same size, inkjet print, presented side by side</li>
+  </ul>
+  </div>
+  <div class="grp" data-only="ft">
+  <p class="sub-h">#5 Colour Accurate Reproduction</p>
+  <ul class="plain">
+    <li><span class="m">+</span>Original flat artwork (magazine, painting, poster you have chosen to reproduce)</li>
+    <li><span class="m">+</span>A printed reproduction at 1:1 scale, produced to match the real-life colours and physical size of the original as closely as possible</li>
+    <li><span class="m">+</span>Format: single print, same size with the artwork, inkjet print, presented side by side</li>
+  </ul>
+  </div>
+  <div class="grp" data-only="ft">
+  <p class="sub-h">Deadline for feedback</p>
+  <div class="dline" data-only="ft">
+    <dl class="dl-dates">
+    <div><dt>Full-time</dt><dd class="when">26.11.2026<span class="wk">Week #12</span></dd></div>
+    </dl>
+    <p class="left"><span class="cd" data-due="2026-11-26"></span><span class="lb">left</span></p>
+  </div>
+  </div>
+
+  <div class="sec"><span>04</span><span>CA3 presentations</span><span class="ln"></span></div>
+  <div class="dline">
+    <dl class="dl-dates">
+    <div><dt>All groups</dt><dd class="when">14–16.12.2026<span class="wk">Collective Assessment 3</span></dd></div>
+    </dl>
+    <p class="left"><span class="cd" data-due="2026-12-14"></span><span class="lb">left</span></p>
+  </div>
+
+  <div class="sec"><span>05</span><span>CA3 Preparation Checklist</span><span class="ln"></span></div>
+  <ul class="plain check">
+    <li data-gen="brief/ca3/checklist#2128" data-only="ft"><span class="m box">&#9744;</span>Feedback: in the last class before CA3</li>
+    <li data-gen="brief/ca3/checklist#7714"><span class="m box">&#9744;</span>Workbook: one PDF, under 200 MB, in Teams → Files → Workbooks → Your Name</li>
+    <li data-gen="brief/ca3/checklist#d545"><span class="m box">&#9744;</span>#1 Photogram: at least three original photograms</li>
+    <li data-gen="brief/ca3/checklist#1827"><span class="m box">&#9744;</span>#2 Pinhole: the camera and 3 to 5 images</li>
+    <li data-gen="brief/ca3/checklist#6939"><span class="m box">&#9744;</span>#4 reMAKE: two references and two remakes, 4 inkjet prints, minimum A3, same size</li>
+    <li data-gen="brief/ca3/checklist#2b32" data-only="ft"><span class="m box">&#9744;</span>#5 Colour Accurate Reproduction: the original and its 1:1 inkjet print</li>
+    <li data-gen="brief/ca3/checklist#fbea"><span class="m box">&#9744;</span>A title plate for every work on the wall</li>
+  </ul>
+
+
+  <div class="foot"><span>Batuhan Keskiner · Royal Academy of Art · Bachelor Photography · 2026–2027</span><span>build 1051 · 25.11.2026 17:13</span></div>
+</div>
+<div id="lb" role="dialog" aria-modal="true" aria-label="Picture, full size">
+  <span class="x">Esc</span><img alt=""><p></p>
+</div>
+<script>
+/* PRESS A PICTURE AND IT OPENS AT ITS OWN SIZE. The plates on this page are
+   small on purpose - the brief is read, not looked at - so every one of them
+   is a door. Escape, or a press anywhere, closes it. */
+document.getElementById('pdf').addEventListener('click', function () {
+  window.print();
+});
+/* THE PART-TIME COPY (?pt): what only full-time does is left out (the CA3 page, 25-11-2026). */
+(function () {
+  var away = /[?&]pt(&|$)/.test(location.search) ? 'ft' : 'pt';
+  document.querySelectorAll('[data-only="' + away + '"]').forEach(function (el) { el.remove(); });
+})();
+/* HOW LONG IS LEFT, worked out in the browser. A number written into the page
+   at build time is wrong by the next morning. */
+(function () {
+  document.querySelectorAll('.cd[data-due]').forEach(function (el) {
+  if (!el.dataset.due) return;
+  var t = new Date(); t.setHours(0, 0, 0, 0);
+  var due = new Date(el.dataset.due + 'T00:00:00');
+  var n = Math.round((due - t) / 86400000);
+  if (n > 1) el.textContent = n + ' days';
+  else if (n === 1) el.textContent = 'tomorrow';
+  else if (n === 0) el.textContent = 'today';
+  else if (n === -1) el.textContent = 'yesterday';
+  else el.textContent = (-n) + ' days ago';
+  if (n >= 0 && n <= 7) el.classList.add('soon');
+  if (n < 0) el.parentNode.querySelector('.lb').textContent = '';
+  });
+})();
+(function () {
+  var lb = document.getElementById('lb');
+  var im = lb.querySelector('img'), cap = lb.querySelector('p');
+  document.querySelectorAll('.zoom').forEach(function (z) {
+    z.addEventListener('click', function (e) {
+      e.stopPropagation();
+      im.src = z.dataset.full; im.alt = (z.querySelector('img') || {}).alt || '';
+      cap.innerHTML = z.dataset.cap || '';
+      lb.classList.add('on');
+    });
+  });
+  lb.addEventListener('click', function () { lb.classList.remove('on'); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') lb.classList.remove('on');
+  });
+})();
+/* One plate at a time. Arrows, thumbnails and the arrow keys all say the same
+   thing, and the count says where you are. No library: a brief is one file. */
+document.querySelectorAll('[data-show]').forEach(function (sh) {
+  var plates = [].slice.call(sh.querySelectorAll('.sh-plate'));
+  var thumbs = [].slice.call(sh.querySelectorAll('.sh-th'));
+  var num = sh.querySelector('.sh-n');
+  var at = 0;
+  var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  function show(i) {
+    at = (i + plates.length) % plates.length;
+    plates.forEach(function (p, k) { p.classList.toggle('on', k === at); });
+    thumbs.forEach(function (t, k) { t.classList.toggle('on', k === at); });
+    if (num) num.innerHTML = pad(at + 1) + '&thinsp;/&thinsp;' + pad(plates.length);
+    thumbs[at] && thumbs[at].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+  thumbs.forEach(function (t, i) { t.addEventListener('click', function () { show(i); }); });
+  sh.querySelectorAll('.sh-go').forEach(function (g) {
+    g.addEventListener('click', function () { show(at + (+g.dataset.d)); });
+  });
+  sh.tabIndex = 0;
+  sh.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') { e.preventDefault(); show(at + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); show(at - 1); }
+  });
+  show(0);
+});
+/* THE REVIEW ROW. Same contract as kit.js on the lecture pages: REVIEW.json says
+   which keys are approved; an unapproved line is orange and carries its own
+   approve, reject and correct directly under it. Off the working copy there is
+   no REVIEW.json and nothing is drawn. */
+(function () {
+  var marks = [].slice.call(document.querySelectorAll('[data-gen]'));
+  if (!marks.length) return;
+  function plain() { marks.forEach(function (el) { el.classList.remove('gen-say'); }); }
+  if (/[?&]clean\b/.test(location.search)) { plain(); return; }
+
+  function hostOf(el) {
+    if (el.classList.contains('warn')) return el.lastElementChild;
+    return el.querySelector(':scope > .t, :scope > dd') || el;
+  }
+  function textOf(el) {
+    var c = hostOf(el).cloneNode(true);
+    [].forEach.call(c.querySelectorAll('.m,.k,.gen-review'), function (n) { n.remove(); });
+    [].forEach.call(c.querySelectorAll('b'), function (n) { n.after('\n'); });
+    return c.textContent.trim();
+  }
+  function button(cls, label, title) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = cls; b.textContent = label; b.title = title;
+    return b;
+  }
+  function saidOf(item) {
+    return (item.verdict === 'reject' ? '\u2717 Rejected' : 'Correction saved') + (item.note ? ': ' + item.note : '');
+  }
+  function settleKey(key) {
+    marks.forEach(function (el) {
+      if (el.dataset.gen !== key) return;
+      el.classList.remove('gen-say');
+      var r = el.__row; if (r) { r.remove(); el.__row = null; }
+    });
+  }
+  function draw(el, last) {
+    var key = el.dataset.gen, text = textOf(el), verdict = 'other';
+    var row = document.createElement('div'); row.className = 'gen-review';
+    var yes = button('gen-yes', '\u2713 Approve', 'Approve this line');
+    var no = button('gen-no', '\u2717 Reject', 'Reject this line, with a reason');
+    var fix = button('gen-fix', 'Correct', 'Correct this line');
+    var form = document.createElement('div'); form.className = 'gen-form'; form.hidden = true;
+    var box = document.createElement('textarea'); box.rows = 2;
+    var save = button('gen-save', 'Save', 'Save it for the next round');
+    var cancel = button('gen-cancel', 'Cancel', 'Close without saving');
+    var said = document.createElement('p'); said.className = 'gen-said';
+    if (last) said.textContent = saidOf(last);
+    form.append(box, save, cancel);
+    row.append(yes, no, fix, form, said);
+
+    function ready() {
+      var v = box.value.trim();
+      save.disabled = !v || (verdict === 'other' && v === text);
+    }
+    function open(v) {
+      verdict = v; form.hidden = false;
+      box.value = v === 'other' ? text : '';
+      box.placeholder = v === 'reject' ? 'Why is it wrong?' : '';
+      box.style.height = 'auto'; box.style.height = (box.scrollHeight + 2) + 'px';
+      ready(); box.focus();
+    }
+    no.addEventListener('click', function () { open('reject'); });
+    fix.addEventListener('click', function () { open('other'); });
+    cancel.addEventListener('click', function () { form.hidden = true; });
+    box.addEventListener('input', ready);
+    box.addEventListener('keydown', function (e) { e.stopPropagation(); });
+    yes.addEventListener('click', function () {
+      fetch('/__approve', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: key }) })
+        .then(function (r) {
+          if (!r.ok) throw new Error('refused');
+          settleKey(key);
+        })
+        .catch(function () { said.textContent = 'Not approved: the lecture server did not answer.'; });
+    });
+    save.addEventListener('click', function () {
+      var item = { key: key, verdict: verdict, note: box.value.trim(), text: text,
+                   page: location.pathname, title: document.title };
+      form.hidden = true;
+      fetch('/__review', { method: 'POST', body: JSON.stringify(item) })
+        .then(function (r) {
+          if (!r.ok) throw new Error('refused');
+          said.textContent = saidOf(item);
+        })
+        .catch(function () {
+          try {
+            var q = JSON.parse(localStorage.getItem('ts2-review-queue') || '[]');
+            q.push(item); localStorage.setItem('ts2-review-queue', JSON.stringify(q));
+            said.textContent = 'Not sent yet, kept in this browser: ' + item.note;
+          } catch (e) { said.textContent = 'Not saved: the lecture server did not answer.'; }
+        });
+    });
+    if (el.tagName === 'P' || el.classList.contains('chip')) el.insertAdjacentElement('afterend', row);
+    else hostOf(el).appendChild(row);
+    el.__row = row;
+  }
+  function style() {
+    var s = document.createElement('style');
+    s.textContent =
+      '.gen-review{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 2px}' +
+      'ul.plain li>.gen-review{grid-column:2}' +
+      '.gen-review button{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;' +
+        'line-height:1.5;padding:3px 9px;border:1px solid var(--signal);background:transparent;color:var(--signal);cursor:pointer}' +
+      '.gen-review button:hover:not(:disabled){background:var(--signal);color:var(--paper) !important}' +
+      '.gen-review button:disabled{opacity:.35;cursor:default}' +
+      '.gen-form{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}' +
+      '.gen-form[hidden]{display:none}' +
+      '.gen-form textarea{flex:1 0 100%;box-sizing:border-box;font-family:var(--sans);font-size:15px;line-height:1.5;' +
+        'padding:7px 9px;border:1px solid var(--signal);background:var(--paper);color:var(--ink) !important;resize:vertical}' +
+      '.gen-said{flex:1 0 100%;margin:2px 0 0;font-family:var(--mono);font-size:10px;line-height:1.55;letter-spacing:.02em;white-space:pre-line}' +
+      '.gen-said:empty{display:none}' +
+      '@media print{.gen-review{display:none !important}}';
+    document.head.appendChild(s);
+  }
+  function flush() {
+    try {
+      var q = JSON.parse(localStorage.getItem('ts2-review-queue') || '[]');
+      if (!q.length) return;
+      Promise.all(q.map(function (it) {
+        return fetch('/__review', { method: 'POST', body: JSON.stringify(it) })
+          .then(function (r) { return r.ok; }).catch(function () { return false; });
+      })).then(function (ok) {
+        localStorage.setItem('ts2-review-queue', JSON.stringify(q.filter(function (_, i) { return !ok[i]; })));
+      });
+    } catch (e) {}
+  }
+  var register = fetch('/REVIEW.json', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+  var notes = fetch('/_notes/TONE-FEEDBACK.jsonl', { cache: 'no-store' })
+    .then(function (r) { return r.ok ? r.text() : ''; }).catch(function () { return ''; });
+  Promise.all([register, notes]).then(function (got) {
+    var map = got[0] && got[0].approved;
+    if (!map) { plain(); return; }
+    var latest = {};
+    got[1].split('\n').forEach(function (l) {
+      if (!l.trim()) return;
+      try { var j = JSON.parse(l); latest[j.key] = j; } catch (e) {}
+    });
+    style(); flush();
+    marks.forEach(function (el) {
+      var ok = map[el.dataset.gen] === true;
+      el.classList.toggle('gen-say', !ok);
+      if (!ok) draw(el, latest[el.dataset.gen]);
+    });
+  });
+})();
+
+</script>
+</body>
+</html>
